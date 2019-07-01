@@ -5,7 +5,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const GooglePlusTokenStrategy = require('passport-google-plus-token');
 const config = require('./configuration');
 const User = require('./models/user');
-
+const GoogleStrategy = require('passport-google-oauth20')
 // JSON WEB TOKENS STRATEGY
 passport.use(new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
@@ -26,50 +26,90 @@ passport.use(new JwtStrategy({
     done(error, false);
   }
 }));
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+    User.findById(id).then((user) => {
+        done(null, user);
+    });
+});
 
 // Google OAuth Strategy
-passport.use('googleToken', new GooglePlusTokenStrategy({
-  clientID: config.oauth.google.clientID,
-  clientSecret: config.oauth.google.clientSecret
-}, async (accessToken, refreshToken, profile, done) => {
-  try {
-    // Should have full user profile over here
-    console.log('profile', profile);
-    console.log('accessToken', accessToken);
-    console.log('refreshToken', refreshToken);
+// passport.use('googleToken', new GooglePlusTokenStrategy({
+//   clientID: config.oauth.google.clientID,
+//   clientSecret: config.oauth.google.clientSecret
+// }, async (accessToken, refreshToken, profile, done) => {
+//   try {
+//     // Should have full user profile over here
+//     console.log('profile', profile);
+//     console.log('accessToken', accessToken);
+//     console.log('refreshToken', refreshToken);
 
-    const existingUser = await User.findOne({ "google.id": profile.id });
-    if (existingUser) {
-      return done(null, existingUser);
-    }
+//     const existingUser = await User.findOne({ "google.id": profile.id });
+//     if (existingUser) {
+//       return done(null, existingUser);
+//     }
 
-    const newUser = new User({
-      method: 'google',
-      google: {
-        id: profile.id,
-      email: profile.emails[0].value
-      }
-    });
+//     const newUser = new User({
+//       method: 'google',
+//       google: {
+//         id: profile.id,
+//       email: profile.emails[0].value
+//       }
+//     });
 
-    await newUser.save();
-    done(null, newUser);
-  } catch(error) {
-    done(error, false, error.message);
-  }
+//     await newUser.save();
+//     done(null, newUser);
+//   } catch(error) {
+//     done(error, false, error.message);
+//   }
+// }));
+passport.use(
+  new GoogleStrategy(
+    {
+        clientID: "97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com",
+        clientSecret: "oDN7TToVdMpqwCdhDCZEsGOI",
+        callbackURL: '/auth/users/oauth/google'
+    },
+  (accessToken,refreshToken, profile,done)=>{
+        User.findOne({ 'email' : profile.emails[0].value }, function(err, user) {
+          if (err) return done(err);
+
+          if (user) {
+              User.updateOne({'email' : profile.emails[0].value });
+              return done(null, user);
+          } else {
+            var newUser = {
+              email: profile.emails[0].value,
+              socialId: profile.id,
+              password:'$2a$10$LGvwGlOq9.2ahUvfRdypj.EddTci2pGmRyVL21to8L/vTyDovHiZa',
+              name:profile.displayName,
+              isEmailVerified:true
+            };
+              console.log(newUser);
+            User.create(newUser, function(err, added) {
+                if (err) {
+                  console.log(err);
+                }
+                return done(null, added);
+            });
+          }
+        });
 }));
-
 // LOCAL STRATEGY
 passport.use(new LocalStrategy({
   usernameField: 'email'
 }, async (email, password, done) => {
   try {
     // Find the user given the email
-    User.findOne({ "local.email": email })
+    User.findOne({ "email": email })
     .then(user =>{
       if (!user) {
       return done(null, false);
     }
-       if (!user.local.isEmailVerified) {
+       if (!user.isEmailVerified) {
       return done(null, false);
     }
     const isMatch = user.isValidPassword(password);

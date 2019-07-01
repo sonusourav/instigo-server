@@ -2,25 +2,23 @@ const express = require('express');
 const router = require('express-promise-router')();
 const passport = require('passport');
 const passportConf = require('../passport');
-
 const { validateBody, schemas } = require('../helpers/routeHelpers');
 const UsersController = require('../controllers/users');
 const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
-
 router.route('/signup')
-  .post(validateBody(schemas.authSchema),UsersController.signUp);
-
+.post(UsersController.sign);
 router.route('/signin')
-  .post(validateBody(schemas.authSchema), passportSignIn, UsersController.signIn);
+  .post(passportSignIn, UsersController.signIn);
 
 router.route('/oauth/google')
-  .post(passport.authenticate('googleToken', { session: false }), UsersController.googleOAuth);
+  .get(passport.authenticate('google', { session: false }), UsersController.googleOAuth);
 
 router.route('/secret')
   .get(passportJWT, UsersController.secret);
+  console.log("aman");
 
-router.route('/verify/:id/:id1')
+router.route('/verify/:id1')
 	.get(UsersController.verify);
 	
 module.exports = router;

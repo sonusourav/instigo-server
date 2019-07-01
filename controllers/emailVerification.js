@@ -8,9 +8,9 @@ var smtpTransport = nodemailer.createTransport('smtps://' + userCredential.user 
 var rand,mailOptions,host,link;
 
 exports.verifyemail = (req,res,next) => {
-    rand = Math.floor((Math.random() * 1000000) + 54 );
+    //rand = Math.floor((Math.random() * 1000000) + 54 );
     host = req.get('host');
-    link = "http://localhost:3000" + "/users/verify/" + rand + "/" + req.userID;
+    link = "http://localhost:3000" + "/users/verify/"+ req.userID;
     mailOptions = {
         from: '"Admin" <aluthra1403@gmail.com>',
         to: req.body.email,
@@ -29,8 +29,7 @@ exports.verifyemail = (req,res,next) => {
               });
         }
         const vemail = new Vemail({
-            userID: req.userID,
-            rand: rand
+            userID: req.userID
         });
         vemail
             .save()
