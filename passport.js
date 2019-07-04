@@ -5,8 +5,18 @@ const LocalStrategy = require('passport-local').Strategy;
 const GooglePlusTokenStrategy = require('passport-google-plus-token');
 const config = require('./configuration');
 const User = require('./models/user');
-const GoogleStrategy = require('passport-google-oauth20')
+var bcrypt = require('bcryptjs')
+const GoogleStrategy = require('passport-google-oauth20');
 // JSON WEB TOKENS STRATEGY
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+    User.findById(id).then((user) => {
+        done(null, user);
+    });
+});
 passport.use(new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
   secretOrKey: config.JWT_SECRET
@@ -26,15 +36,7 @@ passport.use(new JwtStrategy({
     done(error, false);
   }
 }));
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
 
-passport.deserializeUser((id, done) => {
-    User.findById(id).then((user) => {
-        done(null, user);
-    });
-});
 
 // Google OAuth Strategy
 // passport.use('googleToken', new GooglePlusTokenStrategy({
@@ -76,7 +78,6 @@ passport.use(
   (accessToken,refreshToken, profile,done)=>{
         User.findOne({ 'email' : profile.emails[0].value }, function(err, user) {
           if (err) return done(err);
-
           if (user) {
               User.updateOne({'email' : profile.emails[0].value });
               return done(null, user);
@@ -88,6 +89,7 @@ passport.use(
               name:profile.displayName,
               isEmailVerified:true
             };
+
               console.log(newUser);
             User.create(newUser, function(err, added) {
                 if (err) {
@@ -99,39 +101,3 @@ passport.use(
         });
 }));
 // LOCAL STRATEGY
-passport.use(new LocalStrategy({
-  usernameField: 'email'
-}, async (email, password, done) => {
-  try {
-    // Find the user given the email
-    User.findOne({ "email": email })
-    .then(user =>{
-      if (!user) {
-      return done(null, false);
-    }
-       if (!user.isEmailVerified) {
-      return done(null, false);
-    }
-    const isMatch = user.isValidPassword(password);
-    if (!isMatch) {
-      return done(null, false);
-    }
-    done(null, user);
-    }).
-    catch(err => {
-    done(err, false);
-  });
-    
-    // If not, handle it
-    
-    // Check if the password is correct
-    
-    // If not, handle it
-    
-   
-    // Otherwise, return the user
-    
-  } catch(error) {
-    done(error, false);
-  }
-}));

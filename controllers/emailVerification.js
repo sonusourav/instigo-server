@@ -19,6 +19,7 @@ exports.verifyemail = (req,res,next) => {
     }
     smtpTransport.sendMail(mailOptions, (error, info) => {
         if(error) {
+            console.log(error);
             User.deleteOne({"email": req.body.email}).then(response => {
                 console.log("User deleted as email not sent!");
             }).catch(erorr => {

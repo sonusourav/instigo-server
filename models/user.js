@@ -15,13 +15,6 @@ const userSchema =mongoose.Schema({
    hostel: {type:Number,default:null},
    phone:{type:Number,default:null} 
 });
-userSchema.methods.isValidPassword = async function(newPassword) {
-  try { 
-    return await bcrypt.compare(newPassword, this.password);
-  } catch(error) {
-    throw new Error(error);
-  }
-}
 // Create a model
 module.exports  = mongoose.model("User", userSchema);
 

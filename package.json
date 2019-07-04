@@ -11,23 +11,30 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
+    "connect-mongo": "^3.0.0",
+    "cookie-parser": "^1.4.4",
     "cross-env": "^5.0.5",
     "ejs": "^2.6.2",
     "express": "^4.15.3",
     "express-promise-router": "^2.0.0",
+    "express-session": "^1.16.2",
+    "express-validator": "^6.1.1",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^2.2.0",
     "m": "^1.5.4",
     "mongoose": "^5.1.2",
     "mongoose-unique-validator": "^2.0.3",
     "morgan": "^1.8.2",
+    "multer": "^1.4.1",
     "nodemailer": "^6.2.1",
     "passport": "^0.3.2",
     "passport-google-oauth20": "^2.0.0",
     "passport-google-plus-token": "^2.1.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "phone": "^2.3.16"
+    "phone": "^2.3.16",
+    "rand-token": "^0.4.0"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
