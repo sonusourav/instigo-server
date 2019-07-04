@@ -31,22 +31,23 @@ e)Forgot Password:
 f)	Update Profile:
 					1) Firstly Sign in with registered email id in one tab in postman.
 					2) Open another tab 
-					3) Paste the url of Update profile in postman 
-					4) Check the db				
-g)  Getting Profile:
-
-
-
-
-h) Uploading ProfilePic:
-
-
-
-
-
-i) Uploading Coverpic:
-
-
-
-
-j) logout:
+					3) Paste the url of Update profile above in postman 
+					4) Check the db	
+g) Upload Profilepic:
+					1)  Firstly Sign in with registered email id in one tab in postman.
+					2)  Open another tab
+					3)  Paste the url of Upload profilepic above in postman  
+					4)  Choose the form data in Body tab instead of raw data .
+					5) Keep Key as empty & choose the value with file Option instead of text.
+					6) Now choose file from ur Pc and check the image Folder inside the instigo Folder. 
+                    7) Can check db as of now for ProfilePic path in ur sign-in Id
+h) Uploading Coverpic:
+					1) same procedure as above(g) just change the url in Postman
+i)  Getting Profile:
+					1) Firstly Sign in with registered email id in one tab in postman.					
+					2)  Open another tab
+					3)  Paste the url of /profile above in postman 
+j) logout: 
+					1) Paste the url of /logout above in postman 
+					2) These profile routes(f,g,h,i) will not work if not authenticated.
+					3) check these routes after logout
