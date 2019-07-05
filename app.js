@@ -72,7 +72,15 @@ const storage = multer.diskStorage({
     cb(null, './instigo/images');
   },
   filename: function(req, file, cb) {
-    cb(null, req.session.user.email + file.originalname);
+    cb(null, req.session.user.email +'_profilePic_' + file.originalname);
+  }
+});
+const storage1 = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './instigo/images');
+  },
+  filename: function(req, file, cb) {
+    cb(null, req.session.user.email+'_coverPic_' + file.originalname);
   }
 });
 const fileFilter = (req, file, cb,res) => {
@@ -85,6 +93,13 @@ const fileFilter = (req, file, cb,res) => {
 };
 const upload = multer({
   storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 1
+  },
+  fileFilter: fileFilter
+});
+const upload1 = multer({
+  storage: storage1,
   limits: {
     fileSize: 1024 * 1024 * 1
   },
@@ -195,7 +210,7 @@ app.post('/profilepic',upload.single(''),function (req,res) {
     return res.status(401).send("Not Authorized");
   }
   console.log(req.file);
-  User.updateOne({email: req.session.user.email },{'profilePic':req.file.filename}).then(result =>{
+  User.updateOne({email: req.session.user.email },{'profilePic':storage.filename}).then(result =>{
       console.log(result);
   if (result.n > 0) {
       res.status(200).json({ message: "successfully Uploaded profilepic!" });
@@ -209,13 +224,13 @@ app.post('/profilepic',upload.single(''),function (req,res) {
       });
     });
 });
-app.post('/coverpic',upload.single(''),function (req,res) {
+app.post('/coverpic',upload1.single(''),function (req,res) {
   console.log(req.session.user);
   if(!req.session.user){
     return res.status(401).send("Not Authorized");
   }
   console.log(req.file);
-  User.updateOne({email: req.session.user.email },{'coverPic':storage.filename}).then(result =>{
+  User.updateOne({email: req.session.user.email },{'coverPic':storage1.filename}).then(result =>{
       console.log(result);
   if (result.n > 0) {
       res.status(200).json({ message: "successfully Uploaded coverpic!" });
