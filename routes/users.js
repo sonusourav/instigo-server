@@ -18,7 +18,7 @@ router.route('/signin')
 router.route('/oauth/google')
   .get(passport.authenticate('google', { session: false }), UsersController.googleOAuth);
 
-router.route('/verify/:id1')
+router.route('/verify/:id/:id1')
 	.get(UsersController.verify);
 
 router.route('/forgotp')

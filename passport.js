@@ -81,7 +81,9 @@ passport.use(
           if (user) {
               User.updateOne({'email' : profile.emails[0].value });
               return done(null, user);
+
           } else {
+            
             var newUser = {
               email: profile.emails[0].value,
               socialId: profile.id,

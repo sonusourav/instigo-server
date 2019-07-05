@@ -20,7 +20,7 @@ module.exports = {
 signUp: (req, res, next) => {
 const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
+    return res.status(422).json({ errors: errors.array()[0].msg });
   }
 
 const url = req.get("host");
@@ -65,7 +65,7 @@ const url = req.get("host");
 
     const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
+    return res.status(422).json({ errors: errors.array()[0].msg });
   }
 
     let fetchedUser;
@@ -121,8 +121,12 @@ const url = req.get("host");
 
   verify: async( req, res, next) => {
       Vemail.findOne({"userID": req.params.id1}, (err, result) =>{
-    if(err) throw err;
-  
+      if(!result){
+         res.status(201).json({
+        message: "Email already Verified"
+      });
+      }
+      else{
       User.updateOne({_id: req.params.id1},{"isEmailVerified": true}).then(result =>{console.log(result)});
         Vemail.deleteOne({"userID": req.params.id1}).catch(error => {
           console.log(error);
@@ -130,7 +134,7 @@ const url = req.get("host");
       res.status(201).json({
         message: "Email Verified"
       });
- 
+ }
     // else{
     //   res.status(500).json({
     //     message: "Invalid User Credentials!"
@@ -151,6 +155,7 @@ const url = req.get("host");
         gender: user.gender,
         branch: user.branch,
         profilePic: user.profilePic,
+        coverPic:user.coverPic,
         hostel:user.hostel,
         dob:user.dob,
         phone:user.phone
