@@ -72,7 +72,7 @@ const storage = multer.diskStorage({
     cb(null, './instigo/images');
   },
   filename: function(req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
+    cb(null, req.session.user.email + file.originalname);
   }
 });
 const fileFilter = (req, file, cb,res) => {
