@@ -15,7 +15,9 @@
 | get |   http://localhost:3000/logout     |    |     
 | post|  http://localhost:3000/profilepic  |  |
 | post |  http://localhost:3000/coverpic   |    |
-  
+| get |  http://localhost:3000/users/profilepic   |    |
+| get |  http://localhost:3000/users/coverpic   |    |
+| post |  http://localhost:3000/updatepassword    |  {"password": "amanji"} |  
 		                                         
  	       		
 * Check db:
@@ -54,5 +56,17 @@
   - Paste the url of /profile above in postman 
 * logout: 
   - Paste the url of /logout above in postman 
-  - These profile routes(f,g,h,i) will not work if not authenticated.
+  - These profile routes will not work if not authenticated.
   - check these routes after logout
+* UpdatePassword: 
+  -Firstly Sign in with registered email id in one tab in postman.
+  - Paste the url of /updatepassword above in other tab
+  - check with sign-in 
+* GetprofilePic: 
+  -Firstly Sign in with registered email id in one tab in postman.
+  - Paste the url of /users/profilepic above in other tab.
+  - copy the string u get in response e.g. (xxxxxxxxxxxxxxxxxx.jpg)
+  - check this url on browser 'http://localhost:3000/instigo/images/xxxxxxxxxxxxxxx.jpg'
+  - It will show that image
+* GetCoverPic:
+  - same as GetProfilePic above
