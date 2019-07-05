@@ -209,8 +209,8 @@ app.post('/profilepic',upload.single(''),function (req,res) {
   if(!req.session.user){
     return res.status(401).send("Not Authorized");
   }
-  console.log(req.file);
-  User.updateOne({email: req.session.user.email },{'profilePic':storage.filename}).then(result =>{
+  console.log(req.file.filename);
+  User.updateOne({email: req.session.user.email },{'profilePic':req.file.filename}).then(result =>{
       console.log(result);
   if (result.n > 0) {
       res.status(200).json({ message: "successfully Uploaded profilepic!" });
@@ -230,7 +230,7 @@ app.post('/coverpic',upload1.single(''),function (req,res) {
     return res.status(401).send("Not Authorized");
   }
   console.log(req.file);
-  User.updateOne({email: req.session.user.email },{'coverPic':storage1.filename}).then(result =>{
+  User.updateOne({email: req.session.user.email },{'coverPic':req.file.filename}).then(result =>{
       console.log(result);
   if (result.n > 0) {
       res.status(200).json({ message: "successfully Uploaded coverpic!" });
