@@ -15,7 +15,6 @@ const { JWT_SECRET } = require('./configuration');
 const passportJWT = passport.authenticate('jwt', { session: false });
 const fPass = require('./models/forgotPassword');
 const multer= require('multer');
-const upload = multer({dest: 'instigo/images' }); 
 mongoose.Promise = global.Promise;
 const app = express();
 //const expressValidator = require('express-validator');
@@ -36,8 +35,6 @@ if (process.env.NODE_ENV === 'test') {
   });
 }
 require('./passport');
-const two = 1000*60*60*2;
-const sess = two;
 // Middlewares moved morgan into if for clear tests
 if (!process.env.NODE_ENV === 'test') {
   app.use(morgan('dev'));
@@ -70,6 +67,29 @@ app.get('/',(req,res) =>{
   console.log(req.session);
   res.render('home');
 });
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './instigo/images');
+  },
+  filename: function(req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+});
+const fileFilter = (req, file, cb,res) => {
+  // reject a file
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 1
+  },
+  fileFilter: fileFilter
+});
 app.use(function(req, res, next){
   next();
 });
@@ -80,7 +100,7 @@ app.post('/reset',[check('password','password must be in 6 characters').isLength
   if (token) {
     JWT.verify(token,JWT_SECRET,function(err, token_data) {
       if (err) {
-         return res.status(403).send('Error');
+         return res.status(403).send({message: 'Link has been expired!'});
       } else {
             var tok = decode(token);
                const errors = validationResult(req);
@@ -95,8 +115,10 @@ else {
  bcrypt.hash(password, 10).then(hash =>{
    User.updateOne({email: tok.email },{password:hash}).then(result =>{
     console.log(result);
-
   if (result.n > 0) {
+    fPass.deleteOne({"userID": tok.email}).catch(error => {
+          console.log(error);
+        });
       res.status(200).json({ message: "successfully Updated password!" });
       }else {
         res.status(401).json({ message: "err in Updating" });
@@ -112,17 +134,51 @@ else {
   }
   });
 }
-  else {
-    return res.status(403).send('No token');
+else {
+    return res.status(403).send('Link has been Expired');
   };
 });
-app.get('/forgotp/:id',(req,res)=>{
-  var tok =decode(req.params.id);
-        fPass.deleteOne({"userID": tok.email}).catch(error => {
-          console.log(error);
-        });
-   res.cookie('auth',req.params.id);
- res.render('email',{id:req.params.id});
+app.post('/updatepassword',[check('password','password must be in 6 characters').isLength({min:6})],(req,res)=>{
+  if (!req.session.user) {
+    res.json({message : "Not Authorized"});}
+       else {
+               const errors = validationResult(req);
+       //         if (errors){
+       //    return res.status(422).json({ errors: errors[0].msg});
+       // }
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ message: errors.array()[0].msg });
+  }
+    var password = req.body.password;
+     if (password === "" ) return res.status(200).json({ message: "password can't be empty" });
+else {
+ bcrypt.hash(password, 10).then(hash =>{
+   User.updateOne({email: req.session.user.email },{password:hash}).then(result =>{
+    console.log(result);
+  if (result.n > 0) {
+    req.session.user = null;
+      res.status(200).json({ message: "successfully Updated password!" });
+      }else {
+        res.status(401).json({ message: "err in Updating" });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "User not found!"
+      });
+    });
+      });
+    };
+  }
+});
+app.get('/forgotp/:id1/:id',(req,res)=>{
+    fPass.findOne({'rand':req.params.id1}).then(result =>{
+      if(!result){
+        res.status(403).json({message : "password already Updated"});
+      }
+      res.cookie('auth',req.params.id);
+    res.render('email',{id1:req.params.id1});
+    });
 })
 app.get('/auth/google', passport.authenticate('google', {
   scope: ['profile', 'email']
@@ -159,7 +215,7 @@ app.post('/coverpic',upload.single(''),function (req,res) {
     return res.status(401).send("Not Authorized");
   }
   console.log(req.file);
-  User.updateOne({email: req.session.user.email },{'coverPic':req.file.filename}).then(result =>{
+  User.updateOne({email: req.session.user.email },{'coverPic':storage.filename}).then(result =>{
       console.log(result);
   if (result.n > 0) {
       res.status(200).json({ message: "successfully Uploaded coverpic!" });

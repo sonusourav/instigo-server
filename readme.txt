@@ -9,10 +9,11 @@
  	4) 	GET		  http://localhost:3000/users/secret	     {Header : key:Authorization , value:"token value"}
  	5) post       http://localhost:3000/users/forgotp      {"email": "170030039@iitdh.ac.in"}
  	6) post 	  http://localhost:3000/users/update/profile {"branch":"cse","year":2,"hostel":2,"gender":"male","dob":"10/02/1999","phone":1111111111}
- 	7) post  	  http://localhost:3000/users/profile      
- 	8) get       http://localhost:3000/logout
- 	9) post      http://localhost:3000/profilepic
- 	10) post     http://localhost:3000/coverpic
+ 	7) get 	  	  http://localhost:3000/users/profile      
+ 	8) get        http://localhost:3000/logout
+ 	9) post       http://localhost:3000/profilepic
+ 	10) post      http://localhost:3000/coverpic
+ 	11) post      http://localhost:3000/updatePassword   
 c)  Check db:
 				1) use api;
 				2) db.users.find();

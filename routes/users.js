@@ -19,10 +19,6 @@ router.route('/signin')
 router.route('/oauth/google')
   .get(passport.authenticate('google', { session: false }), UsersController.googleOAuth);
 
-router.route('/secret')
-  .get(passportJWT, UsersController.secret);
-  console.log("aman");
-
 router.route('/verify/:id1')
 	.get(UsersController.verify);
 
@@ -34,5 +30,11 @@ router.route('/profile')
 
 router.route('/update/profile')
 	.post(UsersController.updateProfile);	
-		
+
+router.route('/profilepic')
+	.get(UsersController.getProfilePic);	
+
+router.route('/coverpic')
+	.get(UsersController.getCoverPic);	
+	
 module.exports = router;

@@ -119,10 +119,6 @@ const url = req.get("host");
    res.render('home.ejs');
   },
 
-  secret: async (req, res, next) => {
-    console.log('I managed to get here!');
-    res.json({ secret: "resource" });
-  },
   verify: async( req, res, next) => {
       Vemail.findOne({"userID": req.params.id1}, (err, result) =>{
     if(err) throw err;
@@ -189,17 +185,33 @@ const url = req.get("host");
       });
     });
   },
-  generateToken: async(req,res,next)=>{
-    var userId = req.body.id
-  var refreshToken = req.body.refreshToken
-  if( refreshTokens[refreshToken] == userId) {
-    var token = JWT.sign(userId,  JWT_SECRET, { expiresIn: 300 })
-    res.status(200).json({token: token});
+  getProfilePic : async(req,res,next) =>{
+    if(!req.session.user){
+    return res.status(401).send("Not Authorized");
   }
-  else {
-    res.send(401)
+  User.findOne({'email':req.session.user.email}).then(user =>{
+        res.status(200).json(user.profilePic);
+  });
+  },
+   getCoverPic : async(req,res,next) =>{
+    if(!req.session.user){
+    return res.status(401).send("Not Authorized");
   }
-  }
+  User.findOne({'email':req.session.user.email}).then(user =>{
+        res.status(200).json(user.coverPic);
+  });
+}
+  // generateToken: async(req,res,next)=>{
+  //   var userId = req.body.id
+  // var refreshToken = req.body.refreshToken
+  // if( refreshTokens[refreshToken] == userId) {
+  //   var token = JWT.sign(userId,  JWT_SECRET, { expiresIn: 300 })
+  //   res.status(200).json({token: token});
+  // }
+  // else {
+  //   res.send(401)
+  // }
+  // }
 }
  
   

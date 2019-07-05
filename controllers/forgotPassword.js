@@ -7,6 +7,8 @@ const JWT = require('jsonwebtoken');
 var smtpTransport = nodemailer.createTransport('smtps://' + userCredential.user  + ':' +userCredential.pass +'@smtp.gmail.com');
 var rand,mailOptions,host,link;
 exports.forgotPassword = (req,res,next) => {
+    User.findOne({'email':req.body.email}).then(user =>{
+   if(user){
     rand = Math.floor((Math.random() * 1000000) + 54 );
     host = req.get('host');
     const token = JWT.sign(
@@ -14,7 +16,7 @@ exports.forgotPassword = (req,res,next) => {
         JWT_SECRET,
         { expiresIn: "300s" }
       );
-    link = "http://localhost:3000" + "/forgotp/"+token
+    link = "http://localhost:3000" + "/forgotp/"+rand+'/'+token
     mailOptions = {
         from: '"Admin" <aluthra1403@gmail.com>',
         to: req.body.email,
@@ -33,7 +35,8 @@ exports.forgotPassword = (req,res,next) => {
               });
         }
         const fpass = new Fpass({
-            userID: req.body.email
+            userID: req.body.email,
+            rand : rand
         });
        fpass
             .save()
@@ -49,6 +52,9 @@ exports.forgotPassword = (req,res,next) => {
             })
         console.log(info.response);
     })
-
+}else{
+ res.status(404).json({message :"User Not Found"});
+}
+})
 }
 //ewoJImVtYWlsIjoiYWx1dGhyYTE0MDNAZ21haWwuY29tIgp9
