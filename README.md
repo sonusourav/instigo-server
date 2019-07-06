@@ -17,7 +17,11 @@
 | post |  http://localhost:3000/coverpic   |    |
 | get |  http://localhost:3000/users/profilepic   |    |
 | get |  http://localhost:3000/users/coverpic   |    |
-| post |  http://localhost:3000/updatepassword    |  {"password": "amanji"} |  
+| post |  http://localhost:3000/updatepassword    |  {"password": "amanji"} | 
+| get |  http://localhost:3000/mess  |    | 
+| post |  http://localhost:3000/mess/feedback  |  {"ratings":2,"title":"delayed","part":"dinner","desc":"anything","day":"Monday" |
+| get |  http://localhost:3000/mess/getfeedbacks  |    | 
+| post |  http://localhost:3000/mess/ratings/1/breakfast  | {"ratings":5}   | 
 		                                         
  	       		
 * Check db:
@@ -70,3 +74,22 @@
   - It will show that image
 * GetCoverPic:
   - same as GetProfilePic above
+* Postmenu:
+  -Follow following Commands:
+  -cd seed
+  - node menu-seeder.js
+  -You should see the output("Added successfully")
+  -check db for products
+* Getmenu:
+  - Paste Url of /mess from above table in postman
+* Postfeedback:
+  - Paste Url of /mess/feedback from above table in postman
+  - check db
+* Getfeedback:
+  - Paste Url of /mess/getfeedbacks from above table in postman
+* Postmenuratings:
+  - Paste Url of /mess/ratings/1/breakfast from above table in postman
+  - You can add 0-6 and (lunch,snacks,dinner,breakfast) respectively in above url e.g."/mess/ratings/5/snacks
+  -check db for raters and ratings
+
+

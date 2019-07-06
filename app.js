@@ -4,6 +4,7 @@ var cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const userRoutes = require("./routes/users");
+const messRoutes = require("./routes/mess");
 const session = require('express-session');
 const passport = require('passport');
 const JWT = require('jsonwebtoken');
@@ -245,6 +246,7 @@ app.post('/coverpic',upload1.single(''),function (req,res) {
     });
 });
 app.use('/users', userRoutes);
+app.use('/mess', messRoutes);
 app.get('/auth/users/oauth/google', passport.authenticate('google'), (req, res) => {
      res.status(200).json({ message: "success" });
 });
