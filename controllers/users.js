@@ -31,10 +31,10 @@ const url = req.get("host");
     if (user) {
        if(!user.isEmailVerified){
           res.status(201).json({
-            message: "Activate your account by clicking link in email!"
+            message: "Failure_Activate your account by clicking link in email!"
           })
         }else{
-      return res.status(403).json({ error: 'Email is already in use'});
+      return res.status(403).json({ error: 'Failure_Email is already in use'});
     }}
 
     // Create a new user
@@ -73,20 +73,20 @@ const url = req.get("host");
     .then(user =>{
       if (!user) {
         return res.status(401).json({
-          message: "User Not found"
+          message: "Failure_User Not found"
         });
     }
     fetchedUser = user;
        if (!user.isEmailVerified) {
        return res.status(401).json({
-          message: "First Activate your Account from your mailbox!"
+          message: "Failure_First Activate your Account from your mailbox!"
         });
     }
   return bcrypt.compare(req.body.password,user.password);
 }).then(result =>{
   if(!result){
     return res.status(401).json({
-          message: "password do not match"
+          message: "Failure_password do not match"
         });
   }
  // var refreshTokens = {} 
@@ -102,12 +102,12 @@ const url = req.get("host");
    //  res.json({token:  token, refreshToken: refreshToken}) 
   // console.log(req.session.user);
    res.status(200).json({
-        token: token
+       message:"Success"
       });
     })
     .catch(err => {
       return res.status(401).json({
-        message: "Invalid authentication credentials!"
+        message: "Failure_Invalid authentication credentials!"
       });
     });
 },
@@ -144,7 +144,7 @@ const url = req.get("host");
  },
  profile: async(req,res,next) =>{
   if(!req.session.user){
-    return res.status(401).send("Not Authorized");
+    return res.status(401).send("Failure_Not Authorized");
   }
   User.findById(req.session.user._id).then(user => {
     if (user) {
@@ -162,37 +162,37 @@ const url = req.get("host");
       }
       res.status(200).json(details);
     } else {
-      res.status(404).json({ message: "User not found!" });
+      res.status(404).json({ message: "Failure_User not found!" });
     }
   })
   .catch(error => {
     res.status(500).json({
-      message: "Fetching User failed!"
+      message: "Failure_Fetching User failed!"
     });
   });
  },
  updateProfile: async(req,res,next) =>{
   if(!req.session.user){
-    return res.status(401).send("Not Authorized");
+    return res.status(401).send("Failure_Not Authorized");
   }
   User.updateOne({'email':req.session.user.email},{'branch':req.body.branch,'year':req.body.year,'gender':req.body.gender,'hostel':req.body.hostel,'phone':req.body.phone,'dob':req.body.dob})
   .then(result =>{
     console.log(result);
      if (result.n > 0) {
-      res.status(200).json({ message: "successfully Updated profile" });
+      res.status(200).json({ message: "Success" });
       }else {
-        res.status(401).json({ message: "err in Updating" });
+        res.status(401).json({ message: "Failure_err in Updating" });
       }
     })
     .catch(error => {
       res.status(500).json({
-        message: "User not found"
+        message: "Failure_User not found"
       });
     });
   },
   getProfilePic : async(req,res,next) =>{
     if(!req.session.user){
-    return res.status(401).send("Not Authorized");
+    return res.status(401).send("Failure_Not Authorized");
   }
   User.findOne({'email':req.session.user.email}).then(user =>{
         res.status(200).json(user.profilePic);
@@ -200,7 +200,7 @@ const url = req.get("host");
   },
    getCoverPic : async(req,res,next) =>{
     if(!req.session.user){
-    return res.status(401).send("Not Authorized");
+    return res.status(401).send("Failure_Not Authorized");
   }
   User.findOne({'email':req.session.user.email}).then(user =>{
         res.status(200).json(user.coverPic);

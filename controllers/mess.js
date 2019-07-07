@@ -22,15 +22,15 @@ createFeedback: async(req,res,next) =>{
 		url:req.session.user.profilePic
     });
 	 feedback.save().then(result=>{
-	 	if(result)res.status(200).json({message:"successfully posted"});
-	 	else{res.status(400).json({message:"err in posting feedback"})}
+	 	if(result)res.status(200).json({message:"Success"});
+	 	else{res.status(400).json({message:"Failure_err in posting feedback"})}
 	 });
 	}
 },
 getFeedback: async(req,res,next) =>{
 	console.log("aman");
 	if (!req.session.user) {
-    res.json({message : "Not Authorized"});}
+    res.json({message : "Failure_Not Authorized"});}
     else{
     	Feedback.find({}).then(feedbacks =>{
     		console.log(feedbacks);
@@ -48,8 +48,8 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	var mean = ratings/prod.breakfast.raters;
 	prod.breakfast.ratings = mean;
 	prod.save().then(result =>{
-		if(result){res.status(200).json({message:"successfully rated"});}
-		else{res.status(400).json({message:"err in ratings"});}
+		if(result){res.status(200).json({message:"Success"});}
+		else{res.status(400).json({message:"Failure_err in ratings"});}
 	});
 });
 }
@@ -60,8 +60,8 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	var mean = ratings/prod.lunch.raters;
 	prod.lunch.ratings = mean;
 	prod.save().then(result =>{
-		if(result){res.status(200).json({message:"successfully rated"});}
-		else{res.status(400).json({message:"err in ratings"});}
+		if(result){res.status(200).json({message:"Success"});}
+		else{res.status(400).json({message:"Failure_err in ratings"});}
 	});
 });
 }
@@ -72,8 +72,8 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	var mean = ratings/prod.snacks.raters;
 	prod.snacks.ratings = mean;
 	prod.save().then(result =>{
-		if(result){res.status(200).json({message:"successfully rated"});}
-		else{res.status(400).json({message:"err in ratings"});}
+		if(result){res.status(200).json({message:"Success"});}
+		else{res.status(400).json({message:"Failure_err in ratings"});}
 	});
 });
 }
@@ -84,8 +84,8 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	var mean = ratings/prod.dinner.raters;
 	prod.dinner.ratings = mean;
 	prod.save().then(result =>{
-		if(result){res.status(200).json({message:"successfully rated"});}
-		else{res.status(400).json({message:"err in ratings"});}
+		if(result){res.status(200).json({message:"Success"});}
+		else{res.status(400).json({message:"Failure_err in ratings"});}
 	});
 });
 }

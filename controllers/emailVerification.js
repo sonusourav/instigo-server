@@ -10,12 +10,12 @@ var rand,mailOptions,host,link;
 exports.verifyemail = (req,res,next) => {
     rand = Math.floor((Math.random() * 1000000) + 54 );
     host = req.get('host');
-    link = "http://localhost:3000" + "/users/verify/"+rand+'/'+ req.userID;
+    link = "https://instigo-server.appspot.com" + "/users/verify/"+rand+'/'+ req.userID;
     mailOptions = {
-        from: '"Admin" <aluthra1403@gmail.com>',
+        from: '"InstiGO" <instigo.iitdh@gmail.com>',
         to: req.body.email,
-        subject: "Please confirm your Email Account",
-        html: "Hello,<br> Please Click on the link to verify your email.<br><a href=" + link + ">Clink here to verify</a>"
+        subject: "Verify your email for InstiGO",
+        html: "Hello,<br> Follow the link to verify your email address.<br><a href=" + link + ">Clink here to verify</a><br>If you didn’t ask to verify this address, you can ignore this email.<br><br>Thanks,<br>Your InstiGO team"
     }
     smtpTransport.sendMail(mailOptions, (error, info) => {
         if(error) {
@@ -26,7 +26,7 @@ exports.verifyemail = (req,res,next) => {
                 console.log("Error while Deleting!");
             })
             return res.status(500).json({
-                message: "Check Email and password of sender!"
+                message: "Failure_Check Email and password of sender!"
               });
         }
         const vemail = new Vemail({
@@ -37,12 +37,12 @@ exports.verifyemail = (req,res,next) => {
             .save()
             .then(response => {
                 res.status(200).json({
-                    message: "Email verification link sent!"
+                    message: "Success"
                 })
             })
             .catch(error => {
                 res.status(500).json({
-                    message: "Error occured while saving data!"
+                    message: "Failure_Error occured while saving data!"
                   });
             })
         console.log(info.response);

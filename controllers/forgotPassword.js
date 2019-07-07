@@ -16,12 +16,12 @@ exports.forgotPassword = (req,res,next) => {
         JWT_SECRET,
         { expiresIn: "300s" }
       );
-    link = "http://localhost:3000" + "/forgotp/"+rand+'/'+token
+    link = " https://instigo-server.appspot.com" + "/forgotp/"+rand+'/'+token
     mailOptions = {
-        from: '"Admin" <aluthra1403@gmail.com>',
+        from: '"InstiGO" <instigo.iitdh@gmail.com>',
         to: req.body.email,
-        subject: "Click on link to create a new Password",
-        html: "Hello,<br> Please Click on the link to create a new password.<br><a href=" + link + ">Clink here to verify</a>"
+        subject: "Reset your password for InstiGO",
+        html: "Hello,<br> Follow this link to reset your InstiGO password for your"+"  "+ req.body.email +"  "+"account.<br><a href=" + link + ">Clink here to verify</a><br><br>Thanks,<br>Your InstiGO team"
     }
     smtpTransport.sendMail(mailOptions, (error, info) => {
         if(error) {
@@ -31,7 +31,7 @@ exports.forgotPassword = (req,res,next) => {
                 console.log("Error while Deleting!");
             })
             return res.status(500).json({
-                message: "Check Email and password of sender!"
+                message: "Failure_Check Email and password of sender!"
               });
         }
         const fpass = new Fpass({
@@ -42,18 +42,18 @@ exports.forgotPassword = (req,res,next) => {
             .save()
             .then(response => {
                 res.status(200).json({
-                    message: "Email verification link sent!"
+                    message: "Success"
                 })
             })
             .catch(error => {
                 res.status(500).json({
-                    message: "Error occured while saving data!"
+                    message: "Failure_Error occured while saving data!"
                   });
             })
         console.log(info.response);
     })
 }else{
- res.status(404).json({message :"User Not Found"});
+ res.status(404).json({message :"Failure_User Not Found"});
 }
 })
 }
