@@ -22,6 +22,9 @@
 | post |  http://localhost:3000/mess/feedback  |  {"ratings":2,"title":"delayed","part":"dinner","desc":"anything","day":"Monday" |
 | get |  http://localhost:3000/mess/getfeedbacks  |    | 
 | post |  http://localhost:3000/mess/ratings/1/breakfast  | {"ratings":5}   | 
+| get |  http://localhost:3000/courses  |    |
+| get |  http://localhost:3000/courses/getdocuments/1  |    | 
+| post |  http://localhost:3000/documents/1  | formdata: {"key:value":- 1)title:Notes,2)prof:Sandeep.R.B,3) :file} 
 		                                         
  	       		
 * Check db:
@@ -91,5 +94,16 @@
   - Paste Url of /mess/ratings/1/breakfast from above table in postman
   - You can add 0-6 and (lunch,snacks,dinner,breakfast) respectively in above url e.g."/mess/ratings/5/snacks
   -check db for raters and ratings
-
-
+* Postcourse:
+  -Follow following Commands:
+  -cd seed
+  - node courses-seeder.js
+  -You should see the output("Added successfully")
+  -check db for courses
+* Getcourses:
+  - Paste Url of /courses from above table in postman
+* Postdocuments:
+  - Paste Url of /documents/1 from above table in postman
+  - Fill the formData instead of raw data in Body Tab
+  - You can add 1-2 course respectively in above url e.g."/documents/2"
+  -check /courses/getdocuments/1 or 2 in above url to get the document related to particular Course.

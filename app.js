@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const userRoutes = require("./routes/users");
 const messRoutes = require("./routes/mess");
+const resourcesRoutes = require("./routes/resources");
 const session = require('express-session');
 const passport = require('passport');
 const JWT = require('jsonwebtoken');
@@ -16,6 +17,12 @@ const { JWT_SECRET } = require('./configuration');
 const passportJWT = passport.authenticate('jwt', { session: false });
 const fPass = require('./models/forgotPassword');
 const multer= require('multer');
+const Document = require('./models/documents');
+let fs = require('fs-extra');
+const Course = require('./models/resources');
+// const GridFsStorage = require('multer-gridfs-storage');
+// const Grid = require('gridfs-stream');
+// const methodOverride = require('method-override');
 mongoose.Promise = global.Promise;
 const app = express();
 //const expressValidator = require('express-validator');
@@ -62,7 +69,8 @@ app.use(session({name:'aman',secret: 'aman',saveUninitialized: false,resave: fal
 // app.use("/images", express.static(path.join("images")));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/instigo/images', express.static('instigo/images'));
+app.use('/instigo/images', express.static( 'instigo/images'));
+app.use("/resources", express.static(__dirname + "/resources"));
 app.set('view engine','ejs');
 app.get('/',(req,res) =>{
   console.log(req.session);
@@ -70,7 +78,9 @@ app.get('/',(req,res) =>{
 });
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, './instigo/images');
+     let path = './images/'+req.session.user.email;
+      fs.mkdirsSync(path);
+    cb(null, path);
   },
   filename: function(req, file, cb) {
     cb(null, req.session.user.email +'_profilePic_' + file.originalname);
@@ -78,7 +88,9 @@ const storage = multer.diskStorage({
 });
 const storage1 = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, './instigo/images');
+     let path = './resources/'+req.session.user.email;
+      fs.mkdirsSync(path);
+    cb(null, path);
   },
   filename: function(req, file, cb) {
     cb(null, req.session.user.email+'_coverPic_' + file.originalname);
@@ -105,6 +117,22 @@ const upload1 = multer({
     fileSize: 1024 * 1024 * 1
   },
   fileFilter: fileFilter
+});
+const storage2 = multer.diskStorage({
+  destination: function(req, file, cb) {
+    let path = './resources/'+req.session.user.email;
+      fs.mkdirsSync(path);
+    cb(null, './resources/'+req.session.user.email);
+  },
+  filename: function(req, file, cb) {
+    cb(null, req.session.user.email + file.originalname);
+  }
+});
+const upload2 = multer({
+  storage: storage2,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  }
 });
 app.use(function(req, res, next){
   next();
@@ -245,8 +273,36 @@ app.post('/coverpic',upload1.single(''),function (req,res) {
       });
     });
 });
+app.post('/documents/:id',upload2.single(''),function (req,res) {
+  console.log(req.file);
+  if(!req.session.user){
+    return res.status(401).send("Not Authorized");
+  }
+   else{const documents= new Document({ 
+    title:req.body.title,
+    desc:req.body.desc,
+    prof:req.body.prof,
+    by:req.session.user.name,
+    url:req.session.user.profilePic,
+    file:req.file.filename,
+    type:req.file.mimetype
+    });
+
+   documents.save().then(result=>{
+Course.findOne({id:req.params.id}).then(course =>{
+                course.documents.push(documents._id);
+                course.save();
+    }).catch(err =>{
+      console.log(error);
+    });
+    if(result)res.status(200).json({message:"successfully posted"});
+    else{res.status(400).json({message:"err in posting feedback"})}
+   });
+  }
+});
 app.use('/users', userRoutes);
 app.use('/mess', messRoutes);
+app.use('/courses',resourcesRoutes);
 app.get('/auth/users/oauth/google', passport.authenticate('google'), (req, res) => {
      res.status(200).json({ message: "success" });
 });
