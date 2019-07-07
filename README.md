@@ -103,7 +103,14 @@
 * Getcourses:
   - Paste Url of /courses from above table in postman
 * Postdocuments:
+  -Firstly Sign in with registered email id in one tab in postman.
   - Paste Url of /documents/1 from above table in postman
   - Fill the formData instead of raw data in Body Tab
   - You can add 1-2 course respectively in above url e.g."/documents/2"
   -check /courses/getdocuments/1 or 2 in above url to get the document related to particular Course.
+* GetfileUrl: 
+  - copy the url get in the /courses/getdocuments/1  above in file filed of document object.
+  - e.g. (xxxxxxxxxxxxxxxxxx.cpp) 
+  - check this url on browser 'http://localhost:3000/resources/user@gmail.com/xxxxxxxxxxxxxx.cpp'
+  - It will show that image
+  - To see the file see the resources folder in main folder and check the respective folder of Your email.
