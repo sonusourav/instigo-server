@@ -24,7 +24,8 @@
 | post |  http://localhost:3000/mess/ratings/1/breakfast  | {"ratings":5}   | 
 | get |  http://localhost:3000/courses  |    |
 | get |  http://localhost:3000/courses/getdocuments/1  |    | 
-| post |  http://localhost:3000/documents/1  | formdata: {"key:value":- 1)title:Notes,2)prof:Sandeep.R.B,3) :file} 
+| post |  http://localhost:3000/documents/1  | formdata: {"key:value":- 1)title:Notes,2)prof:Sandeep.R.B,3) :file}
+| get |  http://localhost:3000/secys  |    | 
 		                                         
  	       		
 * Check db:
@@ -114,3 +115,13 @@
   - check this url on browser 'http://localhost:3000/resources/user@gmail.com/xxxxxxxxxxxxxx.cpp'
   - It will show that image
   - To see the file see the resources folder in main folder and check the respective folder of Your email.
+* Student_Council:
+  -Put any Image in student_council in Instigo Folder(I h'v already done).
+  -Give Path of that image in Imagepath in stu.js (Already Done).
+  -Follow following Commands:
+  -cd Student Council
+  - node stu.js
+  -You should see the output("Added successfully")
+  -check db for students
+* GetSecys:
+  - Paste Url of /secys from above table in postman

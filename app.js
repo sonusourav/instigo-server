@@ -20,6 +20,7 @@ const multer= require('multer');
 const Document = require('./models/documents');
 let fs = require('fs-extra');
 const Course = require('./models/resources');
+const Student = require('./Student Council/models/pro');
 // const GridFsStorage = require('multer-gridfs-storage');
 // const Grid = require('gridfs-stream');
 // const methodOverride = require('method-override');
@@ -299,6 +300,13 @@ Course.findOne({id:req.params.id}).then(course =>{
     else{res.status(400).json({message:"err in posting feedback"})}
    });
   }
+});
+app.get('/secys',function (req,res) {
+    Student.find({}).then(students =>{
+      console.log(students);
+      if(students){res.status(200).json({secys : students});}
+      else{res.status(400).json({message : "Err in getting secys"});}
+    });
 });
 app.use('/users', userRoutes);
 app.use('/mess', messRoutes);
