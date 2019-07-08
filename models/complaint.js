@@ -14,6 +14,7 @@ var schema = new Schema({
   desc:{type:String,required:true},
  hostel:{type:Number,required:true},
   private:{type:Boolean,required:true},
-  related:{type:String,required:true}
+  related:{type:String,required:true},
+  hostelsecy:{type:String,required:true}
 });
 module.exports = mongoose.model('Complaint',schema);

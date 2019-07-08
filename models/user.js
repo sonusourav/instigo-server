@@ -13,7 +13,8 @@ const userSchema =mongoose.Schema({
   profilePic: { type: String,default: null },
    coverPic: { type: String, default: null},
    hostel: {type:Number,default:null},
-   phone:{type:Number,default:null} 
+   phone:{type:Number,default:null},
+   mycomplaints:[{type: mongoose.Schema.Types.ObjectId, ref: "Complaint"}] 
 });
 // Create a model
 module.exports  = mongoose.model("User", userSchema);

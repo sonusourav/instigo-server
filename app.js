@@ -21,6 +21,7 @@ const Document = require('./models/documents');
 let fs = require('fs-extra');
 const Course = require('./models/resources');
 const Student = require('./Student Council/models/pro');
+const complaintsRoutes = require('./routes/complaints');
 // const GridFsStorage = require('multer-gridfs-storage');
 // const Grid = require('gridfs-stream');
 // const methodOverride = require('method-override');
@@ -311,6 +312,7 @@ app.get('/secys',function (req,res) {
 app.use('/users', userRoutes);
 app.use('/mess', messRoutes);
 app.use('/courses',resourcesRoutes);
+app.use('/complaints',complaintsRoutes)
 app.get('/auth/users/oauth/google', passport.authenticate('google'), (req, res) => {
      res.status(200).json({ message: "success" });
 });
