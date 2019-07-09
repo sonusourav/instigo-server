@@ -25,6 +25,8 @@ const complaintsRoutes = require('./routes/complaints');
 const UsersController = require('./controllers/users');
 //  const {OAuth2Client} = require('google-auth-library');
 // const client = new OAuth2Client("97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com");
+//const {OAuth2Client} = require('google-auth-library');
+//const client = new OAuth2Client("106338368721-6rhf95094oachsimqnmddod8r7md6e2n.apps.googleusercontent.com");
 var GoogleAuth = require('google-auth-library');
   var auth = new GoogleAuth();
 
@@ -85,7 +87,7 @@ app.get('/',(req,res) =>{
   console.log(req.session);
   res.render('home');
 });
-app.authClient = new auth.OAuth2("106338368721-6rhf95094oachsimqnmddod8r7md6e2n.apps.googleusercontent.com", "TjI6uSU2Vintz3RJ-eUzKf0Y");
+var client = new auth.OAuth2("106338368721-6rhf95094oachsimqnmddod8r7md6e2n.apps.googleusercontent.com", "TjI6uSU2Vintz3RJ-eUzKf0Y");
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
      let path = './images/'+req.session.user.email;
@@ -326,35 +328,63 @@ app.use('/users', userRoutes);
 app.use('/mess', messRoutes);
 app.use('/courses',resourcesRoutes);
 app.use('/complaints',complaintsRoutes)
-app.post('/tokensignin', async function (req,res,next) {
+app.get('/tokensignin/:id',(req,res,next)=>{
+  const token = req.params.id;
   // var GoogleAuth = require('google-auth-library');
   //   var auth = new GoogleAuth();
-       var token = "";
-     var tokenHeader = req.headers["idToken"];
-     if (token) {
-           req.app.authClient.verifyIdToken(
+  // = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFmZGU4MGViMWVkZjlmM2JmNDQ4NmRkODc3YzM0YmE0NmFmYmJhMWYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI5NzM1NDgzODQ2Ni1qaHExaWR0bW5vZmwydnZubmhuOGRqNGdpMHQ0bmdxMC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImF1ZCI6Ijk3MzU0ODM4NDY2LWpocTFpZHRtbm9mbDJ2dm5uaG44ZGo0Z2kwdDRuZ3EwLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTAyMzMwNjM2OTcxMDg1ODgyMjI0IiwiZW1haWwiOiJhbHV0aHJhMTQwM0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6IkM4dnhRZnB5Q1MwaUYzODJXV2xtdlEiLCJuYW1lIjoiYW1hbiBsdXRocmEiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDYuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1taXoyTWdzTTJnYy9BQUFBQUFBQUFBSS9BQUFBQUFBQUZudy9QbzFZMVByUnc4Zy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiYW1hbiIsImZhbWlseV9uYW1lIjoibHV0aHJhIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1NjI3MTE0NTksImV4cCI6MTU2MjcxNTA1OX0.UiLmWb68Q3w1vVGcC_jkheXlkbN_evRShXYk1AHn9LrBO_pZFBEYoQC6Z5CWrBKUpUTfiCl8-rg4kgHto0lvcLJ1wYG1AXW_lToH84f1ASoF4VmhkoHa1kvRDHjk-8Z7q6aqhg8Dnran0thMc9QDPyp7KBDWP8WAmLSFE9sSbpGj4Gk4aKAmKOXgFndXc4YfnJNua0wsBAk7seELDUosWHG-TH33qFP2CWL6ZHBt99JCz9PAYojbOZgI0AOuncSAzzGKYoPMKD8oBQGjemSdt-k9ULUU3eOQDtbt3S2mp2fb0lW8xTgzg25TPlTv37C95Jj3Af-CBsiNoSjOEEKKEw";
+ //const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFmZGU4MGViMWVkZjlmM2JmNDQ4NmRkODc3YzM0YmE0NmFmYmJhMWYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDA1OTUyODkwNTY3NTgwMDI1NzUiLCJoZCI6ImlpdGRoLmFjLmluIiwiZW1haWwiOiIxNzAwMzAwMzlAaWl0ZGguYWMuaW4iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6IkxhX0thTTA1UUZIUXZSSUVRNXdYOXciLCJuYW1lIjoiQU1BTiBJSVQiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1oRmswRFpwbHd1NC9BQUFBQUFBQUFBSS9BQUFBQUFBQUFIVS9YU3FSdW1IT2U4MC9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiQU1BTiIsImZhbWlseV9uYW1lIjoiSUlUIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1NjI3MTEwMDMsImV4cCI6MTU2MjcxNDYwM30.PpaiRjqJgjpGs8O4zpWfUs_bN-0E9P6BbVerKBuXVT4obbowkhZOvxQXHx_ZCxgtonzSVTUDq5iXCmmSI_C3LFzeIlLvW59rwsYo3nOsvx8HYXMuvUpIFcnzWiBC6dFwERbQTEhxBSkhKIC0_S93X_k8c7EkXF31qnVxT4lfHSAk3RqEHd_b3V8cS65onWZd_Rg1jEdMSqMEQ5OjKyI5UWKGV7LOZIOLAIIUNpOCcn_mXuB4XSb8VzBDJbsqjdwvHmmmRsy9zQ5yM_IetOQNVEk0kqpQpp80tkHZDkheI_iHiM5vq3hDvLZ_ou49b4AcG3nEnm4q9y3r_1cVlMN1hw";
+ const audience ="106338368721-6rhf95094oachsimqnmddod8r7md6e2n.apps.googleusercontent.com";
+//const  token ="eyJhbGciOiJSUzI1NiIsImtpZCI6ImFmZGU4MGViMWVkZjlmM2JmNDQ4NmRkODc3YzM0YmE0NmFmYmJhMWYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDA1OTUyODkwNTY3NTgwMDI1NzUiLCJoZCI6ImlpdGRoLmFjLmluIiwiZW1haWwiOiIxNzAwMzAwMzlAaWl0ZGguYWMuaW4iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6IjRtM0E0ZlNNTDlWamQzT2xObGV6X3ciLCJpYXQiOjE1NjI3MDg5NDYsImV4cCI6MTU2MjcxMjU0Nn0.t1S6RMuOOyy7iDpj56bPfMf5o6_NCFZaINEM_qbflC6rPZlHViXhuCKR1SIo7UQYzhlEmlXGVIYMfAWUsFyANSelNuJIjORXg7nByNIngkgWcjyD7IWDq40N0O-FRtAWT7mZfhYeq726PLbYfNIq7Rn0ynC7IRlJgVQYpwdrpdkn6Myebr-vX9Tlns_c5lyIG179Wca1KgQ2ZREMPvJioUmDYhHUAOZRLtUY5048Ogu_IHE6cmUngQ3Ldgf3jS4Ff7wdaYAaczO35BNpazjPdBLqmvRdEkwett4tDRxPUNPYYmNzUhafIBWZTYSiDEAbhWpTwlO1FEVO81DAnIEaTA";
+  //const token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFmZGU4MGViMWVkZjlmM2JmNDQ4NmRkODc3YzM0YmE0NmFmYmJhMWYiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI0MDc0MDg3MTgxOTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDA1OTUyODkwNTY3NTgwMDI1NzUiLCJoZCI6ImlpdGRoLmFjLmluIiwiZW1haWwiOiIxNzAwMzAwMzlAaWl0ZGguYWMuaW4iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6Ikc4QURwSWlmbWx3LXYxVHJCcUsxWkEiLCJuYW1lIjoiQU1BTiBJSVQiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1oRmswRFpwbHd1NC9BQUFBQUFBQUFBSS9BQUFBQUFBQUFIVS9YU3FSdW1IT2U4MC9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoiQU1BTiIsImZhbWlseV9uYW1lIjoiSUlUIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1NjI3MDkyMDQsImV4cCI6MTU2MjcxMjgwNH0.HuRuI85xgc_YMSEBjLV4NLezJV2TGlSOnkybVmT3EMPancW2w7m-gAk8wtVNdLfmEqcvaVJ9mNJyDbI1-y_EGgReKKtWgKHKSIPPnyzs6kaoIL-SgJObmQgwnwReLTts39QOMHG92YOojKG5qYQeQ1LZPDfka0cSGLock9QlTIoeCe4s58IyFg-imBzFFdJ5zPSTl4GJ_gfHSxSl3ycnGcx2EoOOa2Y70nYnt__vISjDW3ZYZ7OenMKt_h-ltPYpOJ6gLM3RS7j5ELqu9KdfdJ_2l9iy-tc0o259oUQlO1KwXbqfCig2vCuX6gAdoipm4j4328rQnIZD16siGNbmpg";
+   var verifyToken = new Promise(function(resolve, reject) {
+            client.verifyIdToken(
                 token,
-                "106338368721-6rhf95094oachsimqnmddod8r7md6e2n.apps.googleusercontent.com",
+                audience,
                 function(e, login) {
-                    console.log(e);
+                  console.log(login);
                     if (login) {
                         var payload = login.getPayload();
                         var googleId = payload['sub'];
                         resolve(googleId);
+                           res.status(200).json({profile: payload});
                         next();
                     } else {
                         reject("invalid token");
                     }
                 }
             )
-       .then(function(googleId) {
-            res.send(googleId);
-        }).catch(function(err) {
-            res.send(err);
         })
-    } else {
-        res.send("Please pass token");
-    }
+        .catch(function(err) {
+            res.send(err);
+        });
+  // 
+  // If request specified a G Suite domain:
+  //const domain = payload['hd'];
+    //  if (token) {
+    //        req.app.authClient.verifyIdToken(
+    //             token,
+    //             "106338368721-6rhf95094oachsimqnmddod8r7md6e2n.apps.googleusercontent.com",
+    //             function(e, login) {
+    //                 console.log(e);
+    //                 if (login) {
+    //                     var payload = login.getPayload();
+    //                     var googleId = payload['sub'];
+    //                     resolve(googleId);
+    //                     next();
+    //                 } else {
+    //                     reject("invalid token");
+    //                 }
+    //             }
+    //         )
+    //    .then(function(googleId) {
+    //         res.send(googleId);
+    //     }).catch(function(err) {
+    //         res.send(err);
+    //     })
+    // } else {
+    //     res.send("Please pass token");
+    // }
     }
 );
   //  OAuth2Client.prototype.verifyIdToken = function(idToken, audience, callback)({
@@ -398,11 +428,9 @@ app.post('/tokensignin', async function (req,res,next) {
   //         }
   //       });
 
-// app.get('/auth/users/oauth/google', passport.authenticate('google'), (req, res) => {
-//       res.cookie('req.session.user',req.user);
-//      res.status(200).json({ message: "success" });
-     
-// });
+app.get('/auth/users/oauth/google', (req, res) => {
+     res.status(200).json({ message: "success" });     
+});
 module.exports = app;
 
 
