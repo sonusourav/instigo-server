@@ -29,11 +29,17 @@ postcomplaints :async(req,res,next) =>{
 	 		user.save();
 	 	});
 	 	Student.findOne({"name":complaint.hostelsecy}).then(secy =>{
+	 				req.userID = secy.email;
 	 		 return complaintEmail.complaintemail(req,res,next);
-	 	})
+	 	}).catch(err=>{
+	 		res.status(200).json({message:"Secy Not Found!"});
+	 	});
 	 	if(result)res.status(200).json({message:"success"});
-	 	else{res.status(400).json({message:"failure_err in posting feedback"})}
+	 	else{res.status(200).json({message:"failure_err in posting feedback"})}
 	 });
 	}  
-}
+},
+	validcomplaints: async(req,res,next) =>{
+
+	}
 }

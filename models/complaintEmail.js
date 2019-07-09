@@ -5,4 +5,4 @@ const complaintEmailSchema = mongoose.Schema({
   rand : {type: Number}
 },{collection: 'complaintemails'});
 
-module.exports = mongoose.model("Vemail", complaintEmailSchema);
+module.exports = mongoose.model("Cemail", complaintEmailSchema);

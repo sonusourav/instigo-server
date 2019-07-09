@@ -3,6 +3,8 @@ const router = require('express-promise-router')();
 const complaintsController = require('../controllers/complaints');
 router.route("").
 get(complaintsController.getcomplaints);
+router.route("/tosecy/:id").
+get(complaintsController.validcomplaints);
 router.route("/create").
 post(complaintsController.postcomplaints);
 module.exports = router;

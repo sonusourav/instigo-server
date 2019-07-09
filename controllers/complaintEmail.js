@@ -1,21 +1,22 @@
 
 var nodemailer = require('nodemailer');
 const userCredential = require('../keys');
-const Vemail = require('../models/verifyemail');
+const Cemail = require('../models/complaintEmail');
 const User = require('../models/user');
 
 var smtpTransport = nodemailer.createTransport('smtps://' + userCredential.user  + ':' +userCredential.pass +'@smtp.gmail.com');
 var rand,mailOptions,host,link;
 
 exports.complaintemail = (req,res,next) => {
+    console.log(req.body);
     rand = Math.floor((Math.random() * 1000000) + 54 );
     host = req.get('host');
-    link = "https://instigo-server.appspot.com" + "/users/verify/"+rand+'/'+ req.userID;
+    link = "http://localhost:3000" + "/complaints/tosecy/"+rand;
     mailOptions = {
         from: '"InstiGO" <instigo.iitdh@gmail.com>',
-        to: req.body.email,
-        subject: "Verify your email for InstiGO",
-        html:"Hello,<br> Follow the link to verify your email address.<br><a href=" + link + ">Clink here to verify</a><br>If you didn’t ask to verify this address, you can ignore this email.<br><br>Thanks,<br>Your InstiGO team"+"</body>"
+        to: req.userID,
+        subject: "Complaint Registered for house no." + req.body.house,
+        html:"Hello,<br> Follow the link to verify your email address.<br><a href=" + link + ">Clink here to accept</a><br>If you didn’t ask to verify this address, you can ignore this email.<br><br>Thanks,<br>Your InstiGO team"+"</body>"
     }
     smtpTransport.sendMail(mailOptions, (error, info) => {
         if(error) {
@@ -29,11 +30,11 @@ exports.complaintemail = (req,res,next) => {
                 message: "Failure_Check Email and password of sender!"
               });
         }
-        const vemail = new Vemail({
+        const Cemail = new Cemail({
             userID: req.userID,
             rand : rand
         });
-        vemail
+        Cemail
             .save()
             .then(response => {
                 res.status(200).json({
@@ -47,5 +48,4 @@ exports.complaintemail = (req,res,next) => {
             })
         console.log(info.response);
     })
-
 }

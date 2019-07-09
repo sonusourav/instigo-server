@@ -18,10 +18,10 @@ signToken = user => {
 }
 module.exports = {
 signUp: (req, res, next) => {
-const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array()[0].msg });
-  }
+// const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     return res.status(200).json({ errors: errors.array()[0].msg });
+//   }
 
 const url = req.get("host");
     // Check if there is a user with the same email
@@ -34,7 +34,7 @@ const url = req.get("host");
             message: "Failure_Activate your account by clicking link in email!"
           })
         }else{
-      return res.status(403).json({ error: 'Failure_Email is already in use'});
+      return res.status(200).json({ error: 'Failure_Email is already in use'});
     }}
 
     // Create a new user
@@ -63,29 +63,30 @@ const url = req.get("host");
 
   signIn: async (req, res, next) => {
 
-    const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array()[0].msg });
-  }
+  //   const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   return res.status(200).json({ errors: errors.array()[0].msg });
+  // }
 
     let fetchedUser;
     User.findOne({ "email": req.body.email })
     .then(user =>{
       if (!user) {
-        return res.status(401).json({
+        return res.status(200).json({
           message: "Failure_User Not found"
         });
     }
     fetchedUser = user;
        if (!user.isEmailVerified) {
-       return res.status(401).json({
+       return res.status(200).json({
           message: "Failure_First Activate your Account from your mailbox!"
         });
     }
   return bcrypt.compare(req.body.password,user.password);
 }).then(result =>{
+  console.log(result);
   if(!result){
-    return res.status(401).json({
+    return res.status(200).json({
           message: "Failure_password do not match"
         });
   }
@@ -106,7 +107,7 @@ const url = req.get("host");
       });
     })
     .catch(err => {
-      return res.status(401).json({
+      return res.status(200).json({
         message: "Failure_Invalid authentication credentials!"
       });
     });
@@ -131,9 +132,10 @@ const url = req.get("host");
         Vemail.deleteOne({"userID": req.params.id1}).catch(error => {
           console.log(error);
         })
-      res.status(201).json({
-        message: "Email Verified"
-      });
+        res.render('../views/suc.ejs');
+      // res.status(201).json({
+      //   message: "Email Verified"
+      // });
  }
     // else{
     //   res.status(500).json({
@@ -144,7 +146,7 @@ const url = req.get("host");
  },
  profile: async(req,res,next) =>{
   if(!req.session.user){
-    return res.status(401).send("Failure_Not Authorized");
+    return res.status(200).send("Failure_Not Authorized");
   }
   User.findById(req.session.user._id).then(user => {
     if (user) {
@@ -173,7 +175,7 @@ const url = req.get("host");
  },
  updateProfile: async(req,res,next) =>{
   if(!req.session.user){
-    return res.status(401).send("Failure_Not Authorized");
+    return res.status(200).send("Failure_Not Authorized");
   }
   User.updateOne({'email':req.session.user.email},{'branch':req.body.branch,'year':req.body.year,'gender':req.body.gender,'hostel':req.body.hostel,'phone':req.body.phone,'dob':req.body.dob})
   .then(result =>{
@@ -181,7 +183,7 @@ const url = req.get("host");
      if (result.n > 0) {
       res.status(200).json({ message: "Success" });
       }else {
-        res.status(401).json({ message: "Failure_err in Updating" });
+        res.status(200).json({ message: "Failure_err in Updating" });
       }
     })
     .catch(error => {
@@ -192,7 +194,7 @@ const url = req.get("host");
   },
   getProfilePic : async(req,res,next) =>{
     if(!req.session.user){
-    return res.status(401).send("Failure_Not Authorized");
+    return res.status(200).send("Failure_Not Authorized");
   }
   User.findOne({'email':req.session.user.email}).then(user =>{
         res.status(200).json(user.profilePic);
@@ -200,7 +202,7 @@ const url = req.get("host");
   },
    getCoverPic : async(req,res,next) =>{
     if(!req.session.user){
-    return res.status(401).send("Failure_Not Authorized");
+    return res.status(200).send("Failure_Not Authorized");
   }
   User.findOne({'email':req.session.user.email}).then(user =>{
         res.status(200).json(user.coverPic);
@@ -214,7 +216,7 @@ const url = req.get("host");
   //   res.status(200).json({token: token});
   // }
   // else {
-  //   res.send(401)
+  //   res.send(200)
   // }
   // }
 }

@@ -23,7 +23,7 @@ createFeedback: async(req,res,next) =>{
     });
 	 feedback.save().then(result=>{
 	 	if(result)res.status(200).json({message:"Success"});
-	 	else{res.status(400).json({message:"Failure_err in posting feedback"})}
+	 	else{res.status(200).json({message:"Failure_err in posting feedback"})}
 	 });
 	}
 },
@@ -49,7 +49,7 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	prod.breakfast.ratings = mean;
 	prod.save().then(result =>{
 		if(result){res.status(200).json({message:"Success"});}
-		else{res.status(400).json({message:"Failure_err in ratings"});}
+		else{res.status(200).json({message:"Failure_err in ratings"});}
 	});
 });
 }
@@ -61,7 +61,7 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	prod.lunch.ratings = mean;
 	prod.save().then(result =>{
 		if(result){res.status(200).json({message:"Success"});}
-		else{res.status(400).json({message:"Failure_err in ratings"});}
+		else{res.status(200).json({message:"Failure_err in ratings"});}
 	});
 });
 }
@@ -73,7 +73,7 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	prod.snacks.ratings = mean;
 	prod.save().then(result =>{
 		if(result){res.status(200).json({message:"Success"});}
-		else{res.status(400).json({message:"Failure_err in ratings"});}
+		else{res.status(200).json({message:"Failure_err in ratings"});}
 	});
 });
 }
@@ -85,7 +85,7 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	prod.dinner.ratings = mean;
 	prod.save().then(result =>{
 		if(result){res.status(200).json({message:"Success"});}
-		else{res.status(400).json({message:"Failure_err in ratings"});}
+		else{res.status(200).json({message:"Failure_err in ratings"});}
 	});
 });
 }
