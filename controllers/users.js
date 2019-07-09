@@ -104,7 +104,7 @@ const url = req.get("host");
    //  res.json({token:  token, refreshToken: refreshToken}) 
   // console.log(req.session.user);
    res.status(200).json({
-       message:"success"
+       message:"success",userId:fetchedUser._id
       });
     })
     .catch(err => {

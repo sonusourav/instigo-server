@@ -23,9 +23,10 @@ const Course = require('./models/resources');
 const Student = require('./Student Council/models/pro');
 const complaintsRoutes = require('./routes/complaints');
 const UsersController = require('./controllers/users');
-const {OAuth2Client} = require('google-auth-library');
-const client = new OAuth2Client("97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com");
-
+//  const {OAuth2Client} = require('google-auth-library');
+// const client = new OAuth2Client("97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com");
+var GoogleAuth = require('google-auth-library');
+  var auth = new GoogleAuth();
 
 
 // const GridFsStorage = require('multer-gridfs-storage');
@@ -84,6 +85,7 @@ app.get('/',(req,res) =>{
   console.log(req.session);
   res.render('home');
 });
+app.authClient = new auth.OAuth2("106338368721-6rhf95094oachsimqnmddod8r7md6e2n.apps.googleusercontent.com", "TjI6uSU2Vintz3RJ-eUzKf0Y");
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
      let path = './images/'+req.session.user.email;
@@ -324,24 +326,124 @@ app.use('/users', userRoutes);
 app.use('/mess', messRoutes);
 app.use('/courses',resourcesRoutes);
 app.use('/complaints',complaintsRoutes)
-app.post('/tokensignin', async function () {
-  const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: "97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com"
-        // Specify the CLIENT_ID of the app that accesses the backend
-      // Or, if multiple clients access the backend:
-      //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
-  });
-  const payload = ticket.getPayload();
-  const userid = payload['sub']
-  console.log(payload);
+app.post('/tokensignin', async function (req,res,next) {
+  // var GoogleAuth = require('google-auth-library');
+  //   var auth = new GoogleAuth();
+       var token = "";
+     var tokenHeader = req.headers["idToken"];
+     if (token) {
+           req.app.authClient.verifyIdToken(
+                token,
+                "106338368721-6rhf95094oachsimqnmddod8r7md6e2n.apps.googleusercontent.com",
+                function(e, login) {
+                    console.log(e);
+                    if (login) {
+                        var payload = login.getPayload();
+                        var googleId = payload['sub'];
+                        resolve(googleId);
+                        next();
+                    } else {
+                        reject("invalid token");
+                    }
+                }
+            )
+       .then(function(googleId) {
+            res.send(googleId);
+        }).catch(function(err) {
+            res.send(err);
+        })
+    } else {
+        res.send("Please pass token");
+    }
+    }
+);
+  //  OAuth2Client.prototype.verifyIdToken = function(idToken, audience, callback)({
+  //     idToken: token,
+  //     audience: "97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com"
+  //       // Specify the CLIENT_ID of the app that accesses the backend
+  //     // Or, if multiple clients access the backend:
+  //     //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+  // const userid = payload['sub']
+  // console.log(payload);
+  // });
+ 
+// res.status(200).json({message :"success"});
+  
+ 
     // If request specified a G Suite domain:
   //const domain = payload['hd'];
-}
-);
+  // User.findOne({ 'email' : profile.emails[0].value }, function(err, user) {
+  //         if (err) return done(err);
+  //         if (user) {
+  //             User.updateOne({'email' : profile.emails[0].value });
+  //             res.status(200).json({message:"success"});
+
+  //         } else {
+            
+  //           var newUser = {
+  //             email: profile.emails[0].value,
+  //             socialId: profile.id,
+  //             password:'$2a$10$LGvwGlOq9.2ahUvfRdypj.EddTci2pGmRyVL21to8L/vTyDovHiZa',
+  //             name:profile.displayName,
+  //             isEmailVerified:true
+  //           };
+
+  //             console.log(newUser);
+  //           User.create(newUser, function(err, added) {
+  //               if (err) {
+  //                 console.log(err);
+  //               }
+  //               return done(null, added);
+  //           });
+  //         }
+  //       });
+
 // app.get('/auth/users/oauth/google', passport.authenticate('google'), (req, res) => {
 //       res.cookie('req.session.user',req.user);
 //      res.status(200).json({ message: "success" });
      
 // });
 module.exports = app;
+
+
+
+
+// exports.verifyUser = function(req, res, next) {
+//     var GoogleAuth = require('google-auth-library');
+//     var auth = new GoogleAuth();
+//     var client = new auth.OAuth2(config.passport.google.clientID, config.passport.google.clientSecret, config.passport.google.callbackURL);
+//     // check header or url parameters or post parameters for token
+//     var token = "";
+//     var tokenHeader = req.headers["authorization"];
+//     var items = tokenHeader.split(/[ ]+/);
+//     if (items.length > 1 && items[0].trim().toLowerCase() == "bearer") {
+//         token = items[1];
+//     }
+//     if (token) {
+//         var verifyToken = new Promise(function(resolve, reject) {
+//             client.verifyIdToken(
+//                 token,
+//                 config.passport.google.clientID,
+//                 function(e, login) {
+//                     console.log(e);
+//                     if (login) {
+//                         var payload = login.getPayload();
+//                         var googleId = payload['sub'];
+//                         resolve(googleId);
+//                         next();
+//                     } else {
+//                         reject("invalid token");
+//                     }
+//                 }
+//             )
+//         }).then(function(googleId) {
+//             res.send(googleId);
+//         }).catch(function(err) {
+//             res.send(err);
+//         })
+//     } else {
+//         res.send("Please pass token");
+//     }
+// }
+// 
+// 
