@@ -22,6 +22,12 @@ let fs = require('fs-extra');
 const Course = require('./models/resources');
 const Student = require('./Student Council/models/pro');
 const complaintsRoutes = require('./routes/complaints');
+const UsersController = require('./controllers/users');
+const {OAuth2Client} = require('google-auth-library');
+const client = new OAuth2Client("97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com");
+
+
+
 // const GridFsStorage = require('multer-gridfs-storage');
 // const Grid = require('gridfs-stream');
 // const methodOverride = require('method-override');
@@ -69,8 +75,8 @@ app.use(session({name:'aman',secret: 'aman',saveUninitialized: false,resave: fal
                       ttl: 10 * 365 * 24 * 60 * 60 }),cookie:{maxAge: 10 * 365 * 24 * 60 * 60*1000}}));
 // // Routes
 // app.use("/images", express.static(path.join("images")));
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 app.use('/instigo/images', express.static( 'instigo/images'));
 app.use("/resources", express.static(__dirname + "/resources"));
 app.set('view engine','ejs');
@@ -90,6 +96,7 @@ const storage = multer.diskStorage({
 });
 const storage1 = multer.diskStorage({
   destination: function(req, file, cb) {
+    console.log(req.session.user);
      let path = './resources/'+req.session.user.email;
       fs.mkdirsSync(path);
     cb(null, path);
@@ -186,31 +193,31 @@ else {
 });
 app.post('/updatepassword',[check('password','password must be in 6 characters').isLength({min:6})],(req,res)=>{
   if (!req.session.user) {
-    res.json({message : "Not Authorized"});}
+    res.json({message : "failure@Not Authorized"});}
        else {
-               const errors = validationResult(req);
+               // const errors = validationResult(req);
        //         if (errors){
        //    return res.status(422).json({ errors: errors[0].msg});
        // }
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ message: errors.array()[0].msg });
-  }
+  // if (!errors.isEmpty()) {
+  //   return res.status(422).json({ message: errors.array()[0].msg });
+  // }
     var password = req.body.password;
-     if (password === "" ) return res.status(200).json({ message: "password can't be empty" });
+     if (password === "" ) return res.status(200).json({ message: "failure@Password can't be empty" });
 else {
  bcrypt.hash(password, 10).then(hash =>{
    User.updateOne({email: req.session.user.email },{password:hash}).then(result =>{
     console.log(result);
   if (result.n > 0) {
     req.session.user = null;
-      res.status(200).json({ message: "successfully Updated password!" });
+      res.status(200).json({ message: "success" });
       }else {
-        res.status(401).json({ message: "err in Updating" });
+        res.status(200).json({ message: "failure@err in Updating" });
       }
     })
     .catch(error => {
-      res.status(500).json({
-        message: "User not found!"
+      res.status(200).json({
+        message: "failure@User not found!"
       });
     });
       });
@@ -232,45 +239,49 @@ app.get('/auth/google', passport.authenticate('google', {
 );
 app.get('/logout', function(req, res){
     req.logout();
-     req.session.user = null;
-    res.send("successfully Logged Out");
+    if(req.session.user === null){
+     res.status(200).json({message:"failure@Already Logged Out"});
+    }
+    else{ req.session.user = null;
+    res.status(200).json({message:"success"});
+  }
   });
 app.post('/profilepic',upload.single(''),function (req,res) {
   console.log(req.session.user);
   if(!req.session.user){
-    return res.status(401).send("Not Authorized");
+    return res.status(200).send("failure@Not Authorized");
   }
   console.log(req.file.filename);
   User.updateOne({email: req.session.user.email },{'profilePic':req.file.filename}).then(result =>{
       console.log(result);
   if (result.n > 0) {
-      res.status(200).json({ message: "successfully Uploaded profilepic!" });
+      res.status(200).json({ message: "success" });
       }else {
-        res.status(401).json({ message: "err in Updating pic" });
+        res.status(200).json({ message: "failure@err in Updating pic" });
       }
     })
     .catch(error => {
-      res.status(500).json({
-        message: "User not found!"
+      res.status(200).json({
+        message: "failure@User not found!"
       });
     });
 });
 app.post('/coverpic',upload1.single(''),function (req,res) {
   console.log(req.session.user);
   if(!req.session.user){
-    return res.status(401).send("Not Authorized");
+    return res.status(200).send("failure@Not Authorized");
   }
   console.log(req.file);
   User.updateOne({email: req.session.user.email },{'coverPic':req.file.filename}).then(result =>{
       console.log(result);
   if (result.n > 0) {
-      res.status(200).json({ message: "successfully Uploaded coverpic!" });
+      res.status(200).json({ message: "success" });
       }else {
-        res.status(401).json({ message: "err in Updating pic" });
+        res.status(200).json({ message: "failure@err in Updating pic" });
       }
     })
     .catch(error => {
-      res.status(500).json({
+      res.status(200).tokensigninjson({
         message: "User not found!"
       });
     });
@@ -278,7 +289,7 @@ app.post('/coverpic',upload1.single(''),function (req,res) {
 app.post('/documents/:id',upload2.single(''),function (req,res) {
   console.log(req.file);
   if(!req.session.user){
-    return res.status(401).send("Not Authorized");
+    return res.status(200).send("failure@Not Authorized");
   }
    else{const documents= new Document({ 
     title:req.body.title,
@@ -297,8 +308,8 @@ Course.findOne({id:req.params.id}).then(course =>{
     }).catch(err =>{
       console.log(error);
     });
-    if(result)res.status(200).json({message:"successfully posted"});
-    else{res.status(400).json({message:"err in posting feedback"})}
+    if(result)res.status(200).json({message:"success"});
+    else{res.status(400).json({message:"failure@err in posting feedback"})}
    });
   }
 });
@@ -306,14 +317,31 @@ app.get('/secys',function (req,res) {
     Student.find({}).then(students =>{
       console.log(students);
       if(students){res.status(200).json({secys : students});}
-      else{res.status(400).json({message : "Err in getting secys"});}
+      else{res.status(200).json({message : "failure@Err in getting secys"});}
     });
 });
 app.use('/users', userRoutes);
 app.use('/mess', messRoutes);
 app.use('/courses',resourcesRoutes);
 app.use('/complaints',complaintsRoutes)
-app.get('/auth/users/oauth/google', passport.authenticate('google'), (req, res) => {
-     res.status(200).json({ message: "success" });
-});
+app.post('/tokensignin', async function () {
+  const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: "97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com"
+        // Specify the CLIENT_ID of the app that accesses the backend
+      // Or, if multiple clients access the backend:
+      //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+  });
+  const payload = ticket.getPayload();
+  const userid = payload['sub']
+  console.log(payload);
+    // If request specified a G Suite domain:
+  //const domain = payload['hd'];
+}
+);
+// app.get('/auth/users/oauth/google', passport.authenticate('google'), (req, res) => {
+//       res.cookie('req.session.user',req.user);
+//      res.status(200).json({ message: "success" });
+     
+// });
 module.exports = app;
