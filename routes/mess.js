@@ -3,7 +3,7 @@ const router = require('express-promise-router')();
 const messController = require('../controllers/mess');
 router.route("").
 get(messController.getmenu);
-router.route("/feedback").
+router.route("/feedback/:id").
 post(messController.createFeedback);
 router.route("/getfeedbacks").
 get(messController.getFeedback);

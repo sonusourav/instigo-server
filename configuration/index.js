@@ -1,9 +1,7 @@
 module.exports = {
   JWT_SECRET: 'codeworkrauthentication',
-  oauth: {
     google: {
-      clientID: '97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com',
-      clientSecret: 'oDN7TToVdMpqwCdhDCZEsGOI'
+      clientID: "106338368721-6rhf95094oachsimqnmddod8r7md6e2n.apps.googleusercontent.com",
+      clientSecret: "TjI6uSU2Vintz3RJ-eUzKf0Y"
     }  
-  }
 };

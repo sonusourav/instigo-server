@@ -8,15 +8,13 @@ const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
 const forgotPassword = require('../controllers/forgotPassword');
 router.route('/signup')
-.post([check('password','password must be in 6 characters').isLength({min:6}),
-		check('email','Not valid Email').isEmail()],UsersController.signUp);
+.post(UsersController.signUp);
 
 router.route('/signin')
-  .post([check('password','password must be in 6 characters').isLength({min:6}),
-		check('email','Not valid Email').isEmail()], UsersController.signIn);
+  .post(UsersController.signIn);
 
-router.route('/oauth/google')
-  .get(passport.authenticate('google', { session: false }), UsersController.googleOAuth);
+// router.route('/oauth/google')
+//   .get(passport.authenticate('google', { session: false }), UsersController.googleOAuth);
 
 router.route('/verify/:id/:id1')
 	.get(UsersController.verify);
@@ -24,16 +22,16 @@ router.route('/verify/:id/:id1')
 router.route('/forgotp')
 	.post( forgotPassword.forgotPassword);	
 
-router.route('/profile')
+router.route('/profile/:id')
 	.get(UsersController.profile);
 
-router.route('/update/profile')
+router.route('/update/profile/:id')
 	.post(UsersController.updateProfile);	
 
-router.route('/profilepic')
+router.route('/profilepic/:id')
 	.get(UsersController.getProfilePic);	
 
-router.route('/coverpic')
+router.route('/coverpic/:id')
 	.get(UsersController.getCoverPic);	
 	
 module.exports = router;

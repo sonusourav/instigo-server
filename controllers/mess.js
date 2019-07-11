@@ -10,33 +10,33 @@ module.exports = {
 	});
 },
 createFeedback: async(req,res,next) =>{
-	if (!req.session.user) {
-    res.json({message : "Not Authorized"});}
-	 else{const feedback = new Feedback({ 
+	// if (!req.session.user) {
+ //    res.json({message : "Not Authorized"});}
+ 	User.findOne({'_id':req.params.id}).then(user=>{
+	const feedback = new Feedback({ 
 		day:req.body.day,
 		desc:req.body.desc,
 		part:req.body.part,
 		ratings:req.body.ratings,
 		title:req.body.title,
-		username:req.session.user.name,
-		url:req.session.user.profilePic
+		username:user.name,
+		url:user.profilePic
     });
 	 feedback.save().then(result=>{
 	 	if(result)res.status(200).json({message:"success"});
 	 	else{res.status(200).json({message:"failure@err in posting feedback"})}
 	 });
-	}
+	});
 },
 getFeedback: async(req,res,next) =>{
-	console.log("aman");
-	if (!req.session.user) {
-    res.json({message : "failure@Not Authorized"});}
-    else{
+	// console.log("aman");
+	// if (!req.session.user) {
+ //    res.json({message : "failure@Not Authorized"});}
+    
     	Feedback.find({}).then(feedbacks =>{
     		console.log(feedbacks);
     		return res.status(200).json({feedbacks:feedbacks});
     });
-}
 },
 ratings: async(req,res,next) =>{
 	var part = req.params.id;

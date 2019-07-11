@@ -145,10 +145,10 @@ const url = req.get("host");
   })   
  },
  profile: async(req,res,next) =>{
-  if(!req.session.user){
-    return res.status(200).send("failure@Not Authorized");
-  }
-  User.findById(req.session.user._id).then(user => {
+  // if(!req.session.user){
+  //   return res.status(200).send("failure@Not Authorized");
+  // }
+  User.findById(req.params.id).then(user => {
     if (user) {
       const details = {
         email: user.email,
@@ -174,10 +174,10 @@ const url = req.get("host");
   });
  },
  updateProfile: async(req,res,next) =>{
-  if(!req.session.user){
-    return res.status(200).send("failure@Not Authorized");
-  }
-  User.updateOne({'email':req.session.user.email},{'branch':req.body.branch,'year':req.body.year,'gender':req.body.gender,'hostel':req.body.hostel,'phone':req.body.phone,'dob':req.body.dob})
+  // if(!req.session.user){
+  //   return res.status(200).send("failure@Not Authorized");
+  // }
+  User.updateOne({'id':req.params.id},{'branch':req.body.branch,'year':req.body.year,'gender':req.body.gender,'hostel':req.body.hostel,'phone':req.body.phone,'dob':req.body.dob})
   .then(result =>{
     console.log(result);
      if (result.n > 0) {
@@ -193,18 +193,18 @@ const url = req.get("host");
     });
   },
   getProfilePic : async(req,res,next) =>{
-    if(!req.session.user){
-    return res.status(200).send("failure@Not Authorized");
-  }
-  User.findOne({'email':req.session.user.email}).then(user =>{
+  //   if(!req.session.user){
+  //   return res.status(200).send("failure@Not Authorized");
+  // }
+  User.findOne({'_id':req.params.id}).then(user =>{
         res.status(200).json(user.profilePic);
   });
   },
    getCoverPic : async(req,res,next) =>{
-    if(!req.session.user){
-    return res.status(200).send("failure@Not Authorized");
-  }
-  User.findOne({'email':req.session.user.email}).then(user =>{
+  //   if(!req.session.user){
+  //   return res.status(200).send("failure@Not Authorized");
+  // }
+  User.findOne({'_id':req.params.id}).then(user =>{
         res.status(200).json(user.coverPic);
   });
 }

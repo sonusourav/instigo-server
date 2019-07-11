@@ -10,21 +10,21 @@
 |Post     | http://localhost:3000/users/signup |{"email":"170030039@iitdh.ac.in","password":"amanji","name":aman} |
 |Post      |  http://localhost:3000/users/signin     | {"email":"170030039@iitdh.ac.in","password":"amanji"}|
 |  post   |   http://localhost:3000/users/forgotp    |  {"email": "170030039@iitdh.ac.in"} |      
-| post | http://localhost:3000/users/update/profile | {"branch":"cse","year":2,"hostel":2,"gender":"male","dob":"10/02/1999","phone":1111111111}|      
-| get |  http://localhost:3000/users/profile        |     |        
+| post | http://localhost:3000/users/update/profile/:id | {"branch":"cse","year":2,"hostel":2,"gender":"male","dob":"10/02/1999","phone":1111111111}|      
+| get |  http://localhost:3000/users/profile/:id        |     |        
 | get |   http://localhost:3000/logout     |    |     
-| post|  http://localhost:3000/profilepic  |  |
-| post |  http://localhost:3000/coverpic   |    |
-| get |  http://localhost:3000/users/profilepic   |    |
-| get |  http://localhost:3000/users/coverpic   |    |
-| post |  http://localhost:3000/updatepassword    |  {"password": "amanji"} | 
+| post|  http://localhost:3000/profilepic/:id  |  |
+| post |  http://localhost:3000/coverpic/:id   |    |
+| get |  http://localhost:3000/users/profilepic/:id   |    |
+| get |  http://localhost:3000/users/coverpic/:id   |    |
+| post |  http://localhost:3000/updatepassword/:id    |  {"password": "amanji"} | 
 | get |  http://localhost:3000/mess  |    | 
-| post |  http://localhost:3000/mess/feedback  |  {"ratings":2,"title":"delayed","part":"dinner","desc":"anything","day":"Monday" |
+| post |  http://localhost:3000/mess/feedback/:id  |  {"ratings":2,"title":"delayed","part":"dinner","desc":"anything","day":"Monday" |
 | get |  http://localhost:3000/mess/getfeedbacks  |    | 
 | post |  http://localhost:3000/mess/ratings/1/breakfast  | {"ratings":5}   | 
 | get |  http://localhost:3000/courses  |    |
 | get |  http://localhost:3000/courses/getdocuments/1  |    | 
-| post |  http://localhost:3000/documents/1  | formdata: {"key:value":- 1)title:Notes,2)prof:Sandeep.R.B,3) :file}
+| post |  http://localhost:3000/documents/1/:id  | formdata: {"key:value":- 1)title:Notes,2)prof:Sandeep.R.B,3) :file}
 | get |  http://localhost:3000/secys  |    | 
 		                                         
  	       		
