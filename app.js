@@ -42,7 +42,6 @@ if (process.env.NODE_ENV === 'test') {
     console.log("Connection failed!");
   });
 }
-require('./passport');
 // Middlewares moved morgan into if for clear tests
 if (!process.env.NODE_ENV === 'test') {
   app.use(morgan('dev'));
@@ -62,9 +61,9 @@ app.use((req, res, next) => {
   );
   next();
 });
-app.use(session({name:'aman',secret: 'aman',saveUninitialized: false,resave: false,store: new MongoStore({ url:
-  "mongodb+srv://sonusourav:mongopass@instigo-server-ytfvu.gcp.mongodb.net/api?retryWrites=true&w=majority",
-                      ttl: 10 * 365 * 24 * 60 * 60 }),cookie:{maxAge: 10 * 365 * 24 * 60 * 60*1000}}));
+// app.use(session({name:'aman',secret: 'aman',saveUninitialized: false,resave: false,store: new MongoStore({ url:
+//   "mongodb+srv://sonusourav:mongopass@instigo-server-ytfvu.gcp.mongodb.net/api?retryWrites=true&w=majority",
+//                       ttl: 10 * 365 * 24 * 60 * 60 }),cookie:{maxAge: 10 * 365 * 24 * 60 * 60*1000}}));
 //Routes
 app.use('/instigo/images', express.static( 'instigo/images'));
 app.use("/resources", express.static(__dirname + "/resources"));
@@ -75,22 +74,24 @@ app.get('/',(req,res) =>{
 var client = new auth.OAuth2(config.google.clientID,config.google.clientSecret);
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-     let path = './images/'+req.params.id;
+    var tok = decode(req.params.id);
+     let path = './images/'+tok.email;
       fs.mkdirsSync(path);
     cb(null, path);
   },
   filename: function(req, file, cb) {
-    cb(null, req.params.id +'_profilePic_' + file.originalname);
+    cb(null, tok.email +'_profilePic_' + file.originalname);
   }
 });
 const storage1 = multer.diskStorage({
   destination: function(req, file, cb) {
-     let path = './resources/'+req.params.id;
+    var tok = decode(req.params.id);
+     let path = './resources/'+tok.email;
       fs.mkdirsSync(path);
     cb(null, path);
   },
   filename: function(req, file, cb) {
-    cb(null, req.params.id+'_coverPic_' + file.originalname);
+    cb(null, tok.email+'_coverPic_' + file.originalname);
   }
 });
 const fileFilter = (req, file, cb,res) => {
@@ -117,12 +118,13 @@ const upload1 = multer({
 });
 const storage2 = multer.diskStorage({
   destination: function(req, file, cb) {
-    let path = './resources/'+req.params.id;
+     var tok = decode(req.params.id);
+    let path = './resources/'+tok.email;
       fs.mkdirsSync(path);
     cb(null, './resources/'+req.params.id);
   },
   filename: function(req, file, cb) {
-    cb(null, req.params.id + file.originalname);
+    cb(null,tok.email+ file.originalname);
   }
 });
 const upload2 = multer({
@@ -179,12 +181,19 @@ else {
     return res.status(403).send('Link has been Expired');
   };
 });
-app.post('/updatepassword/:id',[check('password','password must be in 6 characters').isLength({min:6})],(req,res)=>{
+app.post('/updatepassword/:id',(req,res)=>{
     var password = req.body.password;
      if (password === "" ) return res.status(200).json({ message: "failure@Password can't be empty" });
 else {
  bcrypt.hash(password, 10).then(hash =>{
-   User.updateOne({'_id': req.params.id },{password:hash}).then(result =>{
+  token = req.params.id
+   if (token) {
+    JWT.verify(token,JWT_SECRET,function(err, token_data) {
+      if (err) {
+         return res.status(200).send({message: 'failure@err in Updating'});
+      } 
+   else{var tok = decode(req.params.id);
+   User.updateOne({'_id': tok.id },{password:hash}).then(result =>{
     console.log(result);
   if (result.n > 0) {
       res.status(200).json({ message: "success" });
@@ -197,8 +206,12 @@ else {
         message: "failure@User not found!"
       });
     });
+  }
       });
+
     };
+});
+}
 });
 app.get('/forgotp/:id1/:id',(req,res)=>{
     fPass.findOne({'rand':req.params.id1}).then(result =>{
@@ -228,8 +241,9 @@ app.post('/profilepic/:id',upload.single(''),function (req,res) {
   // if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
+  var tok = decode(req.params.id);
   console.log(req.file.filename);
-  User.updateOne({'_id': req.params.id },{'profilePic':req.file.filename}).then(result =>{
+  User.updateOne({'_id': tok.id },{'profilePic':req.file.filename}).then(result =>{
       console.log(result);
   if (result.n > 0) {
       res.status(200).json({ message: "success" });
@@ -247,8 +261,9 @@ app.post('/coverpic/:id',upload1.single(''),function (req,res) {
   // if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
+  var tok = decode(req.params.id);
   console.log(req.file);
-  User.updateOne({'_id': req.params.id },{'coverPic':req.file.filename}).then(result =>{
+  User.updateOne({'_id': tok.id },{'coverPic':req.file.filename}).then(result =>{
       console.log(result);
   if (result.n > 0) {
       res.status(200).json({ message: "success" });
@@ -263,8 +278,8 @@ app.post('/coverpic/:id',upload1.single(''),function (req,res) {
     });
 });
 app.post('/documents/:id/:id1',upload2.single(''),function (req,res) {
-  
-  User.findOne({'_id':req.params.id1}).then(user =>{
+  var tok = decode(req.params.id1);
+  User.findOne({'_id':tok.id}).then(user =>{
    const documents= new Document({ 
     title:req.body.title,
     desc:req.body.desc,
@@ -297,7 +312,7 @@ app.get('/secys',function (req,res) {
 app.use('/users', userRoutes);
 app.use('/mess', messRoutes);
 app.use('/courses',resourcesRoutes);
-app.use('/complaints',complaintsRoutes)
+app.use('/complaints',complaintsRoutes);
 app.get('/tokensignin/:id',(req,res,next)=>{
   const token = req.params.id;
  const audience = config.google.clientID;
@@ -312,11 +327,15 @@ app.get('/tokensignin/:id',(req,res,next)=>{
                         var googleId = payload['sub'];
                         var email = payload['email'];
                         var name = payload['name'];
-                        resolve(googleId);
+                        resolve(googleId);   
                         User.findOne({ 'email' : email}, function(err, user) {
                         if (err) return done(err);
-             if (user) {
-              res.status(200).json({message:"success",userId:user._id});
+             if (user) {  const token = JWT.sign(
+               { id: user._id ,email:user.email},
+                               JWT_SECRET,
+                                 { expiresIn: "31536000h" }
+                              );
+              res.status(200).json({message:"success",userId:token});
           } else {
             var newUser = {
               email:email,
@@ -327,25 +346,25 @@ app.get('/tokensignin/:id',(req,res,next)=>{
             };
               console.log(newUser);
             User.create(newUser, function(err, added) {
+              const token = JWT.sign(
+               { id: newUser._id ,email:newUser.email},
+                               JWT_SECRET,
+                                 { expiresIn: "31536000h" }
+                              );
                 if (err) {
                   console.log(err);
                 }
-                 res.status(200).json({message:"success",userId:newUser._id});
+                 res.status(200).json({message:"success",userId:token});
             });
           }
         });
                     } else {
                         reject("invalid token");
                     }
-                }
-            )
-        })
+                })
+          })
         .catch(function(err) {
             res.send(err);
-        });
-    }
-); 
-// app.get('/auth/users/oauth/google', (req, res) => {
-//      res.status(200).json({ message: "success" });     
-// });
+        })
+    })
 module.exports = app;

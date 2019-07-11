@@ -6,6 +6,7 @@ const verifyEmail = require ('./emailVerification');
 const bcrypt = require("bcryptjs");
 const phone = require("phone");
 const Fpass = require("../models/forgotPassword");
+const decode = require('jwt-decode');
 const {check, validationResult } = require('express-validator');
 var randtoken = require('rand-token') 
 signToken = user => {
@@ -92,19 +93,19 @@ const url = req.get("host");
   }
  // var refreshTokens = {} 
    const token = JWT.sign(
-        { userId: fetchedUser._id },
+        { id: fetchedUser._id,email:fetchedUser.email },
         JWT_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "31536000h" }
       );
    console.log("aman");
-     req.session.user = fetchedUser;
+   //  req.session.user = fetchedUser;
    // var refreshToken = randtoken.uid(256);
    //  refreshTokens[refreshToken] = fetchedUser.name;
    //    console.log(req.user);
    //  res.json({token:  token, refreshToken: refreshToken}) 
   // console.log(req.session.user);
    res.status(200).json({
-       message:"success",userId:fetchedUser._id
+       message:"success",userId:token
       });
     })
     .catch(err => {
@@ -113,12 +114,6 @@ const url = req.get("host");
       });
     });
 },
-
-  googleOAuth: async (req, res, next) => {
-  //   // Generate token
-  // console.log(req.body);
-  // res.send('success');
-  },
 
   verify: async( req, res, next) => {
       Vemail.findOne({"userID": req.params.id1}, (err, result) =>{
@@ -148,7 +143,8 @@ const url = req.get("host");
   // if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
-  User.findById(req.params.id).then(user => {
+  var tok = decode(req.params.id);
+  User.findById(tok.id).then(user => {
     if (user) {
       const details = {
         email: user.email,
@@ -177,7 +173,8 @@ const url = req.get("host");
   // if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
-  User.updateOne({'id':req.params.id},{'branch':req.body.branch,'year':req.body.year,'gender':req.body.gender,'hostel':req.body.hostel,'phone':req.body.phone,'dob':req.body.dob})
+  var tok = decode(req.params.id);
+  User.updateOne({'_id':tok.id},{'branch':req.body.branch,'year':req.body.year,'gender':req.body.gender,'hostel':req.body.hostel,'phone':req.body.phone,'dob':req.body.dob})
   .then(result =>{
     console.log(result);
      if (result.n > 0) {
@@ -196,7 +193,8 @@ const url = req.get("host");
   //   if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
-  User.findOne({'_id':req.params.id}).then(user =>{
+  var tok = decode(req.params.id);
+  User.findOne({'_id':tok.id}).then(user =>{
         res.status(200).json(user.profilePic);
   });
   },
@@ -204,7 +202,8 @@ const url = req.get("host");
   //   if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
-  User.findOne({'_id':req.params.id}).then(user =>{
+  var tok = decode(req.params.id);
+  User.findOne({'_id':tok.id}).then(user =>{
         res.status(200).json(user.coverPic);
   });
 }

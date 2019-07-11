@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const Product = require('../models/menu');
 const Feedback = require('../models/feedback');
+const decode = require('jwt-decode');
 module.exports = {
 	getmenu :async(req,res,next) =>{
 	Product.find({}).then(prods =>{
@@ -12,7 +13,8 @@ module.exports = {
 createFeedback: async(req,res,next) =>{
 	// if (!req.session.user) {
  //    res.json({message : "Not Authorized"});}
- 	User.findOne({'_id':req.params.id}).then(user=>{
+ var tok = decode(req.params.id);
+ 	User.findOne({'_id':tok.id}).then(user=>{
 	const feedback = new Feedback({ 
 		day:req.body.day,
 		desc:req.body.desc,

@@ -10,16 +10,16 @@
 |Post     | http://localhost:3000/users/signup |{"email":"170030039@iitdh.ac.in","password":"amanji","name":aman} |
 |Post      |  http://localhost:3000/users/signin     | {"email":"170030039@iitdh.ac.in","password":"amanji"}|
 |  post   |   http://localhost:3000/users/forgotp    |  {"email": "170030039@iitdh.ac.in"} |      
-| post | http://localhost:3000/users/update/profile/:id | {"branch":"cse","year":2,"hostel":2,"gender":"male","dob":"10/02/1999","phone":1111111111}|      
-| get |  http://localhost:3000/users/profile/:id        |     |        
+| post | http://localhost:3000/users/update/profile/value of token | {"branch":"cse","year":2,"hostel":2,"gender":"male","dob":"10/02/1999","phone":1111111111}|      
+| get |  http://localhost:3000/users/profile/value of token        |     |        
 | get |   http://localhost:3000/logout     |    |     
-| post|  http://localhost:3000/profilepic/:id  |  |
-| post |  http://localhost:3000/coverpic/:id   |    |
-| get |  http://localhost:3000/users/profilepic/:id   |    |
-| get |  http://localhost:3000/users/coverpic/:id   |    |
-| post |  http://localhost:3000/updatepassword/:id    |  {"password": "amanji"} | 
+| post|  http://localhost:3000/profilepic/value of token   |  |
+| post |  http://localhost:3000/coverpic/value of token |    |
+| get |  http://localhost:3000/users/profilepic/value of token   |    |
+| get |  http://localhost:3000/users/coverpic/value of token    |    |
+| post |  http://localhost:3000/updatepassword/value of token   |  {"password": "amanji"} | 
 | get |  http://localhost:3000/mess  |    | 
-| post |  http://localhost:3000/mess/feedback/:id  |  {"ratings":2,"title":"delayed","part":"dinner","desc":"anything","day":"Monday" |
+| post |  http://localhost:3000/mess/feedback/value of token   |  {"ratings":2,"title":"delayed","part":"dinner","desc":"anything","day":"Monday" |
 | get |  http://localhost:3000/mess/getfeedbacks  |    | 
 | post |  http://localhost:3000/mess/ratings/1/breakfast  | {"ratings":5}   | 
 | get |  http://localhost:3000/courses  |    |
@@ -33,11 +33,8 @@
   - db.users.find();
 
 * For googe SignIn:
-  - Type URl In browser: http://localhost:3000,
-  - Click on google+ Button and sign in with your email id
+  - URl : http://localhost:3000/tokensignin/idToken value
   - check db On mongocloud
-  - google+ button Url : http://localhost:3000/auth/google
-  - Redirect Url: http://localhost:3000/auth/users/oauth/google
 * Forgot Password:
   - see the url for forgot Password in b)(open Postman); 
   - After getting Url in email: Enter Your Password in 6 characters.

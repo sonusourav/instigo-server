@@ -2,6 +2,7 @@ const User = require('../models/user');
 const Complaint = require('../models/complaint');
 const Student = require('../Student Council/models/pro');
 const complaintEmail = require('./complaintEmail'); 
+const decode = require('jwt-decode');
 module.exports = {
 	getcomplaints:async(req,res,next) =>{
 	Complaint.find({private:false}).then(complaints =>{
@@ -24,7 +25,8 @@ postcomplaints :async(req,res,next) =>{
 		hostelsecy:req.body.hostelsecy
     });
 	 complaint.save().then(result=>{
-	 	User.findOne({"_id":req.params.id}).then(user =>{
+	 	var tok = decode(req.params.id);
+	 	User.findOne({"_id":tok.id}).then(user =>{
 	 		user.mycomplaints.push(complaint._id);
 	 		user.save();
 	 	});
