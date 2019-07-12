@@ -22,7 +22,7 @@ var readHTMLFile = function(path, callback) {
 exports.verifyemail = (req,res,next) => {
     rand = Math.floor((Math.random() * 1000000) + 54 );
     host = req.get('host');
-    link = "https://instigo-server.appspot.com" + "/users/verify/"+rand+'/'+ req.userID;
+    link = "https://instigo-project.appspot.com" + "/users/verify/"+rand+'/'+ req.userID;
     readHTMLFile(__dirname + '/verify.html', function(err, html) {
         // if (err)throw (err) ;
     var template = handlebars.compile(html);

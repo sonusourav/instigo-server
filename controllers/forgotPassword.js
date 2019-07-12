@@ -30,7 +30,7 @@ exports.forgotPassword = (req,res,next) => {
         JWT_SECRET,
         { expiresIn: "300s" }
       );
-    link = " https://instigo-server.appspot.com" + "/forgotp/"+rand+'/'+token
+    link = " https://instigo-project.appspot.com" + "/forgotp/"+rand+'/'+token
     readHTMLFile(__dirname + '/index.html', function(err, html) {
     var template = handlebars.compile(html);
     var replacements = {

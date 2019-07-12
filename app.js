@@ -71,7 +71,7 @@ app.set('view engine','ejs');
 app.get('/',(req,res) =>{
   res.render('home');
 });
-var client = new auth.OAuth2("97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com","oDN7TToVdMpqwCdhDCZEsGOI");
+var client = new auth.OAuth2(config.google.clientID,config.google.clientSecret);
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     var tok = decode(req.params.id);
@@ -133,6 +133,7 @@ const upload2 = multer({
     fileSize: 1024 * 1024 * 5
   }
 });
+console.log(config.google.clientID);
 app.use(function(req, res, next){
   next();
 });
@@ -315,12 +316,13 @@ app.use('/courses',resourcesRoutes);
 app.use('/complaints',complaintsRoutes);
 app.get('/tokensignin/:id',(req,res,next)=>{
   const token =req.params.id;
- const audience = "97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com";
+ const audience = config.google.clientID;
    var verifyToken = new Promise(function(resolve, reject) {
             client.verifyIdToken(
                 token,
                 audience,
                 function(e, login) {
+                  console.log(e);
                   console.log(login);
                     if (login) {
                         var payload = login.getPayload();
