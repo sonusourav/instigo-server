@@ -71,7 +71,7 @@ app.set('view engine','ejs');
 app.get('/',(req,res) =>{
   res.render('home');
 });
-var client = new auth.OAuth2(config.google.clientID,config.google.clientSecret);
+var client = new auth.OAuth2("97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com","oDN7TToVdMpqwCdhDCZEsGOI");
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     var tok = decode(req.params.id);
@@ -314,8 +314,8 @@ app.use('/mess', messRoutes);
 app.use('/courses',resourcesRoutes);
 app.use('/complaints',complaintsRoutes);
 app.get('/tokensignin/:id',(req,res,next)=>{
-  const token = req.params.id;
- const audience = config.google.clientID;
+  const token =req.params.id;
+ const audience = "97354838466-jhq1idtmnofl2vvnnhn8dj4gi0t4ngq0.apps.googleusercontent.com";
    var verifyToken = new Promise(function(resolve, reject) {
             client.verifyIdToken(
                 token,
@@ -330,8 +330,8 @@ app.get('/tokensignin/:id',(req,res,next)=>{
                         resolve(googleId);   
                         User.findOne({ 'email' : email}, function(err, user) {
                         if (err) return done(err);
-             if (user) {  const token = JWT.sign(
-               { id: user._id ,email:user.email},
+                 if (user) {  const token = JWT.sign(
+                             { id: user._id ,email:user.email},
                                JWT_SECRET,
                                  { expiresIn: "31536000h" }
                               );
