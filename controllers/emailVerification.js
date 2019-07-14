@@ -52,7 +52,7 @@ exports.verifyemail = (req,res,next) => {
                 console.log("Error while Deleting!");
             })
             return res.status(500).json({
-                message: "Failure_Check Email and password of sender!"
+                message: "failure_Check Email and password of sender!"
               });
         }
         const vemail = new Vemail({
@@ -64,12 +64,12 @@ exports.verifyemail = (req,res,next) => {
             .save()
             .then(response => {
                 res.status(200).json({
-                    message: "Success"
+                    message: "success" , updatedPassword:req.updateP
                 })
             })
             .catch(error => {
                 res.status(500).json({
-                    message: "Failure_Error occured while saving data!"
+                    message: "failure_Error occured while saving data!"
                   });
             })
         console.log(info.response);

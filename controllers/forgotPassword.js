@@ -63,7 +63,7 @@ exports.forgotPassword = (req,res,next) => {
             .save()
             .then(response => {
                 res.status(200).json({
-                    message: "Success"
+                    message: "success"
                 })
             })
             .catch(error => {
@@ -79,4 +79,3 @@ exports.forgotPassword = (req,res,next) => {
 }
 })
 }
-//ewoJImVtYWlsIjoiYWx1dGhyYTE0MDNAZ21haWwuY29tIgp9

@@ -23,7 +23,6 @@ signUp: (req, res, next) => {
 //   if (!errors.isEmpty()) {
 //     return res.status(200).json({ errors: errors.array()[0].msg });
 //   }
-
 const url = req.get("host");
     // Check if there is a user with the same email
   bcrypt.hash(req.body.password, 10).then(hash => {
@@ -40,15 +39,24 @@ const url = req.get("host");
 
     // Create a new user
    else { 
+    var currentdate = new Date(); 
+var datetime = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + "@"  
+                + currentdate.toLocaleTimeString('en-GB', { hour: "numeric", 
+                                             minute: "numeric"});
+
     const newUser = new User({ 
         email: req.body.email, 
         password:hash,
-        name: req.body.name
+        name: req.body.name,
+        updatedPass:datetime
     });
    newUser.save().then(result => { 
     const token = signToken(newUser);
     // Respond with signToken 
                          req.userID = result._id;
+                         req.updateP = result.updatedPass;
              return verifyEmail.verifyemail(req,res,next);
                 })  
     .catch(err => {

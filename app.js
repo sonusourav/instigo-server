@@ -157,16 +157,23 @@ app.post('/reset',[check('password','password must be in 6 characters').isLength
      if (password === "" ) return res.status(200).json({ message: "password can't be empty" });
 else {
  bcrypt.hash(password, 10).then(hash =>{
-   User.updateOne({email: tok.email },{password:hash}).then(result =>{
-    console.log(result);
-  if (result.n > 0) {
-    fPass.deleteOne({"userID": tok.email}).catch(error => {
-          console.log(error);
-        });
-      res.status(200).json({ message: "successfully Updated password!" });
-      }else {
-        res.status(401).json({ message: "err in Updating" });
-      }
+      User.findOne({'_id': tok.id }).then(user =>{
+    var currentdate = new Date(); 
+var datetime = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + "@"  
+                + currentdate.toLocaleTimeString('en-GB', { hour: "numeric", 
+                                             minute: "numeric"});
+    user.password = hash;
+    user.updatedPass = datetime;
+    user.save().then(result=>{
+      res.status(200).json({ message: "successfully Updated Password"});
+    })
+    .catch(error => {
+      res.status(200).json({
+        message: "failure@err in Updating"
+      });
+    });
     })
     .catch(error => {
       res.status(500).json({
@@ -194,13 +201,24 @@ else {
          return res.status(200).send({message: 'failure@err in Updating'});
       } 
    else{var tok = decode(req.params.id);
-   User.updateOne({'_id': tok.id },{password:hash}).then(result =>{
-    console.log(result);
-  if (result.n > 0) {
-      res.status(200).json({ message: "success" });
-      }else {
-        res.status(200).json({ message: "failure@err in Updating" });
-      }
+   User.findOne({'_id': tok.id }).then(user =>{
+    var currentdate = new Date(); 
+var datetime = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + "@"  
+                + currentdate.toLocaleTimeString('en-GB', { hour: "numeric", 
+                                             minute: "numeric"});
+    user.password = hash;
+    updatepassword = datetime;
+    user.updatedPass = datetime;
+    user.save().then(result=>{
+      res.status(200).json({ message: "success",updatedPassword: updatepassword });
+    })
+    .catch(error => {
+      res.status(200).json({
+        message: "failure@err in Updating"
+      });
+    });
     })
     .catch(error => {
       res.status(200).json({
@@ -208,9 +226,8 @@ else {
       });
     });
   }
-      });
-
-    };
+ });
+};
 });
 }
 });

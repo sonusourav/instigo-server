@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require("bcryptjs");
 // Create a schema
+
 const userSchema =mongoose.Schema({
   email: { type: String,  lowercase: true, required: true },
   password: { type: String, default: null ,required:true},
@@ -14,7 +15,8 @@ const userSchema =mongoose.Schema({
    coverPic: { type: String, default: null},
    hostel: {type:Number,default:null},
    phone:{type:Number,default:null},
-   mycomplaints:[{type: mongoose.Schema.Types.ObjectId, ref: "Complaint"}] 
+   mycomplaints:[{type: mongoose.Schema.Types.ObjectId, ref: "Complaint"}],
+   updatedPass:{type:String,default:null}
 });
 // Create a model
 module.exports  = mongoose.model("User", userSchema);
