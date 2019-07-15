@@ -40,17 +40,28 @@ const url = req.get("host");
     // Create a new user
    else { 
     var currentdate = new Date(); 
-var datetime = currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + "@"  
-                + currentdate.toLocaleTimeString('en-GB', { hour: "numeric", 
-                                             minute: "numeric"});
+var datetime = currentdate.getDate() + "-"
+                + (currentdate.getMonth()+1)  + "-" 
+                + currentdate.getFullYear() + " "  
+              + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+var dateString = datetime,
+    dateTimeParts = dateString.split(' '),
+    timeParts = dateTimeParts[1].split(':'),
+    dateParts = dateTimeParts[0].split('-'),
+    date;
 
+date = new Date(dateParts[2], parseInt(dateParts[1], 10) - 1, dateParts[0], timeParts[0], timeParts[1]);
+
+console.log(date.getTime());
+ //1379426880000
+ var datetime1 = date.getTime();
     const newUser = new User({ 
         email: req.body.email, 
         password:hash,
         name: req.body.name,
-        updatedPass:datetime
+        updatedPass:datetime1
     });
    newUser.save().then(result => { 
     const token = signToken(newUser);
