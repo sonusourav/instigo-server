@@ -64,7 +64,7 @@ exports.verifyemail = (req,res,next) => {
             .save()
             .then(response => {
                 res.status(200).json({
-                    message: "success" , updatedPassword:req.updateP
+                    message: "success" , passLastUpdated:req.updateP
                 })
             })
             .catch(error => {

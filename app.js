@@ -224,7 +224,7 @@ console.log(date.getTime());
     updatepassword = datetime1;
     user.updatedPass = datetime1;
     user.save().then(result=>{
-      res.status(200).json({ message: "success",updatedPassword: updatepassword });
+      res.status(200).json({ message: "success",passLastUpdated: updatepassword });
     })
     .catch(error => {
       res.status(200).json({

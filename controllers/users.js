@@ -88,6 +88,7 @@ console.log(date.getTime());
   //   return res.status(200).json({ errors: errors.array()[0].msg });
   // }
 
+
     let fetchedUser;
     User.findOne({ "email": req.body.email })
     .then(user =>{
@@ -123,8 +124,9 @@ console.log(date.getTime());
    //    console.log(req.user);
    //  res.json({token:  token, refreshToken: refreshToken}) 
   // console.log(req.session.user);
+    
    res.status(200).json({
-       message:"success",userId:token
+       message:"success",userId:token,passLastUpdated:fetchedUser.updatedPass
       });
     })
     .catch(err => {
