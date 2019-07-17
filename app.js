@@ -25,11 +25,11 @@ const Student = require('./Student Council/models/pro');
 const complaintsRoutes = require('./routes/complaints');
 const UsersController = require('./controllers/users');
 var GoogleAuth = require('google-auth-library');
-  var auth = new GoogleAuth();
+var http = require('http-request');
+var auth = new GoogleAuth();
 mongoose.Promise = global.Promise;
 const app = express();
 const {check, validationResult } = require('express-validator');
-var MongoStore = require('connect-mongo')(session);
 if (process.env.NODE_ENV === 'test') {
   mongoose.connect("mongodb+srv://admin:aluthra1403@cluster0-mrukq.gcp.mongodb.net/api?retryWrites=true&w=majority", { useNewUrlParser: true });
 } else {
@@ -66,6 +66,7 @@ app.use((req, res, next) => {
 //                       ttl: 10 * 365 * 24 * 60 * 60 }),cookie:{maxAge: 10 * 365 * 24 * 60 * 60*1000}}));
 //Routes
 app.use('/instigo/images', express.static( 'instigo/images'));
+app.use('/images', express.static(__dirname +'/images'));
 app.use("/resources", express.static(__dirname + "/resources"));
 app.set('view engine','ejs');
 app.get('/',(req,res) =>{
@@ -73,13 +74,16 @@ app.get('/',(req,res) =>{
 });
 var client = new auth.OAuth2(config.google.clientID,config.google.clientSecret);
 const storage = multer.diskStorage({
+  
   destination: function(req, file, cb) {
     var tok = decode(req.params.id);
+    // const url = req.protocol + "://" + req.get("host");
      let path = './images/'+tok.email;
       fs.mkdirsSync(path);
     cb(null, path);
   },
   filename: function(req, file, cb) {
+    var tok = decode(req.params.id);
     cb(null, tok.email +'_profilePic_' + file.originalname);
   }
 });
@@ -91,6 +95,7 @@ const storage1 = multer.diskStorage({
     cb(null, path);
   },
   filename: function(req, file, cb) {
+    var tok = decode(req.params.id);
     cb(null, tok.email+'_coverPic_' + file.originalname);
   }
 });
@@ -124,6 +129,7 @@ const storage2 = multer.diskStorage({
     cb(null, './resources/'+req.params.id);
   },
   filename: function(req, file, cb) {
+    var tok = decode(req.params.id);
     cb(null,tok.email+ file.originalname);
   }
 });
@@ -273,7 +279,7 @@ app.post('/profilepic/:id',upload.single(''),function (req,res) {
   // }
   var tok = decode(req.params.id);
   console.log(req.file.filename);
-  User.updateOne({'_id': tok.id },{'profilePic':req.file.filename}).then(result =>{
+  User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.com/images/'+tok.email+'/'+req.file.filename}).then(result =>{
       console.log(result);
   if (result.n > 0) {
       res.status(200).json({ message: "success" });
@@ -358,6 +364,7 @@ app.get('/tokensignin/:id',(req,res,next)=>{
                         var googleId = payload['sub'];
                         var email = payload['email'];
                         var name = payload['name'];
+                        var picture = payload['picture'];
                         resolve(googleId);   
                         User.findOne({ 'email' : email}, function(err, user) {
                         if (err) return done(err);
@@ -373,6 +380,7 @@ app.get('/tokensignin/:id',(req,res,next)=>{
               socialId: googleId,
               password:'$2a$10$LGvwGlOq9.2ahUvfRdypj.EddTci2pGmRyVL21to8L/vTyDovHiZa',
               name:name,
+              profilePic:picture,
               isEmailVerified:true
             };
               console.log(newUser);

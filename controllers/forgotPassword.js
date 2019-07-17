@@ -52,7 +52,7 @@ exports.forgotPassword = (req,res,next) => {
                 console.log("Error while Deleting!");
             })
             return res.status(500).json({
-                message: "Failure_Check Email and password of sender!"
+                message: "failure@Check Email and password of sender!"
               });
         }
         const fpass = new Fpass({
@@ -68,14 +68,14 @@ exports.forgotPassword = (req,res,next) => {
             })
             .catch(error => {
                 res.status(500).json({
-                    message: "Failure_Error occured while saving data!"
+                    message: "failure@Error occured while saving data!"
                   });
             })
         console.log(info.response);
     });
 });
 }else{
- res.status(404).json({message :"Failure_User Not Found"});
+ res.status(404).json({message :"failure@User Not Found"});
 }
 })
 }

@@ -8,7 +8,8 @@ const phone = require("phone");
 const Fpass = require("../models/forgotPassword");
 const decode = require('jwt-decode');
 const {check, validationResult } = require('express-validator');
-var randtoken = require('rand-token') 
+var randtoken = require('rand-token');
+
 signToken = user => {
   return JWT.sign({
     iss: 'CodeWorkr',
@@ -61,7 +62,8 @@ console.log(date.getTime());
         email: req.body.email, 
         password:hash,
         name: req.body.name,
-        updatedPass:datetime1
+        updatedPass:datetime1,
+        profilePic:'https://instigo-project.appspot.com/'+req.file.filename
     });
    newUser.save().then(result => { 
     const token = signToken(newUser);
@@ -227,7 +229,18 @@ console.log(date.getTime());
   User.findOne({'_id':tok.id}).then(user =>{
         res.status(200).json(user.coverPic);
   });
-}
+},
+  getpicnameemail : async(req,res,next) =>{
+  //   if(!req.session.user){
+  //   return res.status(200).send("failure@Not Authorized");
+  // }
+  var tok = decode(req.params.id);
+  User.findOne({'_id':tok.id}).then(user =>{
+   var userInfo = {name:user.name,
+                   email:user.email,
+                  profilePic:user.profilePic};
+        res.status(200).json(userInfo);
+  });
   // generateToken: async(req,res,next)=>{
   //   var userId = req.body.id
   // var refreshToken = req.body.refreshToken
@@ -240,5 +253,4 @@ console.log(date.getTime());
   // }
   // }
 }
- 
-  
+ }

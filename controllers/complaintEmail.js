@@ -3,21 +3,44 @@ var nodemailer = require('nodemailer');
 const userCredential = require('../keys');
 const Cemail = require('../models/complaintEmail');
 const User = require('../models/user');
-
 var smtpTransport = nodemailer.createTransport('smtps://' + userCredential.user  + ':' +userCredential.pass +'@smtp.gmail.com');
 var rand,mailOptions,host,link;
-
+var fs = require('fs');
+var handlebars = require('handlebars');
+var readHTMLFile = function(path, callback) {
+    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+        if (err) {
+            throw err;
+            callback(err);
+        }
+        else {
+            callback(null, html);
+        }
+    });
+};
 exports.complaintemail = (req,res,next) => {
     console.log(req.body);
     console.log(req.userID);
     rand = Math.floor((Math.random() * 1000000) + 54 );
     host = req.get('host');
-    link = "http://localhost:3000" + "/complaints/tosecy/"+rand;
+    readHTMLFile(__dirname + '/complaint.html', function(err, html) {
+    var template = handlebars.compile(html);
+    var replacements = {
+        no:req.body.hostel,
+        no1:req.body.house,
+        comm:req.body.comments,
+        title:req.body.title,
+        type:req.body.related,
+        desc:req.body.desc,
+        by:req.body.name,
+        id:rand
+    };
+    var htmlToSend = template(replacements);
     mailOptions = {
         from: '"InstiGO" <instigo.iitdh@gmail.com>',
         to: req.userID,
-        subject: "Complaint Registered for house no." + req.body.house,
-        html:"Hello,<br> Follow the link to verify your email address.<br><a href=" + link + ">Clink here to accept</a><br>If you didn’t ask to verify this address, you can ignore this email.<br><br>Thanks,<br>Your InstiGO team"+"</body>"
+        subject: "Complaint Registered for Hostel No."+req.body.hostel,
+        html: htmlToSend
     }
      console.log("Bhai");
     smtpTransport.sendMail(mailOptions, (error, info) => {
@@ -52,4 +75,5 @@ exports.complaintemail = (req,res,next) => {
             })
         console.log(info.response);
     })
+});
 }

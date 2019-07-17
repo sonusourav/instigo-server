@@ -69,7 +69,7 @@ exports.verifyemail = (req,res,next) => {
             })
             .catch(error => {
                 res.status(500).json({
-                    message: "failure_Error occured while saving data!"
+                    message: "failure@Error occured while saving data!"
                   });
             })
         console.log(info.response);
