@@ -197,7 +197,7 @@ console.log(date.getTime());
   //   return res.status(200).send("failure@Not Authorized");
   // }
   var tok = decode(req.params.id);
-  User.updateOne({'_id':tok.id},{'branch':req.body.branch,'year':req.body.year,'gender':req.body.gender,'hostel':req.body.hostel,'phone':req.body.phone,'dob':req.body.dob})
+  User.updateOne({'_id':tok.id},{'branch':req.body.branch,'year':req.body.year,'gender':req.body.gender,'hostel':req.body.hostel,'phone':req.body.phone,'dob':req.body.dob,'name':req.body.name})
   .then(result =>{
     console.log(result);
      if (result.n > 0) {
