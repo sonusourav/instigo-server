@@ -26,6 +26,7 @@
 | get |  http://localhost:3000/courses/getdocuments/1  |    | 
 | post |  http://localhost:3000/documents/1/:id  | formdata: {"key:value":- 1)title:Notes,2)prof:Sandeep.R.B,3) :file}
 | get |  http://localhost:3000/secys  |    | 
+| get |  http://localhost:3000/users/picnameemail/:id |    |
 		                                         
  	       		
 * Check db:
@@ -122,3 +123,5 @@
   -check db for students
 * GetSecys:
   - Paste Url of /secys from above table in postman
+* GetPicNameEmail:
+  - Paste Url of /users/picnameemail from above table in postman

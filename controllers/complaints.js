@@ -25,6 +25,12 @@ postcomplaints :async(req,res,next) =>{
 	// if (!req.session.user) {
  //    res.json({message : "failure_Not Authorized"});}
  var tok = decode(req.params.id);
+ var currentdate = new Date(); 
+var datetime = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " "  
+                + currentdate.toLocaleTimeString('en-GB', { hour: "numeric", 
+                                             minute: "numeric"});
 	const complaint = new Complaint({ 
 		house:req.body.house,
 		desc:req.body.desc,
@@ -34,7 +40,8 @@ postcomplaints :async(req,res,next) =>{
 		private:req.body.private,
 		related:req.body.related,
 		hostelsecy:req.body.hostelsecy,
-		by:tok.email
+		by:tok.email,
+		date:datetime
     });
 	 complaint.save().then(result=>{
 	 	

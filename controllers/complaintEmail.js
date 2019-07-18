@@ -24,6 +24,12 @@ exports.complaintemail = (req,res,next) => {
     rand = Math.floor((Math.random() * 1000000) + 54 );
     host = req.get('host');
     readHTMLFile(__dirname + '/complaint.html', function(err, html) {
+        var currentdate = new Date(); 
+var datetime = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " "  
+                + currentdate.toLocaleTimeString('en-GB', { hour: "numeric", 
+                                             minute: "numeric"});
     var template = handlebars.compile(html);
     var replacements = {
         no:req.body.hostel,
@@ -33,7 +39,8 @@ exports.complaintemail = (req,res,next) => {
         type:req.body.related,
         desc:req.body.desc,
         by:req.body.name,
-        id:rand
+        id:rand,
+        date:datetime
     };
     var htmlToSend = template(replacements);
     mailOptions = {
