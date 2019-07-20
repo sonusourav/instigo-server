@@ -25,7 +25,6 @@ const Student = require('./Student Council/models/pro');
 const complaintsRoutes = require('./routes/complaints');
 const UsersController = require('./controllers/users');
 var GoogleAuth = require('google-auth-library');
-var http = require('http-request');
 var auth = new GoogleAuth();
 mongoose.Promise = global.Promise;
 const app = express();
@@ -49,6 +48,7 @@ if (!process.env.NODE_ENV === 'test') {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -272,26 +272,58 @@ app.get('/logout', function(req, res){
   //   res.status(200).json({message:"success"});
   // }
   });
-app.post('/profilepic/:id',upload.single(''),function (req,res) {
+app.post('/profilepic/:id',function (req,res) {
 
   // if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
-  var tok = decode(req.params.id);
-  console.log(req.file.filename);
-  User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.com/images/'+tok.email+'/'+req.file.filename}).then(result =>{
-      console.log(result);
-  if (result.n > 0) {
-      res.status(200).json({ message: "success" });
-      }else {
-        res.status(200).json({ message: "failure@err in Updating pic" });
-      }
-    })
-    .catch(error => {
-      res.status(200).json({
-        message: "failure@User not found!"
-      });
-    });
+  // var tok = decode(req.params.id);
+  // console.log(req.file.filename);
+  // User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.com/images/'+tok.email+'/'+req.file.filename}).then(result =>{
+  //     console.log(result);
+  // if (result.n > 0) {
+  //     res.status(200).json({ message: "success" });
+  //     }else {
+  //       res.status(200).json({ message: "failure@err in Updating pic" });
+  //     }
+  //   })
+  //   .catch(error => {
+  //     res.status(200).json({
+  //       message: "failure@User not found!"
+  //     });
+  //   });
+  // console.log(req.file.filename);
+//     fs.readFile(req.file.path, function (err, data){
+//        var tok = decode(req.params.id);
+//     // const url = req.protocol + "://" + req.get("host");
+//       fs.mkdirsSync(dirname);
+//       console.log(dirname);
+//     var newPath = dirname;
+//     fs.writeFile(newPath, data, function (err) {
+//     if(err){
+//       console.log(err);
+//     res.json({'response':"failure@error in Uploading"});
+//     }else {
+//     res.json({'response':"success"});
+// }
+// });
+// });
+console.log(req.files.image.originalFilename);
+  console.log(req.files.image.path);
+    fs.readFile(req.files.image.path, function (err, data){
+      var tok = decode(req.params.id);
+      let path = './images/'+tok.email;
+       fs.mkdirsSync(path);
+    var dirname = "Instigo server";
+    var newPath = dirname + "/images/" + tok.email+  req.files.image.originalFilename;
+    fs.writeFile(newPath, data, function (err) {
+    if(err){
+    res.json({'response':"failure@error"});
+    }else {
+    res.json({'response':"success"});
+}
+});
+});
 });
 app.post('/coverpic/:id',upload1.single(''),function (req,res) {
   // if(!req.session.user){
