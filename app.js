@@ -373,7 +373,7 @@ Course.findOne({id:req.params.id}).then(course =>{
 app.get('/secys',function (req,res) {
     Student.find({}).then(students =>{
       console.log(students);
-      if(students){res.status(200).json({secys : students});}
+      if(students){res.status(200).json({council : students});}
       else{res.status(200).json({message : "failure@Err in getting secys"});}
     });
 });

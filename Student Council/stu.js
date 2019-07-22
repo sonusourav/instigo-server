@@ -16,28 +16,38 @@ mongoose.connect("mongodb+srv://sonusourav:mongopass@instigo-server-ytfvu.gcp.mo
 
 var students = [
 new Student({
-	imagePath:'../instigo/student_council/aluthra1403@gmail.com_profilePic_57.jpg',
+  teamName:"Club",
+  teamDesc:"Heyy",
+  teamSize:10,	
+  team:[{imagePath:null,
 	title:'General Secy',
 	name:'who cares',
 	email:'whocares@gmail.com',
 	phoneno:'9999999999',
-	description: 'Cs 2nd Year'
-}),
-new Student({
-	imagePath:'../instigo/student_council/aluthra1403@gmail.com_profilePic_57.jpg',
+	description: 'Cs 2nd Year'},
+	{imagePath:null,
 	title:'General Secy',
 	name:'Numpy',
 	email:'Numpy@gmail.com',
 	phoneno:'9999999999',
-	description: 'Cs 2nd Year'
+	description: 'Cs 2nd Year'}]
 }),
 new Student({
-	imagePath:'../instigo/student_council/aluthra1403@gmail.com_profilePic_57.jpg',
+  teamName:"Club",
+  teamDesc:"Heyy",
+  teamSize:10	,
+  team:[{imagePath:null,
 	title:'General Secy',
-	name:'Humpy',
-	email:'Humpy@gmail.com',
+	name:'who cares',
+	email:'whocares@gmail.com',
 	phoneno:'9999999999',
-	description: 'Cs 2nd Year'
+	description: 'Cs 2nd Year'},
+	{imagePath:null,
+	title:'General Secy',
+	name:'Numpy',
+	email:'Numpy@gmail.com',
+	phoneno:'9999999999',
+	description: 'Cs 2nd Year'}]
 })
 ];
 
@@ -45,16 +55,18 @@ var done =0;
 
 
 //////////////////------> Saving Student Information in database
-
-
+	
+console.log(students);
 for(var i=0; i<students.length; i++){
 	students[i].save(function(err,result){
+		if(err){console.log(err);}
 		done++;
 		if (done == students.length) {
-			console.log("Added successfully");
+			console.log(done);
 			exit();
 		}
 	});
-}function exit(){
+}
+function exit(){
 	mongoose.disconnect();
 }
