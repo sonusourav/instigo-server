@@ -45,8 +45,8 @@ if (process.env.NODE_ENV === 'test') {
 if (!process.env.NODE_ENV === 'test') {
   app.use(morgan('dev'));
 }
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 app.use(cookieParser());
 
 app.use((req, res, next) => {
@@ -66,7 +66,7 @@ app.use((req, res, next) => {
 //                       ttl: 10 * 365 * 24 * 60 * 60 }),cookie:{maxAge: 10 * 365 * 24 * 60 * 60*1000}}));
 //Routes
 app.use('/instigo/images', express.static( 'instigo/images'));
-app.use('/images', express.static(__dirname +'/images'));
+app.use('/', express.static(__dirname +'/'));
 app.use("/resources", express.static(__dirname + "/resources"));
 app.set('view engine','ejs');
 app.get('/',(req,res) =>{
@@ -292,23 +292,53 @@ function rawBody(req, res, next) {
         res.status(500);
     });
 }
-app.post('/profilepic/:id',rawBody,function (req,res) {
 
-  // if(!req.session.user){
-  //   return res.status(200).send("failure@Not Authorized");
-  // }
+app.post('/profilepic/:id',function (req,res) {
   var tok = decode(req.params.id);
-  console.log(req.rawBody);
+var base64Str = req.body.profilepic;
+var buffer = new Buffer(base64Str, 'base64');
+fs.writeFile(tok.email +'_profilePic', buffer, function(err) {
+    if(err) {
+        return console.log(err);
+        res.send("failure");
+    }
+User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.com/'+tok.email +'_profilePic'}).then(result =>{
+      console.log(result);
+  if (result.n > 0) {
+      res.status(200).json({ message: "success" });
+      }else {
+        res.status(200).json({ message: "failure@err in Updating pic" });
+      }
+    })
+    .catch(error => {
+      res.status(200).json({
+        message: "failure@User not found!"
+      });
+    });
+    console.log("The file has been saved!");
+});
 
-    if (req.rawBody && req.bodyLength > 0) {
+//     if (req.rawBody && req.bodyLength > 0) {
+//       var base64Data = req.rawBody;
+//     fs.writeFile("test.jpg",base64Data,'base64',function(err,written){
+//         if(err) console.log(err);
+//         else {
+//             console.log("file Succesfully written ");    
+//             cloudinary.uploader.upload("test.jpg", function (image) {
+//                 if(image !== undefined) {
 
+//                      res.json({link: image.secure_url}).end();
+//                      console.log("url = " , image.secure_url);
+//                  //   fs.unlink(ImageFile);
+//                 } else console.log.error("Error uploading to Cloudinary, ", image);
+//             });
+//         }
+//     });
+// };
+       
         // TODO save image (req.rawBody) somewhere
 
         // send some content as JSON
-        res.send(200, {status: 'success'});
-    } else {
-        res.send(500,{status: 'failure'});
-    }
 
   // User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.com/images/'+tok.email+'/'+req.file.filename}).then(result =>{
   //     console.log(result);

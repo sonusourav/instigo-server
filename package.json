@@ -9,8 +9,10 @@
   "author": "CodeWorkr",
   "license": "ISC",
   "dependencies": {
+    "base64-to-image": "^1.0.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
+    "btoa-atob": "^0.1.2",
     "connect-mongo": "^3.0.0",
     "cookie-parser": "^1.4.4",
     "cross-env": "^5.0.5",
