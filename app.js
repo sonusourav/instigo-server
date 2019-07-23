@@ -272,26 +272,57 @@ app.get('/logout', function(req, res){
   //   res.status(200).json({message:"success"});
   // }
   });
-app.post('/profilepic/:id',upload.single('profilePic'),function (req,res) {
+function rawBody(req, res, next) {
+    var chunks = [];
+
+    req.on('data', function(chunk) {
+        chunks.push(chunk);
+    });
+
+    req.on('end', function() {
+        var buffer = Buffer.concat(chunks);
+
+        req.bodyLength = buffer.length;
+        req.rawBody = buffer;
+        next();
+    });
+
+    req.on('error', function (err) {
+        console.log(err);
+        res.status(500);
+    });
+}
+app.post('/profilepic/:id',rawBody,function (req,res) {
 
   // if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
   var tok = decode(req.params.id);
-  console.log(req.file.filename);
-  User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.com/images/'+tok.email+'/'+req.file.filename}).then(result =>{
-      console.log(result);
-  if (result.n > 0) {
-      res.status(200).json({ message: "success" });
-      }else {
-        res.status(200).json({ message: "failure@err in Updating pic" });
-      }
-    })
-    .catch(error => {
-      res.status(200).json({
-        message: "failure@User not found!"
-      });
-    });
+  console.log(req.rawBody);
+
+    if (req.rawBody && req.bodyLength > 0) {
+
+        // TODO save image (req.rawBody) somewhere
+
+        // send some content as JSON
+        res.send(200, {status: 'success'});
+    } else {
+        res.send(500,{status: 'failure'});
+    }
+
+  // User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.com/images/'+tok.email+'/'+req.file.filename}).then(result =>{
+  //     console.log(result);
+  // if (result.n > 0) {
+  //     res.status(200).json({ message: "success" });
+  //     }else {
+  //       res.status(200).json({ message: "failure@err in Updating pic" });
+  //     }
+  //   })
+  //   .catch(error => {
+  //     res.status(200).json({
+  //       message: "failure@User not found!"
+  //     });
+  //   });
   // console.log(req.file.filename);
 //     fs.readFile(req.file.path, function (err, data){
 //        var tok = decode(req.params.id);
