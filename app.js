@@ -386,7 +386,7 @@ User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.c
 // });
 // });
 });
-app.post('/coverpic/:id',upload1.single(''),function (req,res) {
+app.post('/coverpic/:id',upload1.single('coverpic'),function (req,res) {
   // if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
@@ -406,7 +406,7 @@ app.post('/coverpic/:id',upload1.single(''),function (req,res) {
       });
     });
 });
-app.post('/documents/:id/:id1',upload2.single(''),function (req,res) {
+app.post('/documents/:id/:id1',upload2.single('documents'),function (req,res) {
   var tok = decode(req.params.id1);
   User.findOne({'_id':tok.id}).then(user =>{
    const documents= new Document({ 
