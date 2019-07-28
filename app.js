@@ -386,26 +386,55 @@ User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.c
 // });
 // });
 });
-app.post('/coverpic/:id',upload1.single('coverpic'),function (req,res) {
-  // if(!req.session.user){
-  //   return res.status(200).send("failure@Not Authorized");
-  // }
-  var tok = decode(req.params.id);
-  console.log(req.file);
-  User.updateOne({'_id': tok.id },{'coverPic':req.file.filename}).then(result =>{
-      console.log(result);
-  if (result.n > 0) {
-      res.status(200).json({ message: "success" });
-      }else {
-        res.status(200).json({ message: "failure@err in Updating pic" });
-      }
+const upload3= multer({
+    dest:'images/', 
+    limits: {fileSize: 10000000, files: 1},
+    fileFilter:  (req, file, callback) => {
+    
+        // if (!file.originalname.match(/\.(jpg|jpeg)$/)) {
+
+        //     return callback(new Error('failure@Only Images are allowed !'), false)
+        // }
+
+        callback(null, true);
+    }
+}).single('coverpic')
+
+app.post('/coverpic/:id', (req, res) => {
+
+    upload3(req, res, function (err) {
+
+        if (err) {
+
+            res.status(400).json({message: err.message})
+
+        } else {
+
+            let path = `/images/${req.file.filename}`
+            res.status(200).json({message: 'success'});
+        }
     })
-    .catch(error => {
-      res.status(200).json({
-        message: "User not found!"
-      });
-    });
 });
+// app.post('/coverpic/:id',upload1.single('coverpic'),function (req,res) {
+//   // if(!req.session.user){
+//   //   return res.status(200).send("failure@Not Authorized");
+//   // }
+//   var tok = decode(req.params.id);
+//   console.log(req.file);
+//   User.updateOne({'_id': tok.id },{'coverPic':req.file.filename}).then(result =>{
+//       console.log(result);
+//   if (result.n > 0) {
+//       res.status(200).json({ message: "success" });
+//       }else {
+//         res.status(200).json({ message: "failure@err in Updating pic" });
+//       }
+//     })
+//     .catch(error => {
+//       res.status(200).json({
+//         message: "User not found!"
+//       });
+//     });
+// });
 app.post('/documents/:id/:id1',upload2.single('documents'),function (req,res) {
   var tok = decode(req.params.id1);
   User.findOne({'_id':tok.id}).then(user =>{
