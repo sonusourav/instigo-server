@@ -49,18 +49,18 @@ app.use(bodyParser.json({limit: "50mb"}));
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, PUT, DELETE, OPTIONS"
-  );
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+//   );
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, PATCH, PUT, DELETE, OPTIONS"
+//   );
+//   next();
+// });
 // app.use(session({name:'aman',secret: 'aman',saveUninitialized: false,resave: false,store: new MongoStore({ url:
 //   "mongodb+srv://sonusourav:mongopass@instigo-server-ytfvu.gcp.mongodb.net/api?retryWrites=true&w=majority",
 //                       ttl: 10 * 365 * 24 * 60 * 60 }),cookie:{maxAge: 10 * 365 * 24 * 60 * 60*1000}}));
@@ -84,19 +84,19 @@ const storage = multer.diskStorage({
   },
   filename: function(req, file, cb) {
     var tok = decode(req.params.id);
-    cb(null, tok.email +'_profilePic_' + file.originalname);
+    cb(null, 'profilePic_' + file.originalname);
   }
 });
 const storage1 = multer.diskStorage({
   destination: function(req, file, cb) {
     var tok = decode(req.params.id);
-     let path = './resources/'+tok.email;
+     let path = './images/'+tok.email;
       fs.mkdirsSync(path);
     cb(null, path);
   },
   filename: function(req, file, cb) {
     var tok = decode(req.params.id);
-    cb(null, tok.email+'_coverPic_' + file.originalname);
+    cb(null, 'coverPic_' + file.originalname);
   }
 });
 const fileFilter = (req, file, cb,res) => {
@@ -292,17 +292,23 @@ function rawBody(req, res, next) {
         res.status(500);
     });
 }
+const upload4= multer({
+    // const url = req.protocol + "://" + req.get("host");
+    storage:storage
+}).single('profilepic')
 
-app.post('/profilepic/:id',function (req,res) {
+app.post('/profilepic/:id',(req,res) => {
   var tok = decode(req.params.id);
-var base64Str = req.body.profilepic;
-var buffer = new Buffer(base64Str, 'base64');
-fs.writeFile(tok.email +'_profilePic', buffer, function(err) {
-    if(err) {
-        return console.log(err);
-        res.send("failure");
-    }
-User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.com/'+tok.email +'_profilePic'}).then(result =>{
+
+    upload4(req, res, function (err) {
+          console.log(req.file);
+        if (err) {
+
+            res.status(400).json({message: err.message})
+
+        } else {
+          let path =req.protocol+'://'+req.get("host")+'/'+'images/'+tok.email+'/'+req.file.filename;
+          User.updateOne({'_id': tok.id },{'profilePic':path}).then(result =>{
       console.log(result);
   if (result.n > 0) {
       res.status(200).json({ message: "success" });
@@ -312,107 +318,133 @@ User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.c
     })
     .catch(error => {
       res.status(200).json({
-        message: "failure@User not found!"
+        message: "User not found!"
       });
     });
-    console.log("The file has been saved!");
+        }
+    })
 });
 
-//     if (req.rawBody && req.bodyLength > 0) {
-//       var base64Data = req.rawBody;
-//     fs.writeFile("test.jpg",base64Data,'base64',function(err,written){
-//         if(err) console.log(err);
-//         else {
-//             console.log("file Succesfully written ");    
-//             cloudinary.uploader.upload("test.jpg", function (image) {
-//                 if(image !== undefined) {
-
-//                      res.json({link: image.secure_url}).end();
-//                      console.log("url = " , image.secure_url);
-//                  //   fs.unlink(ImageFile);
-//                 } else console.log.error("Error uploading to Cloudinary, ", image);
-//             });
-//         }
+//   var tok = decode(req.params.id);
+// var base64Str = req.body.profilepic;
+// var buffer = new Buffer(base64Str, 'base64');
+// fs.writeFile(tok.email +'_profilePic', buffer, function(err) {
+//     if(err) {
+//         return console.log(err);
+//         res.send("failure");
+//     }
+// User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.com/'+tok.email +'_profilePic'}).then(result =>{
+//       console.log(result);
+//   if (result.n > 0) {
+//       res.status(200).json({ message: "success" });
+//       }else {
+//         res.status(200).json({ message: "failure@err in Updating pic" });
+//       }
+//     })
+//     .catch(error => {
+//       res.status(200).json({
+//         message: "failure@User not found!"
+//       });
 //     });
-// };
+//     console.log("The file has been saved!");
+// });
+
+// //     if (req.rawBody && req.bodyLength > 0) {
+// //       var base64Data = req.rawBody;
+// //     fs.writeFile("test.jpg",base64Data,'base64',function(err,written){
+// //         if(err) console.log(err);
+// //         else {
+// //             console.log("file Succesfully written ");    
+// //             cloudinary.uploader.upload("test.jpg", function (image) {
+// //                 if(image !== undefined) {
+
+// //                      res.json({link: image.secure_url}).end();
+// //                      console.log("url = " , image.secure_url);
+// //                  //   fs.unlink(ImageFile);
+// //                 } else console.log.error("Error uploading to Cloudinary, ", image);
+// //             });
+// //         }
+// //     });
+// // };
        
-        // TODO save image (req.rawBody) somewhere
+//         // TODO save image (req.rawBody) somewhere
 
-        // send some content as JSON
+//         // send some content as JSON
 
-  // User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.com/images/'+tok.email+'/'+req.file.filename}).then(result =>{
-  //     console.log(result);
-  // if (result.n > 0) {
-  //     res.status(200).json({ message: "success" });
-  //     }else {
-  //       res.status(200).json({ message: "failure@err in Updating pic" });
-  //     }
-  //   })
-  //   .catch(error => {
-  //     res.status(200).json({
-  //       message: "failure@User not found!"
-  //     });
-  //   });
-  // console.log(req.file.filename);
-//     fs.readFile(req.file.path, function (err, data){
-//        var tok = decode(req.params.id);
-//     // const url = req.protocol + "://" + req.get("host");
-//       fs.mkdirsSync(dirname);
-//       console.log(dirname);
-//     var newPath = dirname;
-//     fs.writeFile(newPath, data, function (err) {
-//     if(err){
-//       console.log(err);
-//     res.json({'response':"failure@error in Uploading"});
-//     }else {
-//     res.json({'response':"success"});
-// }
-// });
-// });
-// console.log(req.files.image.originalFilename);
-//   console.log(req.files.image.path);
-//     fs.readFile(req.files.image.path, function (err, data){
-//       var tok = decode(req.params.id);
-//       let path = './images/'+tok.email;
-//        fs.mkdirsSync(path);
-//     var dirname = "Instigo server";
-//     var newPath = dirname + "/images/" + tok.email+  req.files.image.originalFilename;
-//     fs.writeFile(newPath, data, function (err) {
-//     if(err){
-//     res.json({'response':"failure@error"});
-//     }else {
-//     res.json({'response':"success"});
-// }
-// });
-// });
-});
+//   // User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.com/images/'+tok.email+'/'+req.file.filename}).then(result =>{
+//   //     console.log(result);
+//   // if (result.n > 0) {
+//   //     res.status(200).json({ message: "success" });
+//   //     }else {
+//   //       res.status(200).json({ message: "failure@err in Updating pic" });
+//   //     }
+//   //   })
+//   //   .catch(error => {
+//   //     res.status(200).json({
+//   //       message: "failure@User not found!"
+//   //     });
+//   //   });
+//   // console.log(req.file.filename);
+// //     fs.readFile(req.file.path, function (err, data){
+// //        var tok = decode(req.params.id);
+// //     // const url = req.protocol + "://" + req.get("host");
+// //       fs.mkdirsSync(dirname);
+// //       console.log(dirname);
+// //     var newPath = dirname;
+// //     fs.writeFile(newPath, data, function (err) {
+// //     if(err){
+// //       console.log(err);
+// //     res.json({'response':"failure@error in Uploading"});
+// //     }else {
+// //     res.json({'response':"success"});
+// // }
+// // });
+// // });
+// // console.log(req.files.image.originalFilename);
+// //   console.log(req.files.image.path);
+// //     fs.readFile(req.files.image.path, function (err, data){
+// //       var tok = decode(req.params.id);
+// //       let path = './images/'+tok.email;
+// //        fs.mkdirsSync(path);
+// //     var dirname = "Instigo server";
+// //     var newPath = dirname + "/images/" + tok.email+  req.files.image.originalFilename;
+// //     fs.writeFile(newPath, data, function (err) {
+// //     if(err){
+// //     res.json({'response':"failure@error"});
+// //     }else {
+// //     res.json({'response':"success"});
+// // }
+// // });
+// // });
 const upload3= multer({
     // const url = req.protocol + "://" + req.get("host");
-    dest:'images/', 
-    limits: {fileSize: 10000000, files: 1},
-    fileFilter:  (req, file, callback) => {
-    
-        if (!file.originalname.match(/\.(jpg|jpeg)$/)) {
-
-            return callback(new Error('failure@Only Images are allowed !'), false)
-        }
-
-        callback(null, true);
-    }
+    storage:storage1
 }).single('coverpic')
 
 app.post('/coverpic/:id', (req, res) => {
   var tok = decode(req.params.id);
-    upload3(req, res, function (err) {
 
+    upload3(req, res, function (err) {
+          console.log(req.file);
         if (err) {
 
             res.status(400).json({message: err.message})
 
         } else {
-
-            let path = `/images/${req.file.filename}`;
-            res.status(200).json({message: 'success',path:path});
+          let path =req.protocol+'://'+req.get("host")+'/'+'images/'+tok.email+'/'+req.file.filename;
+          User.updateOne({'_id': tok.id },{'coverPic':path}).then(result =>{
+      console.log(result);
+  if (result.n > 0) {
+      res.status(200).json({ message: "success" });
+      }else {
+        res.status(200).json({ message: "failure@err in Updating pic" });
+      }
+    })
+    .catch(error => {
+      res.status(200).json({
+        message: "User not found!"
+      });
+    });
         }
     })
 });

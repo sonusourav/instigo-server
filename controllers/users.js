@@ -227,7 +227,7 @@ console.log(date.getTime());
   // }
   var tok = decode(req.params.id);
   User.findOne({'_id':tok.id}).then(user =>{
-        res.status(200).json(user.coverPic);
+        res.status(200).json({path:user.coverPic});
   });
 },
   getpicnameemail : async(req,res,next) =>{
