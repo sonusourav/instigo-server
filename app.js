@@ -66,7 +66,7 @@ app.use((req, res, next) => {
 //                       ttl: 10 * 365 * 24 * 60 * 60 }),cookie:{maxAge: 10 * 365 * 24 * 60 * 60*1000}}));
 //Routes
 app.use('/instigo/images', express.static( 'instigo/images'));
-app.use('/', express.static(__dirname +'/'));
+app.use("/images", express.static('images'));
 app.use("/resources", express.static(__dirname + "/resources"));
 app.set('view engine','ejs');
 app.get('/',(req,res) =>{
@@ -387,21 +387,22 @@ User.updateOne({'_id': tok.id },{'profilePic':'https://instigo-project.appspot.c
 // });
 });
 const upload3= multer({
+    // const url = req.protocol + "://" + req.get("host");
     dest:'images/', 
     limits: {fileSize: 10000000, files: 1},
     fileFilter:  (req, file, callback) => {
     
-        // if (!file.originalname.match(/\.(jpg|jpeg)$/)) {
+        if (!file.originalname.match(/\.(jpg|jpeg)$/)) {
 
-        //     return callback(new Error('failure@Only Images are allowed !'), false)
-        // }
+            return callback(new Error('failure@Only Images are allowed !'), false)
+        }
 
         callback(null, true);
     }
 }).single('coverpic')
 
 app.post('/coverpic/:id', (req, res) => {
-
+  var tok = decode(req.params.id);
     upload3(req, res, function (err) {
 
         if (err) {
@@ -410,31 +411,34 @@ app.post('/coverpic/:id', (req, res) => {
 
         } else {
 
-            let path = `/images/${req.file.filename}`
-            res.status(200).json({message: 'success'});
+            let path = `/images/${req.file.filename}`;
+            res.status(200).json({message: 'success',path:path});
         }
     })
 });
-// app.post('/coverpic/:id',upload1.single('coverpic'),function (req,res) {
-//   // if(!req.session.user){
-//   //   return res.status(200).send("failure@Not Authorized");
-//   // }
-//   var tok = decode(req.params.id);
-//   console.log(req.file);
-//   User.updateOne({'_id': tok.id },{'coverPic':req.file.filename}).then(result =>{
-//       console.log(result);
-//   if (result.n > 0) {
-//       res.status(200).json({ message: "success" });
-//       }else {
-//         res.status(200).json({ message: "failure@err in Updating pic" });
-//       }
-//     })
-//     .catch(error => {
-//       res.status(200).json({
-//         message: "User not found!"
-//       });
-//     });
-// });
+
+
+
+app.post('/image/:id',upload1.single('coverpic'),function (req,res) {
+  // if(!req.session.user){
+  //   return res.status(200).send("failure@Not Authorized");
+  // }
+  var tok = decode(req.params.id);
+  console.log(req.file);
+  User.updateOne({'_id': tok.id },{'coverPic':'https://instigo-project.appspot.com/'+req.file.path}).then(result =>{
+      console.log(result);
+  if (result.n > 0) {
+      res.status(200).json({ message: "success" });
+      }else {
+        res.status(200).json({ message: "failure@err in Updating pic" });
+      }
+    })
+    .catch(error => {
+      res.status(200).json({
+        message: "User not found!"
+      });
+    });
+});
 app.post('/documents/:id/:id1',upload2.single('documents'),function (req,res) {
   var tok = decode(req.params.id1);
   User.findOne({'_id':tok.id}).then(user =>{
