@@ -14,6 +14,7 @@ var schema = new Schema({
   desc:{type:String},
   url:{type:String},
   file:{type:String,required:true},
-  type:{type:String}
+  type:{type:String},
+  path:{type:String}
 });
 module.exports = mongoose.model('Document',schema);

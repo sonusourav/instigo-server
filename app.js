@@ -123,14 +123,15 @@ const upload1 = multer({
 });
 const storage2 = multer.diskStorage({
   destination: function(req, file, cb) {
-     var tok = decode(req.params.id);
+     var tok = decode(req.params.id1);
+
     let path = './resources/'+tok.email;
       fs.mkdirsSync(path);
-    cb(null, './resources/'+req.params.id);
+    cb(null, './resources/'+tok.email);
   },
   filename: function(req, file, cb) {
-    var tok = decode(req.params.id);
-    cb(null,tok.email+ file.originalname);
+    var tok = decode(req.params.id1);
+    cb(null,file.originalname);
   }
 });
 const upload2 = multer({
@@ -448,31 +449,21 @@ app.post('/coverpic/:id', (req, res) => {
         }
     })
 });
+const upload5= multer({
+    // const url = req.protocol + "://" + req.get("host");
+    storage:storage2
+}).single('resource');
 
-
-
-app.post('/image/:id',upload1.single('coverpic'),function (req,res) {
-  // if(!req.session.user){
-  //   return res.status(200).send("failure@Not Authorized");
-  // }
-  var tok = decode(req.params.id);
-  console.log(req.file);
-  User.updateOne({'_id': tok.id },{'coverPic':'https://instigo-project.appspot.com/'+req.file.path}).then(result =>{
-      console.log(result);
-  if (result.n > 0) {
-      res.status(200).json({ message: "success" });
-      }else {
-        res.status(200).json({ message: "failure@err in Updating pic" });
-      }
-    })
-    .catch(error => {
-      res.status(200).json({
-        message: "User not found!"
-      });
-    });
-});
-app.post('/documents/:id/:id1',upload2.single('documents'),function (req,res) {
+app.post('/documents/:id/:id1',(req,res) => {
   var tok = decode(req.params.id1);
+  console.log(tok.email);
+   upload5(req, res, function (err) {
+          console.log(req.file);
+        if (err) {
+
+            res.status(200).json({message: err.message})
+
+        } else {
   User.findOne({'_id':tok.id}).then(user =>{
    const documents= new Document({ 
     title:req.body.title,
@@ -481,7 +472,8 @@ app.post('/documents/:id/:id1',upload2.single('documents'),function (req,res) {
     by:user.name,
     url:user.profilePic,
     file:req.file.filename,
-    type:req.file.mimetype
+    type:req.file.mimetype,
+    path:req.protocol+'://'+req.get("host")+'/'+'resources/'+tok.email+'/'+req.file.filename
     });
 
    documents.save().then(result=>{
@@ -495,7 +487,9 @@ Course.findOne({id:req.params.id}).then(course =>{
     else{res.status(400).json({message:"failure@err in posting feedback"})}
    });
  });
-});
+}
+})
+ });
 app.get('/secys',function (req,res) {
     Student.find({}).then(students =>{
       console.log(students);
