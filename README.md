@@ -44,7 +44,10 @@
 * Update Profile:
   - Firstly Sign in with registered email id in one tab in postman.
   - Open another tab 
-  - Paste the url of Update profile above in postman 
+  - Paste the url of Update profile above in postman
+  - Open the header and fill it in Key:Value form {Authorization:Bearer value of token}(Note:just give the space between bearer and the value of Token)
+  -Try without header also or pass the invalid token
+  -Also pass the value of token in Url as well
   - Check the db	
 * Upload Profilepic:
   -  Firstly Sign in with registered email id in one tab in postman.
