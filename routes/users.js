@@ -8,6 +8,7 @@ const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
 const forgotPassword = require('../controllers/forgotPassword');
 const multer= require('multer');
+const checkAuth = require("../middleware/check-auth");
 let fs = require('fs-extra');
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -53,7 +54,7 @@ router.route('/profile/:id')
 	.get(UsersController.profile);
 
 router.route('/update/profile/:id')
-	.post(UsersController.updateProfile);	
+	.post(checkAuth,UsersController.updateProfile);	
 
 router.route('/profilepic/:id')
 	.get(UsersController.getProfilePic);
