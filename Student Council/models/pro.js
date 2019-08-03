@@ -6,12 +6,13 @@ var schema = new Schema({
 	teamName:{type:String},
 	teamDesc:{type:String},
 	teamSize:{type:String},
+	teamUrl:{type:String},
 	team:[{imagePath:{type:String},
 	title:{type:String ,required:true},
 	name:{type:String ,required:true},
 	email:{type:String ,required:true},
 	phoneno:{type:Number,required:true},
-	description:{type:String ,required:true}}]
+	desc:{type:String ,required:true}}]
 	
 });
 

@@ -18,36 +18,38 @@ var students = [
 new Student({
   teamName:"Club",
   teamDesc:"Heyy",
-  teamSize:10,	
+  teamSize:10,
+  teamUrl:null,
   team:[{imagePath:null,
 	title:'General Secy',
 	name:'who cares',
 	email:'whocares@gmail.com',
 	phoneno:'9999999999',
-	description: 'Cs 2nd Year'},
+	desc: 'Cs 2nd Year'},
 	{imagePath:null,
 	title:'General Secy',
 	name:'Numpy',
 	email:'Numpy@gmail.com',
 	phoneno:'9999999999',
-	description: 'Cs 2nd Year'}]
+	desc: 'Cs 2nd Year'}]
 }),
 new Student({
   teamName:"Club",
   teamDesc:"Heyy",
   teamSize:10	,
+  teamUrl:null,
   team:[{imagePath:null,
 	title:'General Secy',
 	name:'who cares',
 	email:'whocares@gmail.com',
 	phoneno:'9999999999',
-	description: 'Cs 2nd Year'},
+	desc: 'Cs 2nd Year'},
 	{imagePath:null,
 	title:'General Secy',
 	name:'Numpy',
 	email:'Numpy@gmail.com',
 	phoneno:'9999999999',
-	description: 'Cs 2nd Year'}]
+	desc: 'Cs 2nd Year'}]
 })
 ];
 
