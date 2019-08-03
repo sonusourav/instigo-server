@@ -11,17 +11,17 @@ mongoose.connect("mongodb+srv://sonusourav:mongopass@instigo-server-ytfvu.gcp.mo
 var courses = [
 new Course({
 			courseName:"Software System Labs",
- 		    branch:"1",
+ 		    branch:["1","2","3"],
  		    courseCode:"CS205"
 }),
 new Course({
 			courseName:"Computer Networks",
- 		    branch:"2",
+ 		    branch:["1","2"],
  		    courseCode:"EE101"
 }),
 new Course({
 			courseName:"Mechanical Engineer",
- 		    branch:"3",
+ 		    branch:["3"],
  		    courseCode:"ME266"
 })
 ]
