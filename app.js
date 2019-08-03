@@ -359,11 +359,11 @@ app.post('/documents/:id',(req,res) => {
     });
 
    documents.save().then(result=>{
-Course.findOne({id:req.params.id}).then(course =>{
+Course.findOne({'courseCode':req.params.id}).then(course =>{
                 course.documents.push(documents._id);
                 course.save();
     }).catch(err =>{
-      console.log(error);
+      console.log(err);
     });
     if(result)res.status(200).json({message:"success"});
     else{res.status(400).json({message:"failure@err in posting feedback"})}

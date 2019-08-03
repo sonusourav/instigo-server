@@ -7,7 +7,7 @@ var datetime = currentdate.getDate() + "/"
                 + currentdate.toLocaleTimeString('en-GB', { hour: "numeric", 
                                              minute: "numeric"});
 var schema = new Schema({
-  title:{type:String,required:true},
+  docTitle:{type:String,required:true},
   prof:{type:String,required:true},
   date:{type:String,default:datetime},
   by:{type:String},

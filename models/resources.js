@@ -1,10 +1,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var schema = new Schema({
-  name:{type:String},
+  courseName:{type:String},
   branch:{type:String},
-  code:{type:String},
-  id:{type:Number},
+  courseCode:{type:String},
   documents:[{type: mongoose.Schema.Types.ObjectId, ref: "Document"}]
 });
 module.exports = mongoose.model('Course',schema);

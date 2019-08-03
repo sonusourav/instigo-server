@@ -10,8 +10,8 @@ module.exports = {
 	});
 },
 getdocuments :async(req,res,next) =>{
-	Course.find({id:req.params.id}).populate('documents',null,'Document').then(course=>{
-			res.status(200).json({documents: course[0].documents});
+	Course.find({'courseCode':req.params.id}).populate('documents',null,'Document').then(course=>{
+			res.status(200).json(course[0].documents);
 	});  
 }
 }
