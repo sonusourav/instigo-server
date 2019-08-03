@@ -166,7 +166,7 @@ console.log(date.getTime());
   // if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
-  var tok = decode(req.params.id);
+  var tok = decode(req.headers.authorization.split(" ")[1]);
   User.findById(tok.id).then(user => {
     if (user) {
       const details = {
@@ -196,7 +196,7 @@ console.log(date.getTime());
   // if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
-  var tok = decode(req.params.id);
+  var tok = decode(req.headers.authorization.split(" ")[1]);
   User.updateOne({'_id':tok.id},{'branch':req.body.branch,'year':req.body.year,'gender':req.body.gender,'hostel':req.body.hostel,'phone':req.body.phone,'dob':req.body.dob,'name':req.body.name})
   .then(result =>{
     console.log(result);
@@ -216,7 +216,7 @@ console.log(date.getTime());
   //   if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
-  var tok = decode(req.params.id);
+  var tok = decode(req.headers.authorization.split(" ")[1]);
   User.findOne({'_id':tok.id}).then(user =>{
         res.status(200).json(user.profilePic);
   });
@@ -225,7 +225,7 @@ console.log(date.getTime());
   //   if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
-  var tok = decode(req.params.id);
+  var tok = decode(req.headers.authorization.split(" ")[1]);
   User.findOne({'_id':tok.id}).then(user =>{
         res.status(200).json({path:user.coverPic});
   });
@@ -234,7 +234,7 @@ console.log(date.getTime());
   //   if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
-  var tok = decode(req.params.id);
+  var tok = decode(req.headers.authorization.split(" ")[1]);
   User.findOne({'_id':tok.id}).then(user =>{
    var userInfo = {name:user.name,
                    email:user.email,

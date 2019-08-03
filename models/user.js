@@ -3,9 +3,9 @@ const bcrypt = require("bcryptjs");
 // Create a schema
 
 const userSchema =mongoose.Schema({
-  email: { type: String,  lowercase: true, required: true },
-  password: { type: String, default: null ,required:true},
-  name: { type: String,required:true},
+  email: { type: String,  lowercase: true },
+  password: { type: String, default: null },
+  name: { type: String},
   isEmailVerified: {  type: Boolean,default: false },
    gender: {type:String,default: null},
    branch: {type:String,default:null},

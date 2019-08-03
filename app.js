@@ -77,26 +77,26 @@ var client = new auth.OAuth2(config.google.clientID,config.google.clientSecret);
 const storage = multer.diskStorage({
   
   destination: function(req, file, cb) {
-    var tok = decode(req.params.id);
+    var tok = decode(req.headers.authorization.split(" ")[1]);
     // const url = req.protocol + "://" + req.get("host");
      let path = './images/'+tok.email;
       fs.mkdirsSync(path);
     cb(null, path);
   },
   filename: function(req, file, cb) {
-    var tok = decode(req.params.id);
+    var tok = decode(req.headers.authorization.split(" ")[1]);
     cb(null, 'profilePic_' + file.originalname);
   }
 });
 const storage1 = multer.diskStorage({
   destination: function(req, file, cb) {
-    var tok = decode(req.params.id);
+    var tok = decode(req.headers.authorization.split(" ")[1]);
      let path = './images/'+tok.email;
       fs.mkdirsSync(path);
     cb(null, path);
   },
   filename: function(req, file, cb) {
-    var tok = decode(req.params.id);
+    var tok = decode(req.headers.authorization.split(" ")[1]);
     cb(null, 'coverPic_' + file.originalname);
   }
 });
@@ -124,14 +124,14 @@ const upload1 = multer({
 });
 const storage2 = multer.diskStorage({
   destination: function(req, file, cb) {
-     var tok = decode(req.params.id1);
+     var tok = decode(req.headers.authorization.split(" ")[1]);
 
     let path = './resources/'+tok.email;
       fs.mkdirsSync(path);
     cb(null, './resources/'+tok.email);
   },
   filename: function(req, file, cb) {
-    var tok = decode(req.params.id1);
+    var tok = decode(req.headers.authorization.split(" ")[1]);
     cb(null,file.originalname);
   }
 });
@@ -197,18 +197,12 @@ else {
     return res.status(403).send('Link has been Expired');
   };
 });
-app.post('/updatepassword/:id',(req,res)=>{
+app.post('/updatepassword',checkAuth,(req,res)=>{
     var password = req.body.password;
      if (password === "" ) return res.status(200).json({ message: "failure@Password can't be empty" });
 else {
  bcrypt.hash(password, 10).then(hash =>{
-  token = req.params.id
-   if (token) {
-    JWT.verify(token,JWT_SECRET,function(err, token_data) {
-      if (err) {
-         return res.status(200).send({message: 'failure@err in Updating'});
-      } 
-   else{var tok = decode(req.params.id);
+  var tok = decode(req.headers.authorization.split(" ")[1]);
    User.findOne({'_id': tok.id }).then(user =>{
      var currentdate = new Date(); 
 var datetime = currentdate.getDate() + "-"
@@ -235,6 +229,7 @@ console.log(date.getTime());
       res.status(200).json({ message: "success",passLastUpdated: updatepassword });
     })
     .catch(error => {
+      console.log(error);
       res.status(200).json({
         message: "failure@err in Updating"
       });
@@ -245,11 +240,8 @@ console.log(date.getTime());
         message: "failure@User not found!"
       });
     });
-  }
  });
 };
-});
-}
 });
 app.get('/forgotp/:id1/:id',(req,res)=>{
     fPass.findOne({'rand':req.params.id1}).then(result =>{
@@ -274,33 +266,14 @@ app.get('/logout', function(req, res){
   //   res.status(200).json({message:"success"});
   // }
   });
-function rawBody(req, res, next) {
-    var chunks = [];
 
-    req.on('data', function(chunk) {
-        chunks.push(chunk);
-    });
-
-    req.on('end', function() {
-        var buffer = Buffer.concat(chunks);
-
-        req.bodyLength = buffer.length;
-        req.rawBody = buffer;
-        next();
-    });
-
-    req.on('error', function (err) {
-        console.log(err);
-        res.status(500);
-    });
-}
 const upload4= multer({
     // const url = req.protocol + "://" + req.get("host");
     storage:storage
 }).single('profilepic')
 
-app.post('/profilepic/:id',checkAuth,(req,res) => {
-  var tok = decode(req.params.id);
+app.post('/profilepic',checkAuth,(req,res) => {
+  var tok = decode(req.headers.authorization.split(" ")[1]);
 
     upload4(req, res, function (err) {
           console.log(req.file);
@@ -331,8 +304,8 @@ const upload3= multer({
     storage:storage1
 }).single('coverpic')
 
-app.post('/coverpic/:id', (req, res) => {
-  var tok = decode(req.params.id);
+app.post('/coverpic',checkAuth, (req, res) => {
+  var tok = decode(req.headers.authorization.split(" ")[1]);
 
     upload3(req, res, function (err) {
           console.log(req.file);
@@ -363,8 +336,8 @@ const upload5= multer({
     storage:storage2
 }).single('resource');
 
-app.post('/documents/:id/:id1',(req,res) => {
-  var tok = decode(req.params.id1);
+app.post('/documents/:id',(req,res) => {
+  var tok = decode(req.headers.authorization.split(" ")[1]);
   console.log(tok.email);
    upload5(req, res, function (err) {
           console.log(req.file);

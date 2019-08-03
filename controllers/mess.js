@@ -13,7 +13,7 @@ module.exports = {
 createFeedback: async(req,res,next) =>{
 	// if (!req.session.user) {
  //    res.json({message : "Not Authorized"});}
- var tok = decode(req.params.id);
+ var tok = decode(req.headers.authorization.split(" ")[1]);
  	User.findOne({'_id':tok.id}).then(user=>{
 	const feedback = new Feedback({ 
 		day:req.body.day,
