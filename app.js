@@ -331,6 +331,12 @@ app.post('/coverpic',checkAuth, (req, res) => {
         }
     })
 });
+function getExt(filename)
+{
+    var ext = filename.split('.').pop();
+    if(ext == filename) return "";
+    return ext;
+}
 const upload5= multer({
     // const url = req.protocol + "://" + req.get("host");
     storage:storage2
@@ -342,11 +348,12 @@ app.post('/documents/:id',(req,res) => {
    upload5(req, res, function (err) {
           console.log(req.file);
         if (err) {
-
+              console.log(err);
             res.status(200).json({message: err.message})
 
         } else {
   User.findOne({'_id':tok.id}).then(user =>{
+  const t = getExt(req.file.originalname);
    const documents= new Document({ 
     docTitle:req.body.docTitle,
     desc:req.body.desc,
@@ -354,7 +361,7 @@ app.post('/documents/:id',(req,res) => {
     by:user.name,
     url:user.profilePic,
     file:req.file.filename,
-    type:req.file.mimetype,
+    type:t,
     path:req.protocol+'://'+req.get("host")+'/'+'resources/'+tok.email+'/'+req.file.filename
     });
 
@@ -378,6 +385,10 @@ app.get('/secys',function (req,res) {
       if(students){res.status(200).json(students);}
       else{res.status(200).json({message : "failure@Err in getting secys"});}
     });
+});
+app.get('/download', function(req, res){
+  const file = req.body.path;
+  res.download(file); // Set disposition and send it.
 });
 app.use('/users', userRoutes);
 app.use('/mess', messRoutes);
