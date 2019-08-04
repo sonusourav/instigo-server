@@ -386,8 +386,8 @@ app.get('/secys',function (req,res) {
       else{res.status(200).json({message : "failure@Err in getting secys"});}
     });
 });
-app.get('/download', function(req, res){
-  const file = req.body.path;
+app.get('/download/:id/:id1', function(req, res){
+  const file = `${__dirname}/resources/${req.params.id}/${req.params.id1}`;
   res.download(file); // Set disposition and send it.
 });
 app.use('/users', userRoutes);
