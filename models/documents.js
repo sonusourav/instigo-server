@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+const uniqueValidator = require("mongoose-unique-validator");
 var Schema = mongoose.Schema;
 var currentdate = new Date(); 
 var datetime = currentdate.getDate() + "/"
@@ -13,8 +14,9 @@ var schema = new Schema({
   by:{type:String},
   desc:{type:String},
   url:{type:String},
-  file:{type:String,required:true},
+  file:{type:String,required:true,unique:true},
   type:{type:String},
   path:{type:String}
 });
+schema.plugin(uniqueValidator);
 module.exports = mongoose.model('Document',schema);

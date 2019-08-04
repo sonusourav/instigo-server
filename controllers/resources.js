@@ -17,6 +17,8 @@ module.exports = {
 		});
 		course.save().then(result=>{
 				res.status(200).json({message:"success"});
+		}).catch(err =>{
+			res.status(200).json({message:"failure@err in saving"});
 		});	
 	},
 getdocuments :async(req,res,next) =>{

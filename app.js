@@ -126,9 +126,9 @@ const storage2 = multer.diskStorage({
   destination: function(req, file, cb) {
      var tok = decode(req.headers.authorization.split(" ")[1]);
 
-    let path = './resources/'+tok.email;
+    let path = './resources/'+req.params.id;
       fs.mkdirsSync(path);
-    cb(null, './resources/'+tok.email);
+    cb(null, './resources/'+req.params.id);
   },
   filename: function(req, file, cb) {
     var tok = decode(req.headers.authorization.split(" ")[1]);
@@ -369,11 +369,12 @@ app.post('/documents/:id',(req,res) => {
 Course.findOne({'courseCode':req.params.id}).then(course =>{
                 course.documents.push(documents._id);
                 course.save();
+
+    })
+        res.status(200).json({message:"success"});
     }).catch(err =>{
-      console.log(err);
-    });
-    if(result)res.status(200).json({message:"success"});
-    else{res.status(400).json({message:"failure@err in posting feedback"})}
+      console.log("Bhai");
+      res.status(200).json({message:"failure@err in posting feedback"});
    });
  });
 }
