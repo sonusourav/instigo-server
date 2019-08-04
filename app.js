@@ -348,7 +348,7 @@ app.post('/documents/:id',(req,res) => {
         } else {
   User.findOne({'_id':tok.id}).then(user =>{
    const documents= new Document({ 
-    title:req.body.title,
+    docTitle:req.body.docTitle,
     desc:req.body.desc,
     prof:req.body.prof,
     by:user.name,

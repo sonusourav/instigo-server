@@ -24,7 +24,7 @@
 | post |  http://localhost:3000/mess/ratings/1/breakfast  | {"ratings":5}   | 
 | get |  http://localhost:3000/courses  |    |
 | get |  http://localhost:3000/courses/getdocuments/1  |    | 
-| post |  http://localhost:3000/documents/1 | formdata: {"key:value":- 1)title:Notes,2)prof:Sandeep.R.B,3)resource:file}
+| post |  http://localhost:3000/documents/1 | formdata: {"key:value":- 1)docTitle:Notes,2)prof:Sandeep.R.B,3)resource:file}
 | get |  http://localhost:3000/secys  |    | 
 | get |  http://localhost:3000/users/picnameemail|    |
 		                                         
