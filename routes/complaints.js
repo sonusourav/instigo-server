@@ -11,7 +11,7 @@ router.route("/tosecy/notvalid/:id").
 post(complaintsController.notvalidcomplaints);
 router.route("/tosecy/changes/:id").
 post(complaintsController.changesRequested);
-router.route("/create/:id").
+router.route("/create").
 post(complaintsController.postcomplaints);
 router.route("/warden/:id").
 post(complaintsController.finalVerification);

@@ -4,6 +4,9 @@ const Student = require('../Student Council/models/pro');
 const complaintEmail = require('./complaintEmail'); 
 const decode = require('jwt-decode');
 const warden = require('./warden.js');
+var fcm = require('fcm-notification');
+var FCM = new fcm(__dirname+'/privateKey.json');
+var token = 'token here';
 module.exports = {
 	getcomplaints:async(req,res,next) =>{
 	Complaint.find({private:false}).then(complaints =>{
@@ -24,7 +27,7 @@ mycomplaints:async(req,res,next) =>{
 postcomplaints :async(req,res,next) =>{
 	// if (!req.session.user) {
  //    res.json({message : "failure_Not Authorized"});}
- var tok = decode(req.params.id);
+ var tok = decode(req.headers.authorization.split(" ")[1]);
  var currentdate = new Date(); 
 var datetime = currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
@@ -32,16 +35,16 @@ var datetime = currentdate.getDate() + "/"
                 + currentdate.toLocaleTimeString('en-GB', { hour: "numeric", 
                                              minute: "numeric"});
 	const complaint = new Complaint({ 
-		house:req.body.house,
-		desc:req.body.desc,
-		name:req.body.name,
-		hostel:req.body.hostel,
-		title:req.body.title,
-		private:req.body.private,
+		houseNo:req.body.houseNo,
+		requestDesc:req.body.requestDesc,
+		requestorName:req.body.requestorName,
+		hostelNo:req.body.hostelNo,
+		requestName:req.body.requestName,
+		isPrivate:req.body.isPrivate,
+		isPriority:req.body.isPriority,
 		related:req.body.related,
-		hostelsecy:req.body.hostelsecy,
-		by:tok.email,
-		date:datetime
+		requestorEmail:tok.email,
+		dateCreated:datetime
     });
 	 complaint.save().then(result=>{
 	 	
@@ -49,13 +52,8 @@ var datetime = currentdate.getDate() + "/"
 	 		user.mycomplaints.push(complaint._id);
 	 		user.save();
 	 	});
-	 	Student.findOne({"name":complaint.hostelsecy}).then(secy =>{
-	 				req.userID = secy.email;
-	 				console.log(secy.email);
+	 				req.userID = "sonusouravdx001@gmail.com";
 	 		 return complaintEmail.complaintemail(req,res,next);
-	 	}).catch(err=>{
-	 		res.status(200).json({message:"Secy Not Found!"});
-	 	});
 	 	// if(result)res.status(200).json({message:"success"});
 	 	// else{res.status(200).json({message:"failure_err in posting feedback"})}
 	 });  

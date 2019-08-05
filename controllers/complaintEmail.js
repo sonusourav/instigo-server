@@ -32,13 +32,13 @@ var datetime = currentdate.getDate() + "/"
                                              minute: "numeric"});
     var template = handlebars.compile(html);
     var replacements = {
-        no:req.body.hostel,
-        no1:req.body.house,
+        no:req.body.hostelNo,
+        no1:req.body.houseNo,
         comm:req.body.comments,
-        title:req.body.title,
+        title:req.body.requestName,
         type:req.body.related,
-        desc:req.body.desc,
-        by:req.body.name,
+        desc:req.body.requestDesc,
+        by:req.body.requestorName,
         id:rand,
         date:datetime
     };
