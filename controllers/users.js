@@ -252,5 +252,15 @@ console.log(date.getTime());
   //   res.send(200)
   // }
   // }
-}
+},
+    fcmToken : async(req,res,next) =>{
+  var tok = decode(req.headers.authorization.split(" ")[1]);
+  User.findOne({'_id':tok.id}).then(user =>{
+    user.fcmToken = req.body.fcmToken;
+    user.save().then(result =>{
+      if(result){res.status(200).json({message:"success"});}
+      else{res.status(200).json({message:"failure"});}
+    })
+    });
  }
+}

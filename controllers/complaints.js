@@ -9,7 +9,7 @@ var FCM = new fcm(__dirname+'/privateKey.json');
 var token = 'token here';
 module.exports = {
 	getcomplaints:async(req,res,next) =>{
-	Complaint.find({private:false}).then(complaints =>{
+	Complaint.find({isPrivate:false}).then(complaints =>{
 		console.log(complaints);
     // res.status(200).json({menu: complaints}); 
     res.send(complaints);
@@ -52,6 +52,25 @@ var datetime = currentdate.getDate() + "/"
 	 		user.mycomplaints.push(complaint._id);
 	 		user.save();
 	 	});
+	 	 var message = {
+        data: {    //This is only optional, you can send any data
+            score: '850',
+            time: '2:45'
+        },
+        notification:{
+            title : 'Title of notification',
+            body : 'Body of notification'
+        },
+        token : token
+        };
+ 
+FCM.send(message, function(err, response) {
+    if(err){
+        console.log('error found', err);
+    }else {
+        console.log('response here', response);
+    }
+})
 	 				req.userID = "sonusouravdx001@gmail.com";
 	 		 return complaintEmail.complaintemail(req,res,next);
 	 	// if(result)res.status(200).json({message:"success"});

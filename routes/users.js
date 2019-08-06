@@ -31,6 +31,9 @@ router.route('/profile')
 router.route('/update/profile')
 	.post(checkAuth,UsersController.updateProfile);	
 
+router.route('/fcmtoken')
+	.post(UsersController.fcmToken);	
+
 router.route('/profilepic')
 	.get(UsersController.getProfilePic);
 
