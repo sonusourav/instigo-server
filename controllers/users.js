@@ -63,7 +63,8 @@ console.log(date.getTime());
         password:hash,
         name: req.body.name,
         updatedPass:datetime1,
-        profilePic:'https://instigo-project.appspot.com/'+req.file.filename
+        profilePic:'https://instigo-project.appspot.com/'+req.file.filename,
+        fcmToken:req.body.fcmToken
     });
    newUser.save().then(result => { 
     const token = signToken(newUser);
@@ -94,7 +95,6 @@ console.log(date.getTime());
     let fetchedUser;
     User.findOne({ "email": req.body.email })
     .then(user =>{
-      console.log("reached");
       if (!user) {
         return res.status(200).json({
           message: "failure@User Not found"
@@ -126,7 +126,7 @@ console.log(date.getTime());
    //    console.log(req.user);
    //  res.json({token:  token, refreshToken: refreshToken}) 
   // console.log(req.session.user);
-    
+ 
    res.status(200).json({
        message:"success",userId:token,passLastUpdated:fetchedUser.updatedPass
       });
