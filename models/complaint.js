@@ -7,6 +7,7 @@ var schema = new Schema({
   houseNo:{type:Number,required:true},
   dateCreated:{type:String,default:null},
   requestorName:{type:String,required:true},
+  requestorUrl:{type:String},
   requestDesc:{type:String,required:true},
   hostelNo:{type:Number,required:true},
   isPrivate:{type:Boolean,required:true},

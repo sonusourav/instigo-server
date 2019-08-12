@@ -59,10 +59,12 @@ var datetime = monthNames[currentdate.getMonth()]+" "+currentdate.getDate()
                 +"," 
                 +currentdate.getFullYear();           
 var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
-	const complaint = new Complaint({ 
+	 	User.findOne({"_id":tok.id}).then(user =>{
+	 		const complaint = new Complaint({ 
 		houseNo:req.body.houseNo,
 		requestDesc:req.body.requestDesc,
 		requestorName:req.body.requestorName,
+		requestorUrl:user.profilePic,
 		hostelNo:req.body.hostelNo,
 		requestName:req.body.requestName,
 		isPrivate:req.body.isPrivate,
@@ -73,9 +75,7 @@ var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
 		dateCreated:datetime,
 		status:0
     });
-	 complaint.save().then(result=>{
-	 	
-	 	User.findOne({"_id":tok.id}).then(user =>{
+	 		 complaint.save().then(result=>{
 	 		user.mycomplaints.push(complaint._id);
 	 		user.save();
 	 		var token = user.fcmToken;
