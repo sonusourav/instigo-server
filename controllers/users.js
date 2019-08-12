@@ -9,6 +9,7 @@ const Fpass = require("../models/forgotPassword");
 const decode = require('jwt-decode');
 const {check, validationResult } = require('express-validator');
 var randtoken = require('rand-token');
+var Email= require('../models/emails');
 signToken = user => {
   return JWT.sign({
     iss: 'CodeWorkr',
@@ -23,9 +24,67 @@ signUp: (req, res, next) => {
 //   if (!errors.isEmpty()) {
 //     return res.status(200).json({ errors: errors.array()[0].msg });
 //   }
-const url = req.get("host");
-    // Check if there is a user with the same email
-  bcrypt.hash(req.body.password, 10).then(hash => {
+Email.findOne({"email":req.body.email}).then(user1=>{
+          if(user1){
+            bcrypt.hash(req.body.password, 10).then(hash => {
+  User.findOne({ "email": req.body.email },function(err, user) {
+    if (err) return done(err);
+    if (user) {
+       if(!user.isEmailVerified){
+          res.status(201).json({
+            message: "failure@Activate your account by clicking link in email!"
+          })
+        }else{
+      return res.status(200).json({ error: 'failure@Email is already in use'});
+    }}
+
+    // Create a new user
+   else { 
+    var currentdate = new Date(); 
+var datetime = currentdate.getDate() + "-"
+                + (currentdate.getMonth()+1)  + "-" 
+                + currentdate.getFullYear() + " "  
+              + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+var dateString = datetime,
+    dateTimeParts = dateString.split(' '),
+    timeParts = dateTimeParts[1].split(':'),
+    dateParts = dateTimeParts[0].split('-'),
+    date;
+
+date = new Date(dateParts[2], parseInt(dateParts[1], 10) - 1, dateParts[0], timeParts[0], timeParts[1]);
+
+console.log(date.getTime());
+ //1379426880000
+ var datetime1 = date.getTime();
+    const newUser = new User({ 
+        email: req.body.email, 
+        password:hash,
+        name: req.body.name,
+        updatedPass:datetime1,
+        fcmToken:req.body.fcmToken,
+        level:user1.level
+    });
+   newUser.save().then(result => { 
+    const token = signToken(newUser);
+    // Respond with signToken 
+                         req.userID = result._id;
+                         req.updateP = result.updatedPass;
+             return verifyEmail.verifyemail(req,res,next);
+                })  
+    .catch(err => {
+        return  res.status(200).json({
+          message :  "failure"
+            });
+          });
+    // Generate the token 
+  }
+  });
+});
+}
+    else{
+            bcrypt.hash(req.body.password, 10).then(hash => {
   User.findOne({ "email": req.body.email },function(err, user) {
     if (err) return done(err);
     if (user) {
@@ -79,7 +138,8 @@ console.log(date.getTime());
     // Generate the token 
   }
   });
-});
+});}
+}) 
 },
 
   signIn: async (req, res, next) => {
@@ -126,7 +186,7 @@ console.log(date.getTime());
   // console.log(req.session.user);
  
    res.status(200).json({
-       message:"success",userId:token,passLastUpdated:fetchedUser.updatedPass
+       message:"success",userId:token,passLastUpdated:fetchedUser.updatedPass,level:fetchedUser.level
       });
     })
     .catch(err => {

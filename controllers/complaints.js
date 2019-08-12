@@ -103,7 +103,7 @@ FCM.send(message, function(err, response) {
 	 			 	});
     
 	 		// var token1 = "fbIEam_6qmM:APA91bHnqA1rGyEMZ3jP6QkK8ZQ8b60OZnFDq9LqXQGCE6K3gU3l75HWnSxPQdpDAS8zkSel_ADMQmyJNdvHK3iLqbtESIztA_Gddk0O7PkxEev5l6P_FBUqmN14RYqBHYCYkQe-FEAK";
-	 	
+
 	 				req.userID = "aluthra1403@gmail.com";
 	 		 return complaintEmail.complaintemail(req,res,next);
 	 	// if(result)res.status(200).json({message:"success"});
@@ -111,11 +111,11 @@ FCM.send(message, function(err, response) {
 	 });  
 },
 	validcomplaints: async(req,res,next) =>{
-			Complaint.findOne({'_id':req.params.id}).then(complaint =>{
-							complaint.isValid = true;
+			Complaint.findOne({'requsetId':req.params.id}).then(complaint =>{
+							complaint.status =1;
 							const commen = { 
 								comment:req.body.comment,
-								by: complaint.hostelsecy
+								by:complaint.hostelsecy
 							}
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{
