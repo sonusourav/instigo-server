@@ -173,7 +173,7 @@ console.log(date.getTime());
   }
  // var refreshTokens = {} 
    const token = JWT.sign(
-        { id: fetchedUser._id,email:fetchedUser.email },
+        { id: fetchedUser._id,email:fetchedUser.email,profilePic:fetchedUser.profilePic},
         JWT_SECRET,
         { expiresIn: "31536000h" }
       );

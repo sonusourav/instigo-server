@@ -1,4 +1,3 @@
-
 var nodemailer = require('nodemailer');
 const userCredential = require('../keys');
 const Cemail = require('../models/complaintEmail');
@@ -45,11 +44,10 @@ var datetime = currentdate.getDate() + "/"
     var htmlToSend = template(replacements);
     mailOptions = {
         from: '"InstiGO" <instigo.iitdh@gmail.com>',
-        to: req.userID,
+        to: [req.userID,req.userID1],
         subject: "Complaint Registered for Hostel No."+req.body.hostel,
         html: htmlToSend
     }
-     console.log("Bhai");
     smtpTransport.sendMail(mailOptions, (error, info) => {
             console.log("Bhai1");
         if(error) {

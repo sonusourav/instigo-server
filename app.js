@@ -419,7 +419,7 @@ app.get('/tokensignin/:id',(req,res,next)=>{
                                JWT_SECRET,
                                  { expiresIn: "31536000h" }
                               );
-              res.status(200).json({message:"success",userId:token});
+              res.status(200).json({message:"success",userId:token,level:user.level});
           } else {
             var newUser = {
               email:email,
@@ -429,8 +429,22 @@ app.get('/tokensignin/:id',(req,res,next)=>{
               profilePic:picture,
               isEmailVerified:true
             };
-              console.log(newUser);
+        Email.findOne({"email":newUser.email}).then(user1=>{
+          if (user1) {
             User.create(newUser, function(err, added) {
+              const token = JWT.sign(
+               { id: newUser._id ,email:newUser.email},
+                               JWT_SECRET,
+                                 { expiresIn: "31536000h" }
+                              );
+                if (err) {
+                  console.log(err);
+                }
+                 res.status(200).json({message:"success",userId:token,level:user1.level});
+            });
+          }
+          else{
+             User.create(newUser, function(err, added) {
               const token = JWT.sign(
                { id: newUser._id ,email:newUser.email},
                                JWT_SECRET,
@@ -443,7 +457,9 @@ app.get('/tokensignin/:id',(req,res,next)=>{
             });
           }
         });
-                    } else {
+          }
+        });
+                  } else {
                         reject("invalid token");
                     }
                 })
