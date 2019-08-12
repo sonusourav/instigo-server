@@ -6,7 +6,16 @@ const decode = require('jwt-decode');
 const warden = require('./warden.js');
 var fcm = require('fcm-notification');
 var FCM = new fcm(__dirname+'/privateKey.json');
-var token = 'token here';
+// function myFunction(zeros) {
+// 	 var zeroes = "";
+// 	 console.log("B");
+// 	  for (var i = zeros; i >0; i--) {
+//            zeroes+="0";
+//           console.log(zeroes);
+//                }
+//                console.log(zeroes);
+//                return zeroes; 
+// 	}
 module.exports = {
 	getcomplaints:async(req,res,next) =>{
 	Complaint.find({isPrivate:false}).then(complaints =>{
@@ -15,6 +24,20 @@ module.exports = {
     res.send(complaints);
 	});
 },
+	secyComplaints:async(req,res,next) =>{
+		Complaint.find({}).then(complaints =>{
+		console.log(complaints);
+    // res.status(200).json({menu: complaints}); 
+    res.send(complaints);
+	});
+	},
+	wardenComplaints:async(req,res,next) =>{
+		Complaint.find({Status: {$gte : req.params.id}}).then(complaints =>{
+		console.log(complaints);
+    // res.status(200).json({menu: complaints}); 
+    res.send(complaints);
+	});
+	},
 mycomplaints:async(req,res,next) =>{
 	var tok = decode(req.params.id);
 	User.findById(tok.id).populate('mycomplaints').then(user =>{
@@ -29,11 +52,13 @@ postcomplaints :async(req,res,next) =>{
  //    res.json({message : "failure_Not Authorized"});}
  var tok = decode(req.headers.authorization.split(" ")[1]);
  var currentdate = new Date(); 
-var datetime = currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " "  
-                + currentdate.toLocaleTimeString('en-GB', { hour: "numeric", 
-                                             minute: "numeric"});
+ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+var datetime = monthNames[currentdate.getMonth()]+" "+currentdate.getDate()
+                +"," 
+                +currentdate.getFullYear();           
+var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
 	const complaint = new Complaint({ 
 		houseNo:req.body.houseNo,
 		requestDesc:req.body.requestDesc,
@@ -43,35 +68,43 @@ var datetime = currentdate.getDate() + "/"
 		isPrivate:req.body.isPrivate,
 		isPriority:req.body.isPriority,
 		related:req.body.related,
+		requsetId:id,
 		requestorEmail:tok.email,
-		dateCreated:datetime
+		dateCreated:datetime,
+		status:0
     });
 	 complaint.save().then(result=>{
 	 	
 	 	User.findOne({"_id":tok.id}).then(user =>{
 	 		user.mycomplaints.push(complaint._id);
 	 		user.save();
-	 	});
-	 	 var message = {
+	 		var token = user.fcmToken;
+	 		console.log(token);
+	 		if(token){
+	 			 var message = {
         data: {    //This is only optional, you can send any data
             score: '850',
             time: '2:45'
         },
         notification:{
-            title : 'Title of notification',
-            body : 'Body of notification'
+            title : 'Complaint Registered',
+            body : 'hello '
         },
         token : token
         };
- 
 FCM.send(message, function(err, response) {
     if(err){
         console.log('error found', err);
     }else {
         console.log('response here', response);
     }
-})
-	 				req.userID = "sonusouravdx001@gmail.com";
+});
+	 		}
+	 			 	});
+    
+	 		// var token1 = "fbIEam_6qmM:APA91bHnqA1rGyEMZ3jP6QkK8ZQ8b60OZnFDq9LqXQGCE6K3gU3l75HWnSxPQdpDAS8zkSel_ADMQmyJNdvHK3iLqbtESIztA_Gddk0O7PkxEev5l6P_FBUqmN14RYqBHYCYkQe-FEAK";
+	 	
+	 				req.userID = "aluthra1403@gmail.com";
 	 		 return complaintEmail.complaintemail(req,res,next);
 	 	// if(result)res.status(200).json({message:"success"});
 	 	// else{res.status(200).json({message:"failure_err in posting feedback"})}

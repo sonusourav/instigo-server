@@ -1,8 +1,12 @@
 const express = require('express');
 const router = require('express-promise-router')();
 const complaintsController = require('../controllers/complaints');
-router.route("").
+router.route("/").
 get(complaintsController.getcomplaints);
+router.route("/secy").
+get(complaintsController.secyComplaints);
+router.route("/warden/:id").
+get(complaintsController.wardenComplaints);
 router.route("/my/:id").
 get(complaintsController.mycomplaints);
 router.route("/tosecy/valid/:id").

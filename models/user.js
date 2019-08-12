@@ -17,7 +17,8 @@ const userSchema =mongoose.Schema({
    phone:{type:Number,default:null},
    mycomplaints:[{type: mongoose.Schema.Types.ObjectId, ref: "Complaint"}],
    updatedPass:{type:String,default:null},
-   fcmToken:{type:String,default:null}
+   fcmToken:{type:String,default:null},
+   level:{type:Number,default:0}
 });
 // Create a model
 module.exports  = mongoose.model("User", userSchema);

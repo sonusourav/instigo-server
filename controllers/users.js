@@ -9,7 +9,6 @@ const Fpass = require("../models/forgotPassword");
 const decode = require('jwt-decode');
 const {check, validationResult } = require('express-validator');
 var randtoken = require('rand-token');
-
 signToken = user => {
   return JWT.sign({
     iss: 'CodeWorkr',
@@ -63,7 +62,6 @@ console.log(date.getTime());
         password:hash,
         name: req.body.name,
         updatedPass:datetime1,
-        profilePic:'https://instigo-project.appspot.com/'+req.file.filename,
         fcmToken:req.body.fcmToken
     });
    newUser.save().then(result => { 
