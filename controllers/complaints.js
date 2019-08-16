@@ -36,7 +36,7 @@ module.exports = {
 	});
 	},
 	wardenComplaints:async(req,res,next) =>{
-		Complaint.find({Status: {$gte : req.params.id}}).then(complaints =>{
+		Complaint.find({status: {$gte : req.params.id}}).then(complaints =>{
 		console.log(complaints); 
     res.send(complaints);
 	});
@@ -50,7 +50,7 @@ mycomplaints:async(req,res,next) =>{
 },
 postcomplaints :async(req,res,next) =>{
 var tok = decode(req.headers.authorization.split(" ")[1]);       
-var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear()+str;
+var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
 	 	User.findOne({"_id":tok.id}).then(user =>{
 	 		const complaint = new Complaint({ 
 		houseNo:req.body.houseNo,
@@ -97,9 +97,12 @@ FCM.send(message, function(err, response) {
 	 		// var token1 = "fbIEam_6qmM:APA91bHnqA1rGyEMZ3jP6QkK8ZQ8b60OZnFDq9LqXQGCE6K3gU3l75HWnSxPQdpDAS8zkSel_ADMQmyJNdvHK3iLqbtESIztA_Gddk0O7PkxEev5l6P_FBUqmN14RYqBHYCYkQe-FEAK";
 	 				Student.find({teamName:"General Secy"}).then(team=>{
 	 					  var comp ='Hostel'+' '+req.body.hostelNo+' '+'Secy';
-	 					let result= team[0].team.filter(x => x.title === comp);
-	 					console.log(result[0].email);
-	 					req.userID = "aluthra1403@gmail.com";
+	 					// let result= team[0].team.filter(x => x.title === comp);
+	 					var result = team[0].team.filter(function (el) {
+							  return el.title === comp;
+									});
+	 					console.log(result[0]);
+	 					req.userID = "instigo.iitdh@gmail.com";
 	 					req.userID1=result[0].email;
 	 					return complaintEmail.complaintemail(req,res,next);
 	 				});
@@ -109,7 +112,7 @@ FCM.send(message, function(err, response) {
 	 });  
 },
 	validcomplaints: async(req,res,next) =>{
-			Complaint.findOne({'requsetId':req.params.id}).then(complaint =>{		
+			Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =1;
 							const commen = { 
@@ -124,8 +127,10 @@ FCM.send(message, function(err, response) {
 							})
 						Student.find({teamName:"Wardens"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Warden';
-	 					let result= team[0].team.filter(x => x.title === comp);
-	 					console.log(result[0].email);
+	 					var result = team[0].team.filter(function (el) {
+							  return el.title === comp;
+									});
+	 					console.log(result[0]);
 	 					req.userID =complaint.requestorEmail;
 	 					req.userID1=result[0].email;
 	 					return complaintEmail.complaintemail(req,res,next);
@@ -133,51 +138,152 @@ FCM.send(message, function(err, response) {
 	});
 },
 notvalidcomplaints: async(req,res,next) =>{
-			Complaint.findOne({'_id':req.params.id}).then(complaint =>{
+			Complaint.findOne({'requsetId':req.params.id}).then(complaint =>{		
+  			var tok = decode(req.headers.authorization.split(" ")[1]);
+							complaint.status =7;
 							const commen = { 
 								comment:req.body.comment,
-								by: complaint.hostelsecy
-							}
-							complaint.comments.push(commen);
-							complaint.save().then(result=>{
-								console.log(result);
-							})
-						req.userID = complaint.by;
-						return warden.rejectemail(req,res,next);
-
-	});
-},
-changesRequested:  async(req,res,next) =>{
-	Complaint.findOne({'_id':req.params.id}).then(complaint =>{
-							const commen = { 
-								comment:req.body.comment,
-								by: complaint.hostelsecy
-							}
-							complaint.comments.push(commen);
-							complaint.save().then(result=>{
-								console.log(result);
-							})
-						req.userID = complaint.by;
-						return warden.changesemail(req,res,next);
-
-	});
-
-	},
-	finalVerification:  async(req,res,next) =>{
-	Complaint.findOne({'_id':req.params.id}).then(complaint =>{
-							complaint.isPending = true;
-							const commen = { 
-								comment:req.body.comment,
-								by: complaint.hostelsecy
+								by:complaint.hostelsecy,
+								url:tok.profilePic,
+								date:datetime
 							}
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{
 								console.log(result);
 							});
-						req.userID = complaint.by;
-						req.userID1 = "instigo.iitdh@gmail.com";
-						return warden.changesemail(req,res,next);
-
+	
+	 					req.userID =complaint.requestorEmail;
+	 					return complaintEmail.rejectemail(req,res,next);				
+	});
+},
+onGoing:  async(req,res,next) =>{
+		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
+  			var tok = decode(req.headers.authorization.split(" ")[1]);
+							complaint.status =4;
+							const commen = { 
+								comment:req.body.comment,
+								by:complaint.hostelsecy,
+								url:tok.profilePic,
+								date:datetime
+							}
+							complaint.comments.push(commen);
+							complaint.save().then(result=>{
+								console.log(result);
+							})
+						Student.find({teamName:"Wardens"}).then(team=>{
+	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Warden';
+	 					var result = team[0].team.filter(function (el) {
+							  return el.title === comp;
+									});
+	 					console.log(result[0]);
+	 					req.userID =complaint.requestorEmail;
+	 					req.userID1=result[0].email;
+	 					return complaintEmail.complaintemail(req,res,next);
+	 				});
+	});
+	},
+	resolved:  async(req,res,next) =>{
+		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
+  			var tok = decode(req.headers.authorization.split(" ")[1]);
+							complaint.status =5;
+							const commen = { 
+								comment:req.body.comment,
+								by:complaint.hostelsecy,
+								url:tok.profilePic,
+								date:datetime
+							}
+							complaint.comments.push(commen);
+							complaint.save().then(result=>{
+								console.log(result);
+							})
+						Student.find({teamName:"Wardens"}).then(team=>{
+	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Warden';
+	 					var result = team[0].team.filter(function (el) {
+							  return el.title === comp;
+									});
+	 					console.log(result[0]);
+	 					req.userID =complaint.requestorEmail;
+	 					req.userID1=result[0].email;
+	 					return complaintEmail.complaintemail(req,res,next);
+	 				});
+	});
+	},
+	wardenVerification:  async(req,res,next) =>{
+		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
+  			var tok = decode(req.headers.authorization.split(" ")[1]);
+							complaint.status =2;
+							const commen = { 
+								comment:req.body.comment,
+								by:complaint.hostelsecy,
+								url:tok.profilePic,
+								date:datetime
+							}
+							complaint.comments.push(commen);
+							complaint.save().then(result=>{
+								console.log(result);
+							})
+						Student.find({teamName:"Wardens"}).then(team=>{
+	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Warden';
+	 					var result = team[0].team.filter(function (el) {
+							  return el.title === comp;
+									});
+	 					console.log(result[0]);
+	 					req.userID =complaint.requestorEmail;
+	 					req.userID1=result[0].email;
+	 					return complaintEmail.complaintemail(req,res,next);
+	 				});
+	});
+	},
+	ipsVerification:  async(req,res,next) =>{
+		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
+  			var tok = decode(req.headers.authorization.split(" ")[1]);
+							complaint.status =3;
+							const commen = { 
+								comment:req.body.comment,
+								by:complaint.hostelsecy,
+								url:tok.profilePic,
+								date:datetime
+							}
+							complaint.comments.push(commen);
+							complaint.save().then(result=>{
+								console.log(result);
+							})
+						Student.find({teamName:"Wardens"}).then(team=>{
+	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Warden';
+	 					var result = team[0].team.filter(function (el) {
+							  return el.title === comp;
+									});
+	 					console.log(result[0]);
+	 					req.userID =complaint.requestorEmail;
+	 					req.userID1=result[0].email;
+	 					return complaintEmail.complaintemail(req,res,next);
+	 				});
+	});
+	},
+	close:  async(req,res,next) =>{
+		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
+  			var tok = decode(req.headers.authorization.split(" ")[1]);
+							complaint.status =6;
+							const commen = { 
+								comment:req.body.comment,
+								by:complaint.hostelsecy,
+								url:tok.profilePic,
+								date:datetime
+							}
+							complaint.comments.push(commen);
+							complaint.save().then(result=>{
+								console.log(result);
+							})
+						Student.find({teamName:"Wardens"}).then(team=>{
+	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Warden';
+	 					var result = team[0].team.filter(function (el) {
+							  return el.title === comp;
+									});
+	 					console.log(result[0]);
+	 					req.userID =complaint.requestorEmail;
+	 					req.userID1=result[0].email;
+	 					return complaintEmail.complaintemail(req,res,next);
+	 				});
 	});
 	}
 }

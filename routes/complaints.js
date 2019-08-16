@@ -13,10 +13,16 @@ router.route("/tosecy/valid/:id").
 post(complaintsController.validcomplaints);
 router.route("/tosecy/notvalid/:id").
 post(complaintsController.notvalidcomplaints);
-router.route("/tosecy/changes/:id").
-post(complaintsController.changesRequested);
 router.route("/create").
 post(complaintsController.postcomplaints);
-router.route("/warden/:id").
-post(complaintsController.finalVerification);
+router.route("/warden/valid/:id").
+post(complaintsController.wardenVerification);
+router.route("/ips/valid/:id").
+post(complaintsController.ipsVerification);
+router.route("/final/close/:id").
+post(complaintsController.close);
+router.route("/final/ongoing/:id").
+post(complaintsController.onGoing);
+router.route("/final/resolved/:id").
+post(complaintsController.resolved);
 module.exports = router;

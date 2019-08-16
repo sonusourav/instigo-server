@@ -82,3 +82,44 @@ var datetime = currentdate.getDate() + "/"
     })
 });
 }
+exports.rejectemail = (req,res,next) => {
+    rand = Math.floor((Math.random() * 1000000) + 54 );
+    host = req.get('host');
+    link = "http://localhost:3000" + "/complaints/tosecy/"+rand;
+    mailOptions = {
+        from: '"InstiGO" <instigo.iitdh@gmail.com>',
+        to: req.userID,
+        subject: "Complaint Registered for house no." + req.body.house,
+        html:"Your Request has been rejected"
+    }
+     smtpTransport.sendMail(mailOptions, (error, info) => {
+        if(error) {
+            console.log(error);
+            User.deleteOne({"email": req.body.email}).then(response => {
+                console.log("User deleted as email not sent!");
+            }).catch(erorr => {
+                console.log("Error while Deleting!");
+            })
+            return res.status(500).json({
+                message: "Failure_Check Email and password of sender!"
+              });
+        }
+        const remail = new Remail({
+            userID: req.userID,
+            rand : rand
+        });
+        remail
+            .save()
+            .then(response => {
+                res.status(200).json({
+                    message: "success"
+                })
+            })
+  .catch(error => {
+                res.status(500).json({
+                    message: "failure@Error occured while saving data!"
+                  });
+            })
+        console.log(info.response);
+       });
+}

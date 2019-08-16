@@ -413,8 +413,7 @@ app.get('/tokensignin/:id',(req,res,next)=>{
                         var picture = payload['picture'];
                         resolve(googleId);   
                         User.findOne({ 'email' : email}, function(err, user) {
-                        if (err) return done(err);
-                 if (user) {  const token = JWT.sign(
+                    if (user) {  const token = JWT.sign(
                              { id: user._id ,email:user.email},
                                JWT_SECRET,
                                  { expiresIn: "31536000h" }
@@ -433,7 +432,7 @@ app.get('/tokensignin/:id',(req,res,next)=>{
           if (user1) {
             User.create(newUser, function(err, added) {
               const token = JWT.sign(
-               { id: newUser._id ,email:newUser.email},
+               { _id:newUser.socialId ,email:newUser.email},
                                JWT_SECRET,
                                  { expiresIn: "31536000h" }
                               );
@@ -446,7 +445,7 @@ app.get('/tokensignin/:id',(req,res,next)=>{
           else{
              User.create(newUser, function(err, added) {
               const token = JWT.sign(
-               { id: newUser._id ,email:newUser.email},
+               { _id:newUser.socialId,email:newUser.email},
                                JWT_SECRET,
                                  { expiresIn: "31536000h" }
                               );
