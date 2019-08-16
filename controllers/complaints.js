@@ -62,7 +62,7 @@ var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
 		isPrivate:req.body.isPrivate,
 		isPriority:req.body.isPriority,
 		related:req.body.related,
-		requsetId:id,
+		requestId:id,
 		requestorEmail:tok.email,
 		dateCreated:datetime,
 		status:0
@@ -138,7 +138,7 @@ FCM.send(message, function(err, response) {
 	});
 },
 notvalidcomplaints: async(req,res,next) =>{
-			Complaint.findOne({'requsetId':req.params.id}).then(complaint =>{		
+			Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =7;
 							const commen = { 
