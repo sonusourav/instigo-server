@@ -63,7 +63,6 @@ console.log(date.getTime());
         password:hash,
         name: req.body.name,
         updatedPass:datetime1,
-        fcmToken:req.body.fcmToken,
         level:user1.level
     });
    newUser.save().then(result => { 
@@ -158,7 +157,9 @@ console.log(date.getTime());
           message: "failure@User Not found"
         });
     }
-    fetchedUser = user;
+      fetchedUser = user;
+      user.fcmToken = req.body.fcmToken;
+      user.save();
        if (!user.isEmailVerified) {
        return res.status(200).json({
           message: "failure@First Activate your Account from your mailbox!"
@@ -171,6 +172,7 @@ console.log(date.getTime());
           message: "failure@password do not match"
         });
   }
+
  // var refreshTokens = {} 
    const token = JWT.sign(
         { id: fetchedUser._id,email:fetchedUser.email,profilePic:fetchedUser.profilePic},

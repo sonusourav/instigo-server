@@ -41,6 +41,5 @@ router.route('/picnameemail')
 .get(UsersController.getpicnameemail)		
 
 router.route('/coverpic')
-	.get(UsersController.getCoverPic);	
-	
+	.get(UsersController.getCoverPic);
 module.exports = router;
