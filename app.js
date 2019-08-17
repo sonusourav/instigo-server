@@ -414,7 +414,7 @@ app.get('/tokensignin/:id',(req,res,next)=>{
                         resolve(googleId);   
                         User.findOne({ 'email' : email}, function(err, user) {
                     if (user) {  const token = JWT.sign(
-                             { id: user._id ,email:user.email},
+                             { id: user._id ,email:user.email,name:user.name,profilePic:user.profilePic},
                                JWT_SECRET,
                                  { expiresIn: "31536000h" }
                               );
@@ -432,7 +432,7 @@ app.get('/tokensignin/:id',(req,res,next)=>{
           if (user1) {
             User.create(newUser, function(err, added) {
               const token = JWT.sign(
-               { _id:newUser.socialId ,email:newUser.email},
+               { _id:newUser._id ,email:newUser.email,name:newUser.name,profilePic:newUser.profilePic},
                                JWT_SECRET,
                                  { expiresIn: "31536000h" }
                               );
@@ -445,7 +445,7 @@ app.get('/tokensignin/:id',(req,res,next)=>{
           else{
              User.create(newUser, function(err, added) {
               const token = JWT.sign(
-               { _id:newUser.socialId,email:newUser.email},
+               { _id:newUser._id,email:newUser.email},
                                JWT_SECRET,
                                  { expiresIn: "31536000h" }
                               );

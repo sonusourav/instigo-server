@@ -104,11 +104,11 @@ exports.rejectemail = (req,res,next) => {
                 message: "Failure_Check Email and password of sender!"
               });
         }
-        const remail = new Remail({
+        const cemail = new Cemail({
             userID: req.userID,
             rand : rand
         });
-        remail
+        cemail
             .save()
             .then(response => {
                 res.status(200).json({

@@ -117,9 +117,10 @@ FCM.send(message, function(err, response) {
 							complaint.status =1;
 							const commen = { 
 								comment:req.body.comment,
-								by:complaint.hostelsecy,
+								by:tok.name,
 								url:tok.profilePic,
-								date:datetime
+								date:datetime,
+								email:tok.email
 							}
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{
@@ -140,12 +141,14 @@ FCM.send(message, function(err, response) {
 notvalidcomplaints: async(req,res,next) =>{
 			Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
+  						console.log(complaint);
 							complaint.status =7;
 							const commen = { 
 								comment:req.body.comment,
-								by:complaint.hostelsecy,
+								by:tok.name,
 								url:tok.profilePic,
-								date:datetime
+								date:datetime,
+								email:tok.email
 							}
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{
@@ -162,9 +165,10 @@ onGoing:  async(req,res,next) =>{
 							complaint.status =4;
 							const commen = { 
 								comment:req.body.comment,
-								by:complaint.hostelsecy,
+								by:tok.name,
 								url:tok.profilePic,
-								date:datetime
+								date:datetime,
+								email:tok.email
 							}
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{
@@ -188,9 +192,10 @@ onGoing:  async(req,res,next) =>{
 							complaint.status =5;
 							const commen = { 
 								comment:req.body.comment,
-								by:complaint.hostelsecy,
+								by:tok.name,
 								url:tok.profilePic,
-								date:datetime
+								date:datetime,
+								email:tok.email
 							}
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{
@@ -214,9 +219,10 @@ onGoing:  async(req,res,next) =>{
 							complaint.status =2;
 							const commen = { 
 								comment:req.body.comment,
-								by:complaint.hostelsecy,
+								by:tok.name,
 								url:tok.profilePic,
-								date:datetime
+								date:datetime,
+								email:tok.email
 							}
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{
@@ -240,9 +246,10 @@ onGoing:  async(req,res,next) =>{
 							complaint.status =3;
 							const commen = { 
 								comment:req.body.comment,
-								by:complaint.hostelsecy,
+								by:tok.name,
 								url:tok.profilePic,
-								date:datetime
+								date:datetime,
+								email:tok.email
 							}
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{
@@ -266,9 +273,10 @@ onGoing:  async(req,res,next) =>{
 							complaint.status =6;
 							const commen = { 
 								comment:req.body.comment,
-								by:complaint.hostelsecy,
+								by:tok.name,
 								url:tok.profilePic,
-								date:datetime
+								date:datetime,
+								email:tok.email
 							}
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{

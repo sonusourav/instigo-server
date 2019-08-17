@@ -175,7 +175,7 @@ console.log(date.getTime());
 
  // var refreshTokens = {} 
    const token = JWT.sign(
-        { id: fetchedUser._id,email:fetchedUser.email,profilePic:fetchedUser.profilePic},
+        { id: fetchedUser._id,name:fetchedUser.name,email:fetchedUser.email,profilePic:fetchedUser.profilePic},
         JWT_SECRET,
         { expiresIn: "31536000h" }
       );
@@ -295,7 +295,7 @@ console.log(date.getTime());
   //   return res.status(200).send("failure@Not Authorized");
   // }
   var tok = decode(req.headers.authorization.split(" ")[1]);
-  User.findOne({'_id':tok.id}).then(user =>{
+  User.findOne({'email':tok.email}).then(user =>{
    var userInfo = {name:user.name,
                    email:user.email,
                   profilePic:user.profilePic};
