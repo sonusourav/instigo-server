@@ -28,6 +28,7 @@ var GoogleAuth = require('google-auth-library');
 const checkAuth = require("./middleware/check-auth");
 var auth = new GoogleAuth();
 mongoose.Promise = global.Promise;
+const Email = require('./models/emails');
 const app = express();
 const {check, validationResult } = require('express-validator');
 if (process.env.NODE_ENV === 'test') {

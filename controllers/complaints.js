@@ -46,6 +46,9 @@ mycomplaints:async(req,res,next) =>{
 	User.findById(tok.id).populate('mycomplaints').then(user =>{
 		console.log(user.mycomplaints);
     res.send(user.mycomplaints);
+	}).catch(error =>{
+		console.log(error);
+		res.status(200).json({message:"failure_user not found"});
 	});
 },
 postcomplaints :async(req,res,next) =>{

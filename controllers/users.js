@@ -159,6 +159,8 @@ console.log(date.getTime());
     }
       fetchedUser = user;
       user.fcmToken = req.body.fcmToken;
+      console.log("fcmToken");
+      console.log(req.body.fcmToken);
       user.save();
        if (!user.isEmailVerified) {
        return res.status(200).json({
@@ -192,6 +194,7 @@ console.log(date.getTime());
       });
     })
     .catch(err => {
+      console.log(err);
       return res.status(200).json({
         message: "failure@Invalid authentication credentials!"
       });
