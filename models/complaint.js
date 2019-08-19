@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var schema = new Schema({
   requestName:{type:String,required:true},
-  requsetId:{type:String},
+  requestId:{type:String},
   houseNo:{type:Number,required:true},
   dateCreated:{type:String,default:null},
   requestorName:{type:String,required:true},
