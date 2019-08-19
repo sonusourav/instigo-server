@@ -68,7 +68,7 @@ var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
 		requestId:id,
 		requestorEmail:tok.email,
 		dateCreated:datetime,
-		status:0
+		status:1
     });
 	 		 complaint.save().then(result=>{
 	 		user.mycomplaints.push(complaint._id);
@@ -117,7 +117,7 @@ FCM.send(message, function(err, response) {
 	validcomplaints: async(req,res,next) =>{
 			Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
-							complaint.status =1;
+							complaint.status =2;
 							const commen = { 
 								comment:req.body.comment,
 								by:tok.name,
@@ -126,6 +126,7 @@ FCM.send(message, function(err, response) {
 								email:tok.email
 							}
 							complaint.comments.push(commen);
+							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
 							})
@@ -145,7 +146,7 @@ notvalidcomplaints: async(req,res,next) =>{
 			Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
   						console.log(complaint);
-							complaint.status =7;
+							complaint.status =0;
 							const commen = { 
 								comment:req.body.comment,
 								by:tok.name,
@@ -154,6 +155,7 @@ notvalidcomplaints: async(req,res,next) =>{
 								email:tok.email
 							}
 							complaint.comments.push(commen);
+							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
 							});
@@ -164,7 +166,7 @@ notvalidcomplaints: async(req,res,next) =>{
 onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
-							complaint.status =4;
+							complaint.status =5;
 							const commen = { 
 								comment:req.body.comment,
 								by:tok.name,
@@ -173,6 +175,7 @@ onGoing:  async(req,res,next) =>{
 								email:tok.email
 							}
 							complaint.comments.push(commen);
+							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
 							})
@@ -191,7 +194,7 @@ onGoing:  async(req,res,next) =>{
 	resolved:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
-							complaint.status =5;
+							complaint.status =6;
 							const commen = { 
 								comment:req.body.comment,
 								by:tok.name,
@@ -200,6 +203,7 @@ onGoing:  async(req,res,next) =>{
 								email:tok.email
 							}
 							complaint.comments.push(commen);
+							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
 							})
@@ -219,7 +223,7 @@ onGoing:  async(req,res,next) =>{
 			Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
   						console.log(complaint);
-							complaint.status =7;
+							complaint.status =0;
 							const commen = { 
 								comment:req.body.comment,
 								by:tok.name,
@@ -228,6 +232,7 @@ onGoing:  async(req,res,next) =>{
 								email:tok.email
 							}
 							complaint.comments.push(commen);
+							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
 							});
@@ -240,7 +245,7 @@ onGoing:  async(req,res,next) =>{
 	wardenVerification:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
-							complaint.status =2;
+							complaint.status =3;
 							const commen = { 
 								comment:req.body.comment,
 								by:tok.name,
@@ -249,6 +254,7 @@ onGoing:  async(req,res,next) =>{
 								email:tok.email
 							}
 							complaint.comments.push(commen);
+							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
 							})
@@ -268,7 +274,7 @@ onGoing:  async(req,res,next) =>{
 			Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
   						console.log(complaint);
-							complaint.status =7;
+							complaint.status =0;
 							const commen = { 
 								comment:req.body.comment,
 								by:tok.name,
@@ -277,6 +283,7 @@ onGoing:  async(req,res,next) =>{
 								email:tok.email
 							}
 							complaint.comments.push(commen);
+							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
 							});
@@ -288,7 +295,7 @@ onGoing:  async(req,res,next) =>{
 	ipsVerification:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
-							complaint.status =3;
+							complaint.status =4;
 							const commen = { 
 								comment:req.body.comment,
 								by:tok.name,
@@ -297,6 +304,7 @@ onGoing:  async(req,res,next) =>{
 								email:tok.email
 							}
 							complaint.comments.push(commen);
+							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
 							})
@@ -315,7 +323,7 @@ onGoing:  async(req,res,next) =>{
 	close:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
-							complaint.status =6;
+							complaint.status =7;
 							const commen = { 
 								comment:req.body.comment,
 								by:tok.name,
@@ -324,6 +332,7 @@ onGoing:  async(req,res,next) =>{
 								email:tok.email
 							}
 							complaint.comments.push(commen);
+							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
 							})

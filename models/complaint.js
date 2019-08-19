@@ -15,6 +15,7 @@ var schema = new Schema({
   related:{type:String,required:true},
   comments:[{comment:{type:String,default:null},by:{type:String,default:null},email:{type:String,default:null},url:{type:String,default:null},date:{type:String,default:null}}],
   requestorEmail:{type:String},
-  status:{type:Number}
+  status:{type:Number},
+  statusDate:[{type:String}]
 });
 module.exports = mongoose.model('Complaint',schema);
