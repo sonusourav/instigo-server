@@ -70,6 +70,7 @@ var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
 		dateCreated:datetime,
 		status:1
     });
+	 		 complaint.statusDate.push(datetime);
 	 		 complaint.save().then(result=>{
 	 		user.mycomplaints.push(complaint._id);
 	 		user.save();
