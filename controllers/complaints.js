@@ -295,9 +295,10 @@ onGoing:  async(req,res,next) =>{
 								date:datetime,
 								email:tok.email
 							}
+							console.log(commen);
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{
-								console.log(result);
+								res.status(200).json({message:"success"});
 							});
 						});
 	}

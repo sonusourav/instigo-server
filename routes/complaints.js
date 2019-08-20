@@ -29,4 +29,6 @@ router.route("/final/ongoing/:id").
 post(complaintsController.onGoing);
 router.route("/final/resolved/:id").
 post(complaintsController.resolved);
+router.route("/comments/:id").
+post(complaintsController.comments);
 module.exports = router;
