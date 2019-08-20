@@ -119,18 +119,10 @@ FCM.send(message, function(err, response) {
 			Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =2;
-							const commen = { 
-								comment:req.body.comment,
-								by:tok.name,
-								url:tok.profilePic,
-								date:datetime,
-								email:tok.email
-							}
-							complaint.comments.push(commen);
+							
+							
 							complaint.statusDate.push(datetime);
-							complaint.save().then(result=>{
-								console.log(result);
-							})
+							
 						Student.find({teamName:"General Secy"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
 	 					var result = team[0].team.filter(function (el) {
@@ -148,14 +140,7 @@ notvalidcomplaints: async(req,res,next) =>{
   			var tok = decode(req.headers.authorization.split(" ")[1]);
   						console.log(complaint);
 							complaint.status =0;
-							const commen = { 
-								comment:req.body.comment,
-								by:tok.name,
-								url:tok.profilePic,
-								date:datetime,
-								email:tok.email
-							}
-							complaint.comments.push(commen);
+							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
@@ -168,14 +153,7 @@ onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =5;
-							const commen = { 
-								comment:req.body.comment,
-								by:tok.name,
-								url:tok.profilePic,
-								date:datetime,
-								email:tok.email
-							}
-							complaint.comments.push(commen);
+							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
@@ -196,14 +174,7 @@ onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =6;
-							const commen = { 
-								comment:req.body.comment,
-								by:tok.name,
-								url:tok.profilePic,
-								date:datetime,
-								email:tok.email
-							}
-							complaint.comments.push(commen);
+							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
@@ -225,14 +196,7 @@ onGoing:  async(req,res,next) =>{
   			var tok = decode(req.headers.authorization.split(" ")[1]);
   						console.log(complaint);
 							complaint.status =0;
-							const commen = { 
-								comment:req.body.comment,
-								by:tok.name,
-								url:tok.profilePic,
-								date:datetime,
-								email:tok.email
-							}
-							complaint.comments.push(commen);
+							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
@@ -247,14 +211,7 @@ onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =3;
-							const commen = { 
-								comment:req.body.comment,
-								by:tok.name,
-								url:tok.profilePic,
-								date:datetime,
-								email:tok.email
-							}
-							complaint.comments.push(commen);
+							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
@@ -276,14 +233,7 @@ onGoing:  async(req,res,next) =>{
   			var tok = decode(req.headers.authorization.split(" ")[1]);
   						console.log(complaint);
 							complaint.status =0;
-							const commen = { 
-								comment:req.body.comment,
-								by:tok.name,
-								url:tok.profilePic,
-								date:datetime,
-								email:tok.email
-							}
-							complaint.comments.push(commen);
+							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
@@ -297,14 +247,7 @@ onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =4;
-							const commen = { 
-								comment:req.body.comment,
-								by:tok.name,
-								url:tok.profilePic,
-								date:datetime,
-								email:tok.email
-							}
-							complaint.comments.push(commen);
+							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
@@ -325,14 +268,7 @@ onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =7;
-							const commen = { 
-								comment:req.body.comment,
-								by:tok.name,
-								url:tok.profilePic,
-								date:datetime,
-								email:tok.email
-							}
-							complaint.comments.push(commen);
+							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								console.log(result);
@@ -348,5 +284,21 @@ onGoing:  async(req,res,next) =>{
 	 					return complaintEmail.complaintemail(req,res,next);
 	 				});
 	});
+	},
+	comments:async(req,res,next)=>{
+		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
+  			var tok = decode(req.headers.authorization.split(" ")[1]);
+				const commen = { 
+								comment:req.body.comment,
+								by:tok.name,
+								url:tok.profilePic,
+								date:datetime,
+								email:tok.email
+							}
+							complaint.comments.push(commen);
+							complaint.save().then(result=>{
+								console.log(result);
+							});
+						});
 	}
 }
