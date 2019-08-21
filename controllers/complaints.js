@@ -70,6 +70,8 @@ var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
 		dateCreated:datetime,
 		status:1
     });
+	 	var st ="Opened by "+req.body.requestorName;
+	 	complaint.trackStatus.push(st);
 	 		 complaint.statusDate.push(datetime);
 	 		 complaint.save().then(result=>{
 	 		user.mycomplaints.push(complaint._id);
@@ -119,6 +121,8 @@ FCM.send(message, function(err, response) {
 			Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =2;
+							var st ="Validated by "+tok.name;
+	 						complaint.trackStatus.push(st);
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								
@@ -140,7 +144,8 @@ notvalidcomplaints: async(req,res,next) =>{
   			var tok = decode(req.headers.authorization.split(" ")[1]);
   						console.log(complaint);
 							complaint.status =0;
-							
+							var st ="Rejected by "+tok.name;
+	 						complaint.trackStatus.push(st);
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								
@@ -153,7 +158,8 @@ onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =5;
-							
+							var st ="Work ongoing";
+	 						complaint.trackStatus.push(st);
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								
@@ -174,7 +180,8 @@ onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =6;
-							
+							var st ="Work Resolved";
+	 						complaint.trackStatus.push(st);
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								
@@ -196,7 +203,8 @@ onGoing:  async(req,res,next) =>{
   			var tok = decode(req.headers.authorization.split(" ")[1]);
   						console.log(complaint);
 							complaint.status =0;
-							
+							var st ="Rejected by "+tok.name;
+	 						complaint.trackStatus.push(st);
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 								
@@ -211,7 +219,8 @@ onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =3;
-							
+							var st ="Validated by "+tok.name;
+	 						complaint.trackStatus.push(st);
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 							
@@ -233,7 +242,8 @@ onGoing:  async(req,res,next) =>{
   			var tok = decode(req.headers.authorization.split(" ")[1]);
   						console.log(complaint);
 							complaint.status =0;
-							
+							var st ="Rejected by "+tok.name;
+	 						complaint.trackStatus.push(st);
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 							
@@ -247,7 +257,8 @@ onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =4;
-							
+							var st ="Forwarded by "+tok.name;
+	 						complaint.trackStatus.push(st);
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 							
@@ -268,7 +279,8 @@ onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =7;
-							
+							var st ="Closed by "+tok.name;
+	 						complaint.trackStatus.push(st);
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
 							
