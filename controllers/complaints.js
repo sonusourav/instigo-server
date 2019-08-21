@@ -23,28 +23,28 @@ var datetime = monthNames[currentdate.getMonth()]+" "+currentdate.getDate()
 module.exports = {
 	getcomplaints:async(req,res,next) =>{
 	Complaint.find({isPrivate:false}).then(complaints =>{
-		console.log(complaints);
+		
     // res.status(200).json({menu: complaints}); 
     res.send(complaints);
 	});
 },
 	secyComplaints:async(req,res,next) =>{
 		Complaint.find({}).then(complaints =>{
-		console.log(complaints);
+		
     // res.status(200).json({menu: complaints}); 
     res.send(complaints);
 	});
 	},
 	wardenComplaints:async(req,res,next) =>{
 		Complaint.find({status: {$gte : req.params.id}}).then(complaints =>{
-		console.log(complaints); 
+	
     res.send(complaints);
 	});
 	},
 mycomplaints:async(req,res,next) =>{
 	 var tok = decode(req.headers.authorization.split(" ")[1]);
 	User.findById(tok.id).populate('mycomplaints').then(user =>{
-		console.log(user.mycomplaints);
+		
     res.send(user.mycomplaints);
 	}).catch(error =>{
 		console.log(error);
@@ -75,7 +75,7 @@ var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
 	 		user.mycomplaints.push(complaint._id);
 	 		user.save();
 	 		var token = user.fcmToken;
-	 		console.log(token);
+	 		
 	 		if(token){
 	 			 var message = {
         data: {    //This is only optional, you can send any data
@@ -105,7 +105,7 @@ FCM.send(message, function(err, response) {
 	 					var result = team[0].team.filter(function (el) {
 							  return el.title === comp;
 									});
-	 					console.log(result[0]);
+	 				
 	 					req.userID = "instigo.iitdh@gmail.com";
 	 					req.userID1=result[0].email;
 	 					return complaintEmail.complaintemail(req,res,next);
@@ -128,7 +128,7 @@ FCM.send(message, function(err, response) {
 	 					var result = team[0].team.filter(function (el) {
 							  return el.title === comp;
 									});
-	 					console.log(result[0]);
+	 					
 	 					req.userID =complaint.requestorEmail;
 	 					req.userID1=result[0].email;
 	 					return complaintEmail.complaintemail(req,res,next);
@@ -143,7 +143,7 @@ notvalidcomplaints: async(req,res,next) =>{
 							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
-								console.log(result);
+								
 							});
 	 					req.userID =complaint.requestorEmail;
 	 					return complaintEmail.rejectemail(req,res,next);				
@@ -156,7 +156,7 @@ onGoing:  async(req,res,next) =>{
 							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
-								console.log(result);
+								
 							})
 						Student.find({teamName:"General Secy"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
@@ -177,7 +177,7 @@ onGoing:  async(req,res,next) =>{
 							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
-								console.log(result);
+								
 							})
 						Student.find({teamName:"General Secy"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
@@ -199,7 +199,7 @@ onGoing:  async(req,res,next) =>{
 							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
-								console.log(result);
+								
 							});
 	
 	 					req.userID =complaint.requestorEmail;
@@ -214,7 +214,7 @@ onGoing:  async(req,res,next) =>{
 							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
-								console.log(result);
+							
 							})
 						Student.find({teamName:"General Secy"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
@@ -236,7 +236,7 @@ onGoing:  async(req,res,next) =>{
 							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
-								console.log(result);
+							
 							});
 	
 	 					req.userID =complaint.requestorEmail;
@@ -250,7 +250,7 @@ onGoing:  async(req,res,next) =>{
 							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
-								console.log(result);
+							
 							})
 						Student.find({teamName:"General Secy"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
@@ -271,7 +271,7 @@ onGoing:  async(req,res,next) =>{
 							
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
-								console.log(result);
+							
 							})
 						Student.find({teamName:"General Secy"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
@@ -295,7 +295,7 @@ onGoing:  async(req,res,next) =>{
 								date:datetime,
 								email:tok.email
 							}
-							console.log(commen);
+						
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{
 								res.status(200).json({message:"success"});

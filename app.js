@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === 'test') {
     console.log("Connected to database!");
   })
   .catch((err) => {
-    console.log(err);
+   
     console.log("Connection failed!");
   });
 }
@@ -142,7 +142,7 @@ const upload2 = multer({
     fileSize: 1024 * 1024 * 5
   }
 });
-console.log(config.google.clientID);
+
 app.use(function(req, res, next){
   next();
 });
@@ -220,7 +220,7 @@ var dateString = datetime,
 
 date = new Date(dateParts[2], parseInt(dateParts[1], 10) - 1, dateParts[0], timeParts[0], timeParts[1]);
 
-console.log(date.getTime());
+
  //1379426880000
  var datetime1 = date.getTime();
     user.password = hash;
@@ -230,7 +230,7 @@ console.log(date.getTime());
       res.status(200).json({ message: "success",passLastUpdated: updatepassword });
     })
     .catch(error => {
-      console.log(error);
+    
       res.status(200).json({
         message: "failure@err in Updating"
       });
@@ -277,7 +277,7 @@ app.post('/profilepic',checkAuth,(req,res) => {
   var tok = decode(req.headers.authorization.split(" ")[1]);
 
     upload4(req, res, function (err) {
-          console.log(req.file);
+        
         if (err) {
 
             res.status(400).json({message: err.message})
@@ -285,7 +285,7 @@ app.post('/profilepic',checkAuth,(req,res) => {
         } else {
           let path =req.protocol+'://'+req.get("host")+'/'+'images/'+tok.email+'/'+req.file.filename;
           User.updateOne({'_id': tok.id },{'profilePic':path}).then(result =>{
-      console.log(result);
+    
   if (result.n > 0) {
       res.status(200).json({ message: "success" });
       }else {
@@ -309,7 +309,7 @@ app.post('/coverpic',checkAuth, (req, res) => {
   var tok = decode(req.headers.authorization.split(" ")[1]);
 
     upload3(req, res, function (err) {
-          console.log(req.file);
+       
         if (err) {
 
             res.status(400).json({message: err.message})
@@ -317,7 +317,7 @@ app.post('/coverpic',checkAuth, (req, res) => {
         } else {
           let path =req.protocol+'://'+req.get("host")+'/'+'images/'+tok.email+'/'+req.file.filename;
           User.updateOne({'_id': tok.id },{'coverPic':path}).then(result =>{
-      console.log(result);
+  
   if (result.n > 0) {
       res.status(200).json({ message: "success" });
       }else {
@@ -345,11 +345,11 @@ const upload5= multer({
 
 app.post('/documents/:id',(req,res) => {
   var tok = decode(req.headers.authorization.split(" ")[1]);
-  console.log(tok.email);
+
    upload5(req, res, function (err) {
-          console.log(req.file);
+         
         if (err) {
-              console.log(err);
+            
             res.status(200).json({message: err.message})
 
         } else {
@@ -374,7 +374,7 @@ Course.findOne({'courseCode':req.params.id}).then(course =>{
     })
         res.status(200).json({message:"success"});
     }).catch(err =>{
-      console.log("Bhai");
+     
       res.status(200).json({message:"failure@err in posting feedback"});
    });
  });
@@ -383,7 +383,7 @@ Course.findOne({'courseCode':req.params.id}).then(course =>{
  });
 app.get('/secys',function (req,res) {
     Student.find({}).then(students =>{
-      console.log(students);
+     
       if(students){res.status(200).json(students);}
       else{res.status(200).json({message : "failure@Err in getting secys"});}
     });
@@ -404,8 +404,8 @@ app.get('/tokensignin/:id',(req,res,next)=>{
                 token,
                 audience,
                 function(e, login) {
-                  console.log(e);
-                  console.log(login);
+               
+               
                     if (login) {
                         var payload = login.getPayload();
                         var googleId = payload['sub'];
