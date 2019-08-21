@@ -396,7 +396,7 @@ app.use('/users', userRoutes);
 app.use('/mess', messRoutes);
 app.use('/courses',resourcesRoutes);
 app.use('/complaints',complaintsRoutes);
-app.get('/tokensignin/:id',(req,res,next)=>{
+app.post('/tokensignin/:id',(req,res,next)=>{
   const token =req.params.id;
  const audience = config.google.clientID;
    var verifyToken = new Promise(function(resolve, reject) {
@@ -427,7 +427,8 @@ app.get('/tokensignin/:id',(req,res,next)=>{
               password:'$2a$10$LGvwGlOq9.2ahUvfRdypj.EddTci2pGmRyVL21to8L/vTyDovHiZa',
               name:name,
               profilePic:picture,
-              isEmailVerified:true
+              isEmailVerified:true,
+              fcmToken:req.body.fcmToken
             };
         Email.findOne({"email":newUser.email}).then(user1=>{
           if (user1) {

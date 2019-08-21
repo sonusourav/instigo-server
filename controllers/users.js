@@ -158,9 +158,6 @@ console.log(date.getTime());
         });
     }
       fetchedUser = user;
-      user.fcmToken = req.body.fcmToken;
-      console.log("fcmToken");
-      console.log(req.body.fcmToken);
       user.save();
        if (!user.isEmailVerified) {
        return res.status(200).json({
@@ -181,7 +178,6 @@ console.log(date.getTime());
         JWT_SECRET,
         { expiresIn: "31536000h" }
       );
-   console.log("aman");
    //  req.session.user = fetchedUser;
    // var refreshToken = randtoken.uid(256);
    //  refreshTokens[refreshToken] = fetchedUser.name;
@@ -304,6 +300,7 @@ console.log(date.getTime());
                   profilePic:user.profilePic};
         res.status(200).json(userInfo);
   });
+
   // generateToken: async(req,res,next)=>{
   //   var userId = req.body.id
   // var refreshToken = req.body.refreshToken
@@ -319,7 +316,9 @@ console.log(date.getTime());
     fcmToken : async(req,res,next) =>{
   var tok = decode(req.headers.authorization.split(" ")[1]);
   User.findOne({'_id':tok.id}).then(user =>{
-    user.fcmToken = req.body.fcmToken;
+   if(req.body.fcmToken!=null) {
+    console.log(req.body.fcmToken);
+    user.fcmToken = req.body.fcmToken;}
     user.save().then(result =>{
       if(result){res.status(200).json({message:"success"});}
       else{res.status(200).json({message:"failure"});}
