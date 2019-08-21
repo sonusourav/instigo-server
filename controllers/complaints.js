@@ -19,7 +19,8 @@ function myFunction(zeros) {
 ];
 var datetime = monthNames[currentdate.getMonth()]+" "+currentdate.getDate()
                 +"," 
-                +currentdate.getFullYear(); 
+                +currentdate.getFullYear()+"\n"+currentdate.toLocaleTimeString('en-GB', { hour: "numeric", 
+                                             minute: "numeric"}); 
 module.exports = {
 	getcomplaints:async(req,res,next) =>{
 	Complaint.find({isPrivate:false}).then(complaints =>{
@@ -53,7 +54,7 @@ mycomplaints:async(req,res,next) =>{
 },
 postcomplaints :async(req,res,next) =>{
 var tok = decode(req.headers.authorization.split(" ")[1]);       
-var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
+var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear()+datetime;
 	 	User.findOne({"_id":tok.id}).then(user =>{
 	 		const complaint = new Complaint({ 
 		houseNo:req.body.houseNo,
@@ -219,7 +220,7 @@ onGoing:  async(req,res,next) =>{
 		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =3;
-							var st ="Validated by "+tok.name;
+							var st ="Approved by "+tok.name;
 	 						complaint.trackStatus.push(st);
 							complaint.statusDate.push(datetime);
 							complaint.save().then(result=>{
