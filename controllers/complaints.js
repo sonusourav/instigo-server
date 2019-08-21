@@ -119,10 +119,10 @@ FCM.send(message, function(err, response) {
 			Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 							complaint.status =2;
-							
-							
 							complaint.statusDate.push(datetime);
-							
+							complaint.save().then(result=>{
+								
+							});
 						Student.find({teamName:"General Secy"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
 	 					var result = team[0].team.filter(function (el) {
