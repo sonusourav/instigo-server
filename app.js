@@ -32,9 +32,9 @@ const Email = require('./models/emails');
 const app = express();
 const {check, validationResult } = require('express-validator');
 if (process.env.NODE_ENV === 'test') {
-  mongoose.connect("mongodb+srv://admin:aluthra1403@cluster0-mrukq.gcp.mongodb.net/api?retryWrites=true&w=majority", { useNewUrlParser: true });
+  mongoose.connect("mongodb+srv://sonusourav:sonusourav@instigo-server-ytfvu.gcp.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true });
 } else {
-  mongoose.connect("mongodb+srv://sonusourav:mongopass@instigo-server-ytfvu.gcp.mongodb.net/api?retryWrites=true&w=majority",{useNewUrlParser: true })
+  mongoose.connect("mongodb+srv://sonusourav:sonusourav@instigo-server-ytfvu.gcp.mongodb.net/test?retryWrites=true&w=majority",{useNewUrlParser: true })
   .then(() => {
     console.log("Connected to database!");
   })
@@ -147,6 +147,7 @@ app.use(function(req, res, next){
   next();
 });
 app.post('/reset',[check('password','password must be in 6 characters').isLength({min:6})],(req,res)=>{
+  console.log(req.cookies.auth);
   var token = req.cookies.auth;
   // decode token
   //cookies.set('testtoken', {expires: Date.now()});
@@ -383,7 +384,7 @@ Course.findOne({'courseCode':req.params.id}).then(course =>{
  });
 app.get('/secys',function (req,res) {
     Student.find({}).then(students =>{
-     
+     console.log(students);
       if(students){res.status(200).json(students);}
       else{res.status(200).json({message : "failure@Err in getting secys"});}
     });

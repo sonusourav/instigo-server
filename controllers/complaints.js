@@ -54,7 +54,7 @@ mycomplaints:async(req,res,next) =>{
 },
 postcomplaints :async(req,res,next) =>{
 var tok = decode(req.headers.authorization.split(" ")[1]);       
-var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear()+datetime;
+var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
 	 	User.findOne({"_id":tok.id}).then(user =>{
 	 		const complaint = new Complaint({ 
 		houseNo:req.body.houseNo,

@@ -5,7 +5,7 @@ const decode = require('jwt-decode');
 module.exports = {
 	getmenu :async(req,res,next) =>{
 	Product.find({}).then(prods =>{
-		console.log(prods[0]);
+		console.log(prods);
     // res.status(200).json({menu: prods}); 
     res.send(prods);
 	});
@@ -23,9 +23,10 @@ createFeedback: async(req,res,next) =>{
 		title:req.body.title,
 		username:user.name,
 		url:user.profilePic
-    });
+	});
+	console.log(feedback);
 	 feedback.save().then(result=>{
-	 	if(result)res.status(200).json({message:"success"});
+	 	if(result)res.status(200).json({message:"success",feedback:feedback});
 	 	else{res.status(200).json({message:"failure@err in posting feedback"})}
 	 });
 	});
@@ -50,7 +51,7 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	var mean = ratings/prod.breakfast.raters;
 	prod.breakfast.ratings = mean;
 	prod.save().then(result =>{
-		if(result){res.status(200).json({message:"success"});}
+		if(result){res.status(200).json({message:"success",ratings:mean});}
 		else{res.status(200).json({message:"failure@err in ratings"});}
 	});
 });
@@ -62,7 +63,7 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	var mean = ratings/prod.lunch.raters;
 	prod.lunch.ratings = mean;
 	prod.save().then(result =>{
-		if(result){res.status(200).json({message:"success"});}
+		if(result){res.status(200).json({message:"success",ratings:mean});}
 		else{res.status(200).json({message:"failure@err in ratings"});}
 	});
 });
@@ -74,7 +75,7 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	var mean = ratings/prod.snacks.raters;
 	prod.snacks.ratings = mean;
 	prod.save().then(result =>{
-		if(result){res.status(200).json({message:"success"});}
+		if(result){res.status(200).json({message:"success",ratings:mean});}
 		else{res.status(200).json({message:"failure@err in ratings"});}
 	});
 });
@@ -86,7 +87,7 @@ Product.findOne({"day":req.params.id1}).then(prod =>{
 	var mean = ratings/prod.dinner.raters;
 	prod.dinner.ratings = mean;
 	prod.save().then(result =>{
-		if(result){res.status(200).json({message:"success"});}
+		if(result){res.status(200).json({message:"success",ratings:mean});}
 		else{res.status(200).json({message:"failure@err in ratings"});}
 	});
 });

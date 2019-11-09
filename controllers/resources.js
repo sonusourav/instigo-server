@@ -16,7 +16,7 @@ module.exports = {
  		    courseCode:req.body.courseCode
 		});
 		course.save().then(result=>{
-				res.status(200).json({message:"success"});
+				res.status(200).json({message:"success",course:course});
 		}).catch(err =>{
 			res.status(200).json({message:"failure@err in saving"});
 		});	
