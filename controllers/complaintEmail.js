@@ -18,8 +18,6 @@ var readHTMLFile = function(path, callback) {
     });
 };
 exports.complaintemail = (req,res,next) => {
-    console.log(req.body);
-    console.log(req.userID);
     rand = Math.floor((Math.random() * 1000000) + 54 );
     host = req.get('host');
     readHTMLFile(__dirname + '/complaint.html', function(err, html) {
@@ -45,7 +43,7 @@ var datetime = currentdate.getDate() + "/"
     mailOptions = {
         from: '"InstiGO" <instigo.iitdh@gmail.com>',
         to: [req.userID,req.userID1],
-        subject: "Complaint Registered for Hostel No."+req.body.hostel,
+        subject: "Complaint Registered for Hostel No."+req.body.hostelNo,
         html: htmlToSend
     }
     smtpTransport.sendMail(mailOptions, (error, info) => {

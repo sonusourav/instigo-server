@@ -1,6 +1,7 @@
 var Product = require('../models/menu');
 var mongoose = require('mongoose');
 mongoose.connect("mongodb+srv://sonusourav:sonusourav@instigo-server-ytfvu.gcp.mongodb.net/test?retryWrites=true&w=majority",{useNewUrlParser: true })
+mongoose.connect("mongodb+srv://sonusourav:sonusourav@instigo-server-ytfvu.gcp.mongodb.net/api?retryWrites=true&w=majority",{useNewUrlParser: true })
   .then(() => {
     console.log("Connected to database!");
   })

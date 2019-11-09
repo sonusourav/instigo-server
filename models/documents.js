@@ -14,7 +14,7 @@ var schema = new Schema({
   by:{type:String},
   desc:{type:String},
   url:{type:String},
-  file:{type:String,required:true,unique:true},
+  file:{type:String,required:true},
   type:{type:String},
   path:{type:String}
 });

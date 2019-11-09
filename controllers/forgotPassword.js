@@ -20,6 +20,7 @@ var readHTMLFile = function(path, callback) {
 
 var smtpTransport = nodemailer.createTransport('smtps://' + userCredential.user  + ':' +userCredential.pass +'@smtp.gmail.com');
 exports.forgotPassword = (req,res,next) => {
+    console.log("Amananaaananaa");
     var rand,mailOptions,host,link;
     User.findOne({'email':req.body.email}).then(user =>{
    if(user){
@@ -59,9 +60,7 @@ exports.forgotPassword = (req,res,next) => {
             userID: req.body.email,
             rand : rand
         });
-       fpass
-            .save()
-            .then(response => {
+       fpass.save().then(response => {
                 res.status(200).json({
                     message: "success"
                 })

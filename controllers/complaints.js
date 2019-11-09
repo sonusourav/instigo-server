@@ -75,9 +75,12 @@ var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
 	 	complaint.trackStatus.push(st);
 	 		 complaint.statusDate.push(datetime);
 	 		 complaint.save().then(result=>{
+	 		 	console.log(result);
 	 		user.mycomplaints.push(complaint._id);
-	 		user.save();
-	 		var token = user.fcmToken;
+	 		user.save().then(result=>{
+	 			console.log("Added"+result);
+	 		});
+	 			var token = user.fcmToken;
 	 		
 	 		if(token){
 	 			 var message = {
@@ -86,8 +89,8 @@ var id = req.body.related.slice(0,3).toUpperCase()+currentdate.getFullYear();
             time: '2:45'
         },
         notification:{
-            title : 'Complaint Registered',
-            body : 'hello '
+            title : 'New Complaint',
+            body : "Your Complaint id"+" "+id+" "+'successfully registered' 
         },
         token : token
         };
@@ -100,17 +103,19 @@ FCM.send(message, function(err, response) {
 });
 	 		}
 	 			 	});
-    
 	 		// var token1 = "fbIEam_6qmM:APA91bHnqA1rGyEMZ3jP6QkK8ZQ8b60OZnFDq9LqXQGCE6K3gU3l75HWnSxPQdpDAS8zkSel_ADMQmyJNdvHK3iLqbtESIztA_Gddk0O7PkxEev5l6P_FBUqmN14RYqBHYCYkQe-FEAK";
-	 				Student.find({teamName:"General Secy"}).then(team=>{
+	 				Student.find({teamName:"Hostel Secys"}).then(team=>{
 	 					  var comp ='Hostel'+' '+req.body.hostelNo+' '+'Secy';
 	 					// let result= team[0].team.filter(x => x.title === comp);
 	 					var result = team[0].team.filter(function (el) {
 							  return el.title === comp;
 									});
-	 				
+	 			
 	 					req.userID = "instigo.iitdh@gmail.com";
 	 					req.userID1=result[0].email;
+	 					User.find({'email':"170030039@iitdh.ac.in",'email':result[0].email}).then(users=>{
+	 						console.log(users);
+	 					})
 	 					return complaintEmail.complaintemail(req,res,next);
 	 				});
 	 		 
@@ -128,7 +133,7 @@ FCM.send(message, function(err, response) {
 							complaint.save().then(result=>{
 								
 							});
-						Student.find({teamName:"General Secy"}).then(team=>{
+						Student.find({teamName:"Hostel Secys"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
 	 					var result = team[0].team.filter(function (el) {
 							  return el.title === comp;
@@ -165,7 +170,7 @@ onGoing:  async(req,res,next) =>{
 							complaint.save().then(result=>{
 								
 							})
-						Student.find({teamName:"General Secy"}).then(team=>{
+						Student.find({teamName:"Hostel Secys"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
 	 					var result = team[0].team.filter(function (el) {
 							  return el.title === comp;
@@ -187,7 +192,7 @@ onGoing:  async(req,res,next) =>{
 							complaint.save().then(result=>{
 								
 							})
-						Student.find({teamName:"General Secy"}).then(team=>{
+						Student.find({teamName:"Hostel Secys"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
 	 					var result = team[0].team.filter(function (el) {
 							  return el.title === comp;
@@ -226,7 +231,7 @@ onGoing:  async(req,res,next) =>{
 							complaint.save().then(result=>{
 							
 							})
-						Student.find({teamName:"General Secy"}).then(team=>{
+						Student.find({teamName:"Hostel Secys"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
 	 					var result = team[0].team.filter(function (el) {
 							  return el.title === comp;
@@ -264,7 +269,7 @@ onGoing:  async(req,res,next) =>{
 							complaint.save().then(result=>{
 							
 							})
-						Student.find({teamName:"General Secy"}).then(team=>{
+						Student.find({teamName:"Hostel Secys"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
 	 					var result = team[0].team.filter(function (el) {
 							  return el.title === comp;
@@ -286,7 +291,7 @@ onGoing:  async(req,res,next) =>{
 							complaint.save().then(result=>{
 							
 							})
-						Student.find({teamName:"General Secy"}).then(team=>{
+						Student.find({teamName:"Hostel Secys"}).then(team=>{
 	 					  var comp ='Hostel'+' '+complaint.hostelNo+' '+'Secy';
 	 					var result = team[0].team.filter(function (el) {
 							  return el.title === comp;
@@ -299,7 +304,7 @@ onGoing:  async(req,res,next) =>{
 	});
 	},
 	comments:async(req,res,next)=>{
-		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{		
+		Complaint.findOne({'requestId':req.params.id}).then(complaint =>{	
   			var tok = decode(req.headers.authorization.split(" ")[1]);
 				const commen = { 
 								comment:req.body.comment,
@@ -311,7 +316,8 @@ onGoing:  async(req,res,next) =>{
 						
 							complaint.comments.push(commen);
 							complaint.save().then(result=>{
-								res.status(200).json({message:"success"});
+								console.log("Added"+result);
+								res.send(commen);
 							});
 						});
 	}

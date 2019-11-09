@@ -12,7 +12,12 @@ var courses = [
 new Course({
 			courseName:"Software System Labs",
  		    branch:["1","2","3"],
- 		    courseCode:"CS205"
+ 		    courseCode:"CS203"
+}),
+new Course({
+			courseName:"Digital Systems Labs",
+ 		    branch:["1","2","3"],
+ 		    courseCode:"EE105"
 }),
 new Course({
 			courseName:"Computer Networks",
@@ -20,9 +25,9 @@ new Course({
  		    courseCode:"EE101"
 }),
 new Course({
-			courseName:"Mechanical Engineer",
+			courseName:"Computer Architecture",
  		    branch:["3"],
- 		    courseCode:"ME266"
+ 		    courseCode:"CS301"
 })
 ]
 var done =0;

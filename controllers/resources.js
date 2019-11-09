@@ -15,10 +15,11 @@ module.exports = {
  		    branch:req.body.branch,
  		    courseCode:req.body.courseCode
 		});
+		console.log(course);
 		course.save().then(result=>{
-				res.status(200).json({message:"success",course:course});
+				res.status(200).json({course:course});
 		}).catch(err =>{
-			res.status(200).json({message:"failure@err in saving"});
+			res.status(201).json({message:"failure@err in saving"});
 		});	
 	},
 getdocuments :async(req,res,next) =>{

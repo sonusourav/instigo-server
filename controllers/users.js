@@ -150,6 +150,7 @@ console.log(date.getTime());
 
 
     let fetchedUser;
+
     User.findOne({ "email": req.body.email })
     .then(user =>{
       if (!user) {
@@ -178,13 +179,13 @@ console.log(date.getTime());
         JWT_SECRET,
         { expiresIn: "31536000h" }
       );
+   console.log("Bhai"+token);
    //  req.session.user = fetchedUser;
    // var refreshToken = randtoken.uid(256);
    //  refreshTokens[refreshToken] = fetchedUser.name;
    //    console.log(req.user);
    //  res.json({token:  token, refreshToken: refreshToken}) 
   // console.log(req.session.user);
- 
    res.status(200).json({
        message:"success",userId:token,passLastUpdated:fetchedUser.updatedPass,level:fetchedUser.level
       });
@@ -198,8 +199,10 @@ console.log(date.getTime());
 },
 
   verify: async( req, res, next) => {
-      Vemail.findOne({"userID": req.params.id1}, (err, result) =>{
-      if(!result){
+    console.log("Amanji"+req.params.id1);
+      Vemail.find({"userID": req.params.id1}, (err, result) =>{
+        console.log(result);
+      if(result.length == 0){
          res.status(201).json({
         message: "Email already Verified"
       });
@@ -276,6 +279,7 @@ console.log(date.getTime());
   //   return res.status(200).send("failure@Not Authorized");
   // }
   var tok = decode(req.headers.authorization.split(" ")[1]);
+  console.log(tok);
   User.findOne({'_id':tok.id}).then(user =>{
         res.status(200).json(user.profilePic);
   });
@@ -285,6 +289,7 @@ console.log(date.getTime());
   //   return res.status(200).send("failure@Not Authorized");
   // }
   var tok = decode(req.headers.authorization.split(" ")[1]);
+   console.log(tok);
   User.findOne({'_id':tok.id}).then(user =>{
         res.status(200).json({path:user.coverPic});
   });
@@ -293,7 +298,9 @@ console.log(date.getTime());
   //   if(!req.session.user){
   //   return res.status(200).send("failure@Not Authorized");
   // }
+    console.log("Aman"+req.headers.authorization.split(" ")[1]);
   var tok = decode(req.headers.authorization.split(" ")[1]);
+   console.log(tok);
   User.findOne({'email':tok.email}).then(user =>{
    var userInfo = {name:user.name,
                    email:user.email,

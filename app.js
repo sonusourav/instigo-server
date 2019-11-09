@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === 'test') {
     console.log("Connected to database!");
   })
   .catch((err) => {
-   
+   console.log(err);
     console.log("Connection failed!");
   });
 }
@@ -112,14 +112,14 @@ const fileFilter = (req, file, cb,res) => {
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 1024 * 1024 * 1
+    fileSize: 1024 * 1024 * 10
   },
   fileFilter: fileFilter
 });
 const upload1 = multer({
   storage: storage1,
   limits: {
-    fileSize: 1024 * 1024 * 1
+    fileSize: 1024 * 1024 * 10
   },
   fileFilter: fileFilter
 });
@@ -139,7 +139,7 @@ const storage2 = multer.diskStorage({
 const upload2 = multer({
   storage: storage2,
   limits: {
-    fileSize: 1024 * 1024 * 5
+    fileSize: 1024 * 1024 *10
   }
 });
 
@@ -157,6 +157,7 @@ app.post('/reset',[check('password','password must be in 6 characters').isLength
          return res.status(403).send({message: 'Link has been expired!'});
       } else {
             var tok = decode(token);
+              console.log(tok);
                const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -167,16 +168,17 @@ app.post('/reset',[check('password','password must be in 6 characters').isLength
      if (password === "" ) return res.status(200).json({ message: "password can't be empty" });
 else {
  bcrypt.hash(password, 10).then(hash =>{
-      User.findOne({'_id': tok.id }).then(user =>{
+  console.log(tok.email);
+      User.findOne({'email': tok.email }).then(user =>{
     var currentdate = new Date(); 
-var datetime = currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + "@"  
-                + currentdate.toLocaleTimeString('en-GB', { hour: "numeric", 
-                                             minute: "numeric"});
+var datetime =currentdate.getTime();
     user.password = hash;
     user.updatedPass = datetime;
     user.save().then(result=>{
+      console.log("Amanna"+tok.email);
+       fPass.deleteOne({"rand": req.body.nam}).catch(error => {
+          console.log(error);
+        });
       res.status(200).json({ message: "successfully Updated Password"});
     })
     .catch(error => {
@@ -205,6 +207,7 @@ app.post('/updatepassword',checkAuth,(req,res)=>{
 else {
  bcrypt.hash(password, 10).then(hash =>{
   var tok = decode(req.headers.authorization.split(" ")[1]);
+  console.log(tok);
    User.findOne({'_id': tok.id }).then(user =>{
      var currentdate = new Date(); 
 var datetime = currentdate.getDate() + "-"
@@ -228,6 +231,7 @@ date = new Date(dateParts[2], parseInt(dateParts[1], 10) - 1, dateParts[0], time
     updatepassword = datetime1;
     user.updatedPass = datetime1;
     user.save().then(result=>{
+      console.log('Aman');
       res.status(200).json({ message: "success",passLastUpdated: updatepassword });
     })
     .catch(error => {
@@ -246,12 +250,14 @@ date = new Date(dateParts[2], parseInt(dateParts[1], 10) - 1, dateParts[0], time
 };
 });
 app.get('/forgotp/:id1/:id',(req,res)=>{
+  console.log(req.params.id1);
     fPass.findOne({'rand':req.params.id1}).then(result =>{
+      console.log(result);
       if(!result){
         res.status(403).json({message : "password already Updated"});
-      }
+      }else{
       res.cookie('auth',req.params.id);
-    res.render('email',{id1:req.params.id1});
+    res.render('email',{id1:req.params.id1});}
     });
 })
 // // app.get('/auth/google', passport.authenticate('google', {
@@ -366,17 +372,18 @@ app.post('/documents/:id',(req,res) => {
     type:t,
     path:req.protocol+'://'+req.get("host")+'/'+'resources/'+tok.email+'/'+req.file.filename
     });
-
    documents.save().then(result=>{
 Course.findOne({'courseCode':req.params.id}).then(course =>{
                 course.documents.push(documents._id);
-                course.save();
+                course.save().catch(err=>{
+                  console.log(err);
+                });
 
     })
-        res.status(200).json({message:"success"});
+        res.send(documents);
     }).catch(err =>{
-     
-      res.status(200).json({message:"failure@err in posting feedback"});
+     console.log(err);
+      res.status(201).json({message:"failure@err in posting feedback"});
    });
  });
 }
@@ -404,9 +411,7 @@ app.get('/tokensignin/:id',(req,res,next)=>{
             client.verifyIdToken(
                 token,
                 audience,
-                function(e, login) {
-               
-               
+                function(e, login) { 
                     if (login) {
                         var payload = login.getPayload();
                         var googleId = payload['sub'];
