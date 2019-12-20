@@ -7,7 +7,7 @@
  
 | Type        | Url           | Body  |
 | ------------- |:----------------:| :---------------------: |
-|Post     | http://localhost:3000/users/signup |{"email":"170030039@iitdh.ac.in","password":"amanji","name":aman,'':file} |
+|Post     | http://localhost:3000/users/signup |{"email":"170030039@iitdh.ac.in","password":"amanji","name":aman} |
 |Post      |  http://localhost:3000/users/signin     | {"email":"170030039@iitdh.ac.in","password":"amanji"}|
 |  post   |   http://localhost:3000/users/forgotp    |  {"email": "170030039@iitdh.ac.in"} |      
 | post | http://localhost:3000/users/update/profile | {"branch":"cse","year":2,"hostel":2,"gender":"male","dob":"10/02/1999","phone":1111111111,"name":"aman"}|      
